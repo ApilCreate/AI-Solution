@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@tailwind utilities;
+
+body {
+  font-family: 'Manrope', sans-serif;
+  background: linear-gradient(to right, #edf7fb, #d3e8ff);
+  color: #1a1a1a;
+}
+
+/* Monoton font class for brand text */
+.font-monoton {
+  font-family: 'Monoton', cursive;
+}
