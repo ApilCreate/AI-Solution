@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "analyze": "ANALYZE=true next build",
     "start": "next start",
@@ -25,6 +25,7 @@
     "@splinetool/react-spline": "^4.1.0",
     "@tanstack/react-query": "^5.84.2",
     "@types/next-auth": "^3.13.0",
+    "@types/pg": "^8.15.5",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.1",
     "drizzle-kit": "^0.31.4",
@@ -40,12 +41,12 @@
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
     "resend": "^6.0.1",
+    "tailwindcss": "^3.4.17",
     "zod": "^4.0.17"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@next/bundle-analyzer": "^15.4.5",
-    "@tailwindcss/postcss": "^4",
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -54,7 +55,6 @@
     "eslint": "^9",
     "eslint-config-next": "15.4.4",
     "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.11",
     "tsx": "^4.20.3",
     "typescript": "^5"
   }

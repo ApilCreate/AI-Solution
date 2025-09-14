@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import ConditionalLayout from "./components/ConditionalLayout";
+import Providers from "./components/Providers";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 export const metadata: Metadata = {
   title: "AI Solutions",
@@ -66,10 +68,14 @@ export default function RootLayout({
           }
         `}</style>
       </head>
-      <body className="font-manrope bg-glassblue text-gray-900 dark:bg-darkglass dark:text-white transition duration-300">
-        <ConditionalLayout>
-          {children}
-        </ConditionalLayout>
+      <body className="font-manrope transition-colors duration-300">
+        <ThemeProvider>
+          <Providers>
+            <ConditionalLayout>
+              {children}
+            </ConditionalLayout>
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

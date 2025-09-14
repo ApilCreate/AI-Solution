@@ -1,40 +1,32 @@
 "use client";
 
-import { motion, useReducedMotion } from 'framer-motion';
-import { memo, ReactNode } from 'react';
+import { motion, useReducedMotion, MotionProps } from 'framer-motion';
+import { memo, ReactNode, ComponentProps } from 'react';
 
-interface OptimizedMotionProps {
+interface OptimizedMotionProps extends Omit<ComponentProps<typeof motion.div>, 'children'> {
   children: ReactNode;
-  className?: string;
-  style?: React.CSSProperties;
-  initial?: any;
-  animate?: any;
-  transition?: any;
-  whileInView?: any;
-  viewport?: any;
-  whileHover?: any;
   fallback?: boolean;
 }
 
 // Optimized motion component that respects user preferences
 const OptimizedMotion = memo(({ 
-  children, 
-  fallback = true, 
-  className = "",
-  style = {},
+  children,
+  className,
+  style,
   initial,
   animate,
   transition,
   whileInView,
   viewport,
   whileHover,
+  fallback = false,
   ...props 
 }: OptimizedMotionProps) => {
   const shouldReduceMotion = useReducedMotion();
   
   // If user prefers reduced motion, render without animations
   if (shouldReduceMotion && fallback) {
-    return <div className={className} style={style}>{children}</div>;
+    return <div className={className}>{children}</div>;
   }
   
   // Optimize animation props for better performance
@@ -43,11 +35,11 @@ const OptimizedMotion = memo(({
     style: {
       transform: 'translateZ(0)',
       ...style
-    },
+    } as React.CSSProperties,
     initial,
     animate,
     transition: {
-      ease: [0.22, 1, 0.36, 1],
+      ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
       ...transition
     },
     whileInView,

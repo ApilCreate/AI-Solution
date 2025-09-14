@@ -25,7 +25,7 @@ export default function Home() {
   const [splineError, setSplineError] = useState(false);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
-  const handleSplineError = useCallback((error: any) => {
+  const handleSplineError = useCallback((error: Error | unknown) => {
     console.warn('Spline loading error:', error);
     setSplineError(true);
   }, []);
@@ -342,7 +342,7 @@ export default function Home() {
               </span>
             </h2>
             <p className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-              Discover how we've helped businesses across industries leverage AI to solve complex challenges and drive innovation.
+              Discover how we&apos;ve helped businesses across industries leverage AI to solve complex challenges and drive innovation.
             </p>
           </motion.div>
 
@@ -415,7 +415,7 @@ export default function Home() {
               </span>
             </h2>
             <p className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-              Don't just take our word for it. Here's what our clients have to say about working with AI-Solution.
+              Don&apos;t just take our word for it. Here&apos;s what our clients have to say about working with AI-Solution.
             </p>
           </motion.div>
 
@@ -570,11 +570,11 @@ export default function Home() {
             {/* Content */}
             <div className="relative z-10 space-y-8">
               <h2 className="text-4xl md:text-5xl font-bold">
-                Let's Build Something Amazing Together
+                Let&apos;s Build Something Amazing Together
               </h2>
               
               <p className="text-xl max-w-3xl mx-auto opacity-90">
-                Ready to transform your business with AI? Let's discuss your project and explore how our intelligent solutions can drive your success.
+                Ready to transform your business with AI? Let&apos;s discuss your project and explore how our intelligent solutions can drive your success.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

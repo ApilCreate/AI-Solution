@@ -1,12 +1,12 @@
 interface LogMeta {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
-export function logInfo(message: string, meta?: LogMeta) {
+export function logInfo(message: string, data?: unknown) {
   const timestamp = new Date().toISOString();
   
-  if (meta) {
-    console.log(`[${timestamp}] INFO: ${message}`, meta);
+  if (data) {
+    console.log(`[${timestamp}] INFO: ${message}`, data);
   } else {
     console.log(`[${timestamp}] INFO: ${message}`);
   }

@@ -5,11 +5,11 @@ import Link from "next/link";
 import { ArrowLeft, Calendar, Clock, User, BookOpen, Tag } from "lucide-react";
 import { ArticleCard, GlassCard, Badge } from "@/app/components/ui";
 
-interface BlogParams {
+interface BlogPostPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function BlogDetailPage({ params }: BlogParams) {
+export default async function BlogDetailPage({ params }: BlogPostPageProps) {
   // Ensure the route handler is async and await params
   const { id } = await params;
   const blogId = decodeURIComponent(id);

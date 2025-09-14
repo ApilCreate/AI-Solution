@@ -43,13 +43,6 @@ const nextConfig: NextConfig = {
       };
     }
     
-    // Tree shaking optimization
-    config.optimization = {
-      ...config.optimization,
-      usedExports: true,
-      sideEffects: false,
-    };
-    
     return config;
   },
   

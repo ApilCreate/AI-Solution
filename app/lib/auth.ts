@@ -4,6 +4,9 @@ import bcrypt from "bcrypt";
 import { db, adminUsers } from "@/db";
 import { eq } from "drizzle-orm";
 
+// Ensure we have a proper URL for NextAuth
+const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -49,8 +52,10 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET || "your-secret-key-here",
   session: {
     strategy: "jwt",
+    maxAge: 24 * 60 * 60, // 24 hours
   },
   pages: {
     signIn: "/admin/login",
@@ -59,17 +64,21 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.role = user.role;
+        token.id = user.id;
       }
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
-        session.user.id = token.sub!;
-        session.user.role = token.role;
+        session.user.id = token.id as string;
+        session.user.role = token.role as string;
       }
       return session;
     },
   },
+  debug: process.env.NODE_ENV === 'development',
+  // Fix for Invalid URL error
+  useSecureCookies: process.env.NODE_ENV === 'production',
 };
 
 export async function requireAdmin() {

@@ -1,136 +1,92 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, inquiries } from '@/db';
-import { requireAdmin } from '@/lib/auth';
+import { requireAdminSimple } from '@/app/lib/simple-auth';
 import { logError } from '@/lib/logger';
-import { and, or, like, gte, lte, eq, desc, count } from 'drizzle-orm';
-import { z } from 'zod';
-
-const querySchema = z.object({
-  q: z.string().optional(),
-  reason: z.string().optional(),
-  country: z.string().optional(),
-  status: z.string().optional(),
-  from: z.string().optional(), // ISO date string
-  to: z.string().optional(),   // ISO date string
-  page: z.coerce.number().min(1).default(1),
-  limit: z.coerce.number().min(1).max(100).default(20)
-});
+import { desc, eq, like, gte, lte } from 'drizzle-orm';
 
 export async function GET(request: NextRequest) {
   try {
     // Require admin authentication
-    await requireAdmin();
+    await requireAdminSimple();
 
     const { searchParams } = new URL(request.url);
-    const queryParams = Object.fromEntries(searchParams.entries());
-    
-    // Validate and parse query parameters
-    const validationResult = querySchema.safeParse(queryParams);
-    if (!validationResult.success) {
-      return NextResponse.json(
-        { 
-          error: 'Invalid query parameters',
-          details: validationResult.error.issues
-        },
-        { status: 400 }
-      );
-    }
-
-    const { q, reason, country, status, from, to, page, limit } = validationResult.data;
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '50');
+    const status = searchParams.get('status');
+    const reason = searchParams.get('reason');
+    const country = searchParams.get('country');
+    const search = searchParams.get('search');
+    const startDate = searchParams.get('startDate');
+    const endDate = searchParams.get('endDate');
 
     // Build where conditions
-    const conditions = [];
+    const whereConditions = [];
 
-    // Full-text search across multiple fields
-    if (q) {
-      conditions.push(
-        or(
-          like(inquiries.name, `%${q}%`),
-          like(inquiries.email, `%${q}%`),
-          like(inquiries.company, `%${q}%`),
-          like(inquiries.messageTitle, `%${q}%`),
-          like(inquiries.message, `%${q}%`)
-        )
+    if (status) {
+      whereConditions.push(eq(inquiries.status, status));
+    }
+
+    if (reason) {
+      whereConditions.push(eq(inquiries.reason, reason));
+    }
+
+    if (country) {
+      whereConditions.push(eq(inquiries.country, country));
+    }
+
+    if (search) {
+      whereConditions.push(
+        like(inquiries.name, `%${search}%`)
       );
     }
 
-    // Filter by reason
-    if (reason) {
-      conditions.push(eq(inquiries.reason, reason));
+    if (startDate) {
+      whereConditions.push(gte(inquiries.createdAt, new Date(startDate)));
     }
 
-    // Filter by country
-    if (country) {
-      conditions.push(eq(inquiries.country, country));
+    if (endDate) {
+      whereConditions.push(lte(inquiries.createdAt, new Date(endDate)));
     }
 
-    // Filter by status
-    if (status) {
-      conditions.push(eq(inquiries.status, status));
-    }
-
-    // Date range filter
-    if (from) {
-      try {
-        const fromDate = new Date(from);
-        conditions.push(gte(inquiries.createdAt, fromDate));
-      } catch (error) {
-        return NextResponse.json(
-          { error: 'Invalid from date format' },
-          { status: 400 }
-        );
-      }
-    }
-
-    if (to) {
-      try {
-        const toDate = new Date(to);
-        conditions.push(lte(inquiries.createdAt, toDate));
-      } catch (error) {
-        return NextResponse.json(
-          { error: 'Invalid to date format' },
-          { status: 400 }
-        );
-      }
-    }
-
-    const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
-
-    // Get total count
-    const [totalResult] = await db
-      .select({ count: count() })
-      .from(inquiries)
-      .where(whereClause);
-
-    const total = totalResult.count;
-
-    // Get paginated results
+    // Calculate offset
     const offset = (page - 1) * limit;
-    const rows = await db
+
+    // Execute query with all conditions
+    const results = await db
       .select()
       .from(inquiries)
-      .where(whereClause)
+      .where(
+        whereConditions.length > 0 
+          ? whereConditions.reduce((acc, condition) => acc ? acc && condition : condition)
+          : undefined
+      )
       .orderBy(desc(inquiries.createdAt))
       .limit(limit)
       .offset(offset);
 
-    return NextResponse.json(
-      {
-        rows,
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit)
-      },
-      { 
-        status: 200,
-        headers: {
-          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        }
+    // Get total count for pagination
+    const totalCountResult = await db
+      .select({ count: inquiries.id })
+      .from(inquiries)
+      .where(
+        whereConditions.length > 0 
+          ? whereConditions.reduce((acc, condition) => acc ? acc && condition : condition)
+          : undefined
+      );
+    
+    const totalCount = totalCountResult.length;
+
+    return NextResponse.json(results, { 
+      status: 200,
+      headers: {
+        'X-Total-Count': totalCount.toString(),
+        'X-Page': page.toString(),
+        'X-Limit': limit.toString(),
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
       }
-    );
+    });
 
   } catch (error) {
     if (error instanceof Error && error.message === 'Unauthorized') {
@@ -140,7 +96,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    logError('Failed to fetch inquiries', { error });
+    logError('Failed to fetch inquiries list', { error });
     
     return NextResponse.json(
       { error: 'Internal server error' },

@@ -1,29 +1,37 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import {
-  BarChart3,
-  Building,
-  CheckCircle,
-  Clock,
-  Download,
-  Eye,
-  Filter,
-  Grid3X3,
-  LineChart,
-  List,
-  Mail,
-  MapPin,
-  MessageSquare,
-  PieChart,
-  RefreshCw,
-  Search,
-  TrendingUp,
-  User,
-  X
-} from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Mail,
+  Users,
+  Clock,
+  CheckCircle,
+  TrendingUp,
+  Globe,
+  Calendar,
+  FileText,
+  AlertCircle,
+  Filter,
+  Download,
+  Search,
+  Eye,
+  MoreHorizontal,
+  ChevronDown,
+  RefreshCw,
+  BarChart3,
+  PieChart,
+  LineChart,
+  Grid3X3,
+  List,
+  Settings,
+  X,
+  User,
+  Building,
+  MapPin,
+  MessageSquare
+} from "lucide-react";
 
 interface Inquiry {
   id: string;
@@ -351,117 +359,112 @@ export default function ModernAdminDashboard() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const [inquiriesRes, statsRes, countriesRes, reasonsRes, timeRes] = await Promise.all([
+      const [inquiriesRes, statsRes] = await Promise.all([
         fetch('/api/inquiries/list'),
-        fetch('/api/analytics/overview'),
-        fetch('/api/analytics/by-country'),
-        fetch('/api/analytics/by-reason'),
-        fetch('/api/analytics/over-time')
+        fetch('/api/analytics/overview')
       ]);
 
       if (inquiriesRes.ok) {
         const inquiriesData = await inquiriesRes.json();
-        console.log('Inquiries data:', inquiriesData); // Debug log
-        setInquiries(inquiriesData || []);
-      } else {
-        console.error('Failed to fetch inquiries:', inquiriesRes.status);
+        setInquiries(inquiriesData.inquiries || []);
+        processChartData(inquiriesData.inquiries || []);
       }
 
       if (statsRes.ok) {
         const statsData = await statsRes.json();
-        console.log('Stats data:', statsData); // Debug log
-        setStats({
-          totalInquiries: statsData.total || 0,
-          newThisWeek: statsData.last7 || 0,
-          pendingInquiries: statsData.pending || 0,
-          completedInquiries: (statsData.total || 0) - (statsData.pending || 0)
-        });
-      } else {
-        console.error('Failed to fetch stats:', statsRes.status);
+        setStats(statsData);
       }
-
-      // Process analytics data for charts
-      let countries: Array<{ label: string; value: number; color?: string }> = [];
-      let reasons: Array<{ label: string; value: number; color?: string }> = [];
-      let monthlyTrend: Array<{ label: string; value: number; date: string }> = [];
-      let statusDistribution: Array<{ label: string; value: number; color?: string }> = [];
-      let sourceData: Array<{ label: string; value: number; color?: string }> = [];
-
-      if (countriesRes.ok) {
-        const countriesData = await countriesRes.json();
-        console.log('Countries data:', countriesData); // Debug log
-        countries = countriesData.map((item: any, index: number) => ({
-          label: item.country || 'Unknown',
-          value: item.count,
-          color: chartColors[index % chartColors.length]
-        }));
-      }
-
-      if (reasonsRes.ok) {
-        const reasonsData = await reasonsRes.json();
-        console.log('Reasons data:', reasonsData); // Debug log
-        reasons = reasonsData.map((item: any, index: number) => ({
-          label: item.reason,
-          value: item.count,
-          color: chartColors[index % chartColors.length]
-        }));
-      }
-
-      if (timeRes.ok) {
-        const timeData = await timeRes.json();
-        console.log('Time data:', timeData); // Debug log
-        monthlyTrend = timeData.map((item: any) => ({
-          label: item.month,
-          value: item.count,
-          date: item.month
-        }));
-      }
-
-      // Process status and source data from inquiries
-      if (inquiriesRes.ok) {
-        const inquiriesData = await inquiriesRes.json();
-        
-        // Process status distribution
-        const statusCount = inquiriesData.reduce((acc: any, inquiry: any) => {
-          acc[inquiry.status] = (acc[inquiry.status] || 0) + 1;
-          return acc;
-        }, {});
-
-        statusDistribution = Object.entries(statusCount)
-          .map(([status, count], index) => ({
-            label: status,
-            value: count as number,
-            color: chartColors[index % chartColors.length]
-          }));
-
-        // Process source data
-        const sourceCount = inquiriesData.reduce((acc: any, inquiry: any) => {
-          acc[inquiry.source] = (acc[inquiry.source] || 0) + 1;
-          return acc;
-        }, {});
-
-        sourceData = Object.entries(sourceCount)
-          .map(([source, count], index) => ({
-            label: source,
-            value: count as number,
-            color: chartColors[index % chartColors.length]
-          }));
-      }
-
-      // Set chart data from API responses
-      setChartData({
-        countries,
-        reasons,
-        monthlyTrend,
-        statusDistribution,
-        sourceData
-      });
-
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const processChartData = (inquiriesData: Inquiry[]) => {
+    // Process countries
+    const countryCount = inquiriesData.reduce((acc, inquiry) => {
+      const country = inquiry.country || 'Unknown';
+      acc[country] = (acc[country] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const countries = Object.entries(countryCount)
+      .map(([country, count], index) => ({
+        label: country,
+        value: count,
+        color: chartColors[index % chartColors.length]
+      }))
+      .sort((a, b) => b.value - a.value);
+
+    // Process reasons
+    const reasonCount = inquiriesData.reduce((acc, inquiry) => {
+      acc[inquiry.reason] = (acc[inquiry.reason] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const reasons = Object.entries(reasonCount)
+      .map(([reason, count], index) => ({
+        label: reason,
+        value: count,
+        color: chartColors[index % chartColors.length]
+      }))
+      .sort((a, b) => b.value - a.value);
+
+    // Process monthly trend
+    const monthlyCount = inquiriesData.reduce((acc, inquiry) => {
+      const date = new Date(inquiry.createdAt);
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      const monthName = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+      
+      if (!acc[monthKey]) {
+        acc[monthKey] = { count: 0, month: monthName, date: monthKey };
+      }
+      acc[monthKey].count++;
+      return acc;
+    }, {} as Record<string, { count: number; month: string; date: string }>);
+
+    const monthlyTrend = Object.values(monthlyCount)
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .map(item => ({
+        label: item.month,
+        value: item.count,
+        date: item.date
+      }));
+
+    // Process status distribution
+    const statusCount = inquiriesData.reduce((acc, inquiry) => {
+      acc[inquiry.status] = (acc[inquiry.status] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const statusDistribution = Object.entries(statusCount)
+      .map(([status, count], index) => ({
+        label: status,
+        value: count,
+        color: chartColors[index % chartColors.length]
+      }));
+
+    // Process source data
+    const sourceCount = inquiriesData.reduce((acc, inquiry) => {
+      acc[inquiry.source] = (acc[inquiry.source] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const sourceData = Object.entries(sourceCount)
+      .map(([source, count], index) => ({
+        label: source,
+        value: count,
+        color: chartColors[index % chartColors.length]
+      }));
+
+    setChartData({
+      countries,
+      reasons,
+      monthlyTrend,
+      statusDistribution,
+      sourceData
+    });
   };
 
   const applyFilters = () => {
