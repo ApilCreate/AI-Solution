@@ -54,6 +54,7 @@ export default function InquiriesPage() {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [filteredInquiries, setFilteredInquiries] = useState<Inquiry[]>([]);
   const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
   const [showResponseModal, setShowResponseModal] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
   const [isSendingResponse, setIsSendingResponse] = useState(false);
@@ -514,7 +515,10 @@ export default function InquiriesPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => setSelectedInquiry(inquiry)}
+                          onClick={() => {
+                            setSelectedInquiry(inquiry);
+                            setShowDetailModal(true);
+                          }}
                           className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
                         >
                           <Eye className="w-4 h-4" />
@@ -555,6 +559,190 @@ export default function InquiriesPage() {
           </div>
         )}
       </div>
+
+      {/* Inquiry Detail Modal */}
+      {showDetailModal && selectedInquiry && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
+                Inquiry Details
+              </h3>
+              <button
+                onClick={() => setShowDetailModal(false)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl"
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Left Column - Contact Information */}
+              <div className="space-y-6">
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                    <Mail className="w-5 h-5" />
+                    Contact Information
+                  </h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Name</label>
+                      <p className="text-gray-900 dark:text-white">{selectedInquiry.name}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Email</label>
+                      <p className="text-gray-900 dark:text-white">{selectedInquiry.email}</p>
+                    </div>
+                    {selectedInquiry.phone && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</label>
+                        <p className="text-gray-900 dark:text-white flex items-center gap-2">
+                          <Phone className="w-4 h-4" />
+                          {selectedInquiry.phone}
+                        </p>
+                      </div>
+                    )}
+                    {selectedInquiry.company && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Company</label>
+                        <p className="text-gray-900 dark:text-white flex items-center gap-2">
+                          <Building className="w-4 h-4" />
+                          {selectedInquiry.company}
+                        </p>
+                      </div>
+                    )}
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Country</label>
+                      <p className="text-gray-900 dark:text-white flex items-center gap-2">
+                        <Globe className="w-4 h-4" />
+                        {selectedInquiry.country}
+                      </p>
+                    </div>
+                    {selectedInquiry.occupation && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Occupation</label>
+                        <p className="text-gray-900 dark:text-white">{selectedInquiry.occupation}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                    <Tag className="w-5 h-5" />
+                    Inquiry Details
+                  </h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Reason</label>
+                      <p className="text-gray-900 dark:text-white capitalize">{selectedInquiry.reason.replace(/-/g, ' ')}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">How They Heard About Us</label>
+                      <p className="text-gray-900 dark:text-white capitalize">{selectedInquiry.howDidYouHear.replace(/-/g, ' ')}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Source</label>
+                      <p className="text-gray-900 dark:text-white">{selectedInquiry.source}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Status</label>
+                      <span className={`inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full ${getStatusColor(selectedInquiry.status)}`}>
+                        {getStatusIcon(selectedInquiry.status)}
+                        {selectedInquiry.status}
+                      </span>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Date Submitted</label>
+                      <p className="text-gray-900 dark:text-white">{new Date(selectedInquiry.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}</p>
+                    </div>
+                    {selectedInquiry.tags && selectedInquiry.tags.length > 0 && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Tags</label>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {selectedInquiry.tags.map((tag, index) => (
+                            <span
+                              key={index}
+                              className="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs rounded-full"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column - Message */}
+              <div className="space-y-6">
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                    <MessageSquare className="w-5 h-5" />
+                    Message
+                  </h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Subject</label>
+                      <p className="text-lg font-medium text-gray-900 dark:text-white">{selectedInquiry.messageTitle}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Message</label>
+                      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg p-4 mt-2">
+                        <p className="text-gray-900 dark:text-white whitespace-pre-wrap leading-relaxed">
+                          {selectedInquiry.message}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button
+                    onClick={() => {
+                      setShowDetailModal(false);
+                      setShowResponseModal(true);
+                    }}
+                    className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    Respond
+                  </button>
+                  
+                  <select
+                    value={selectedInquiry.status}
+                    onChange={(e) => {
+                      updateInquiryStatus(selectedInquiry.id, e.target.value);
+                      setSelectedInquiry({...selectedInquiry, status: e.target.value});
+                    }}
+                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  >
+                    <option value="new">New</option>
+                    <option value="pending">Pending</option>
+                    <option value="responded">Responded</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                  
+                  <button
+                    onClick={() => setShowDetailModal(false)}
+                    className="px-4 py-2 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Response Modal */}
       {showResponseModal && selectedInquiry && (

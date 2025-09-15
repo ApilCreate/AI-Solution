@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import OptimizedSpline from "./components/OptimizedSpline";
 import Showcase from "./components/Showcase";
+import HomeDataVisualization from "./components/HomeDataVisualization";
 import { FeatureCard, GradientButton, PrimaryButton, ProjectCard, SecondaryButton } from "./components/ui";
 
 export default function Home() {
@@ -484,6 +485,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Data Visualization Section */}
+        <HomeDataVisualization />
 
         {/* Photo Gallery Section */}
         <section className="px-6 py-24 max-w-7xl mx-auto">

@@ -1,23 +1,21 @@
 "use client";
 
-import { useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { signOut } from 'next-auth/react';
 import {
-  LayoutDashboard,
-  Users,
-  Mail,
-  Calendar,
+  BarChart3,
   Bell,
+  Calendar,
   FileText,
   Home,
-  BarChart3,
-  Settings,
   LogOut,
+  Mail,
   Menu,
-  X,
-  Search
+  Search,
+  X
 } from 'lucide-react';
+import { signOut } from 'next-auth/react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import ThemeToggle from './ui/ThemeToggle';
 
 interface DashboardLayoutProps {
@@ -61,10 +59,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         />
       )}
 
-      {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-70 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 lg:translate-x-0 lg:static lg:inset-0 transition-transform duration-300 ${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-      }`}>
+      {/* Main layout container */}
+      <div className="flex min-h-screen">
+        {/* Sidebar */}
+        <div className={`fixed inset-y-0 left-0 z-50 w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 lg:translate-x-0 lg:static lg:inset-0 transition-transform duration-300 ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        }`}>
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-gray-700">
@@ -91,9 +91,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               const isActive = isActiveRoute(item.href);
               
               return (
-                <a
+                <Link
                   key={item.name}
                   href={item.href}
+                  onClick={() => setSidebarOpen(false)}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive
                       ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800'
@@ -104,7 +105,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     isActive ? 'text-purple-600 dark:text-purple-400' : 'text-gray-500 dark:text-gray-400'
                   }`} />
                   {item.name}
-                </a>
+                </Link>
               );
             })}
           </nav>
@@ -120,12 +121,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </button>
           </div>
         </div>
-      </div>
+        </div>
 
-      {/* Main content */}
-      <div className="lg:pl-70">
-        {/* Header */}
-        <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
+        {/* Main content */}
+        <div className="flex-1">
+          {/* Header */}
+          <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
           <div className="flex items-center justify-between h-16 px-6">
             {/* Left side */}
             <div className="flex items-center gap-4">
@@ -189,6 +190,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <main className="p-6">
           {children}
         </main>
+      </div>
       </div>
     </div>
   );
