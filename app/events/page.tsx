@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import dynamic from "next/dynamic";
 import { 
@@ -26,6 +28,18 @@ const Spline = dynamic(() => import("@splinetool/react-spline"), {
   )
 });
 
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+  category: string;
+  bannerUrl: string;
+  status: 'draft' | 'published';
+}
+
 // Curated Unsplash images for tech events
 const eventGallery = [
   "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop&crop=center", // Tech conference presentation
@@ -36,38 +50,11 @@ const eventGallery = [
   "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&h=400&fit=crop&crop=center", // Community event
 ];
 
-const upcomingEvents = [
-  {
-    title: "AI Innovation Workshop",
-    date: "Dec 15, 2024",
-    time: "2:00 PM - 6:00 PM",
-    location: "Tech Hub, Downtown",
-    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=250&fit=crop&crop=center",
-    description: "Hands-on workshop exploring the latest AI technologies including machine learning, neural networks, and their practical business applications.",
-    category: "Workshop"
-  },
-  {
-    title: "AI Solutions Demo Day",
-    date: "Jan 20, 2025",
-    time: "9:00 AM - 5:00 PM",
-    location: "Virtual Event",
-    image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&h=250&fit=crop&crop=center",
-    description: "Showcase of cutting-edge AI solutions featuring live demonstrations of chatbots, computer vision, and automation tools.",
-    category: "Demo"
-  },
-  {
-    title: "AI Business Strategy Summit",
-    date: "Feb 5, 2025",
-    time: "6:00 PM - 8:00 PM",
-    location: "Innovation Center",
-    image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=250&fit=crop&crop=center",
-    description: "Industry experts share insights on implementing AI strategies, ROI optimization, and digital transformation through intelligent automation.",
-    category: "Summit"
-  }
-];
-
 export default function EventsPage() {
   const heroRef = useRef(null);
+  const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+  
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"]
@@ -75,6 +62,29 @@ export default function EventsPage() {
 
   const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('/api/events/list');
+        if (response.ok) {
+          const allEvents = await response.json();
+          // Filter only published events and sort by date
+          const publishedEvents = allEvents
+            .filter((event: Event) => event.status === 'published')
+            .sort((a: Event, b: Event) => new Date(a.date).getTime() - new Date(b.date).getTime());
+          
+          setUpcomingEvents(publishedEvents);
+        }
+      } catch (error) {
+        console.error('Failed to fetch events:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -170,67 +180,101 @@ export default function EventsPage() {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {upcomingEvents.map((event, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.4, delay: index * 0.05, ease: "easeOut" }}
-                whileHover={{ y: -4 }}
-                className="group bg-white/5 rounded-2xl overflow-hidden border border-white/10 hover:border-purple-500/30 transition-all duration-300 backdrop-blur-sm"
-              >
-                <div className="relative h-48 overflow-hidden">
-                  <img 
-                    src={event.image}
-                    alt={event.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                  
-                  {/* AI Badge */}
-                  <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 rounded-full bg-purple-500/20 backdrop-blur-sm text-purple-300 text-xs font-medium border border-purple-500/30">
-                      {event.category}
-                    </span>
-                  </div>
+            {loading ? (
+              // Loading skeleton
+              Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="bg-white/5 rounded-2xl p-6 animate-pulse">
+                  <div className="h-48 bg-gray-700 rounded-lg mb-4"></div>
+                  <div className="h-6 bg-gray-700 rounded mb-2"></div>
+                  <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
+                  <div className="h-4 bg-gray-700 rounded w-1/2"></div>
                 </div>
+              ))
+            ) : upcomingEvents.length > 0 ? (
+              upcomingEvents.map((event, index) => (
+                <motion.div
+                  key={event.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.4, delay: index * 0.05, ease: "easeOut" }}
+                  whileHover={{ y: -4 }}
+                  className="group bg-white/5 rounded-2xl overflow-hidden border border-white/10 hover:border-purple-500/30 transition-all duration-300 backdrop-blur-sm"
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    {event.bannerUrl ? (
+                      <img 
+                        src={event.bannerUrl}
+                        alt={event.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center">
+                        <Calendar className="w-16 h-16 text-purple-400" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    
+                    {/* Category Badge */}
+                    <div className="absolute top-4 left-4">
+                      <span className="px-3 py-1 rounded-full bg-purple-500/20 backdrop-blur-sm text-purple-300 text-xs font-medium border border-purple-500/30">
+                        {event.category}
+                      </span>
+                    </div>
+                  </div>
 
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-3 text-white group-hover:text-purple-300 transition-colors">
-                    {event.title}
-                  </h3>
-                  
-                  <p className="text-gray-400 text-sm mb-4 leading-relaxed">
-                    {event.description}
-                  </p>
-                  
-                  <div className="space-y-2 mb-6 text-gray-400 text-sm">
-                    <div className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-2 text-purple-400" />
-                      {event.date}
+                  <div className="p-6">
+                    <Link href={`/events/${event.id}`}>
+                      <h3 className="text-xl font-semibold mb-3 text-white group-hover:text-purple-300 transition-colors cursor-pointer hover:underline">
+                        {event.title}
+                      </h3>
+                    </Link>
+                    
+                    <div className="space-y-2 mb-4">
+                      <div className="flex items-center gap-2 text-gray-400">
+                        <Calendar className="w-4 h-4" />
+                        <span className="text-sm">{new Date(event.date).toLocaleDateString()}</span>
+                      </div>
+                      
+                      {event.time && (
+                        <div className="flex items-center gap-2 text-gray-400">
+                          <Clock className="w-4 h-4" />
+                          <span className="text-sm">{event.time}</span>
+                        </div>
+                      )}
+                      
+                      <div className="flex items-center gap-2 text-gray-400">
+                        <MapPin className="w-4 h-4" />
+                        <span className="text-sm">{event.location}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center">
-                      <Clock className="w-4 h-4 mr-2 text-purple-400" />
-                      {event.time}
-                    </div>
-                    <div className="flex items-center">
-                      <MapPin className="w-4 h-4 mr-2 text-purple-400" />
-                      {event.location}
-                    </div>
+
+                    <p className="text-gray-400 text-sm mb-6 line-clamp-3">
+                      {event.description}
+                    </p>
+
+                    <Link href={`/events/${event.id}`}>
+                      <GradientButton 
+                        variant="secondary"
+                        size="sm"
+                        className="w-full group-hover:bg-purple-600 transition-colors"
+                      >
+                        Learn More
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </GradientButton>
+                    </Link>
                   </div>
-                  
-                  <motion.button 
-                    whileHover={{ x: 4 }}
-                    className="text-purple-400 font-medium text-sm hover:text-purple-300 transition-colors flex items-center"
-                  >
-                    Register for Event
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </motion.button>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))
+            ) : (
+              // No events state
+              <div className="col-span-full text-center py-12">
+                <Calendar className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-400 mb-2">No upcoming events</h3>
+                <p className="text-gray-500">Check back soon for new AI events and workshops!</p>
+              </div>
+            )}
           </div>
         </div>
       </section>

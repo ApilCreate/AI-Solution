@@ -42,11 +42,15 @@ export const adminUsers = pgTable('admin_users', {
 export const events = pgTable('events', {
   id: uuid('id').primaryKey().$defaultFn(() => randomUUID()),
   title: varchar('title', { length: 255 }).notNull(),
-  date: date('date').notNull(),
-  location: varchar('location', { length: 255 }).notNull(),
-  bannerUrl: varchar('banner_url', { length: 500 }),
   description: text('description'),
+  date: date('date').notNull(),
+  time: varchar('time', { length: 50 }),
+  location: varchar('location', { length: 255 }).notNull(),
+  category: varchar('category', { length: 100 }),
+  bannerUrl: varchar('banner_url', { length: 500 }),
+  status: varchar('status', { length: 20 }).default('draft').notNull(), // 'draft' or 'published'
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
 // Event RSVPs table for tracking event attendees

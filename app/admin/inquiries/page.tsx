@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { 
@@ -18,7 +18,8 @@ import {
   AlertCircle,
   Send,
   Download,
-  RefreshCw
+  RefreshCw,
+  Loader2
 } from "lucide-react";
 import DashboardLayout from "../../components/DashboardLayout";
 
@@ -67,6 +68,13 @@ export default function InquiriesPage() {
   });
   const [showFilters, setShowFilters] = useState(false);
 
+  // Pagination and lazy loading states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+  const ITEMS_PER_PAGE = 20;
+
   useEffect(() => {
     // Check authentication
     const checkAuth = () => {
@@ -95,73 +103,69 @@ export default function InquiriesPage() {
     checkAuth();
   }, [router]);
 
-  const fetchInquiries = async () => {
+  const fetchInquiries = async (page = 1, append = false) => {
     try {
-      const response = await fetch('/api/inquiries/list');
+      setIsLoadingMore(append);
+      if (!append) setIsLoading(true);
+
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: ITEMS_PER_PAGE.toString(),
+        ...(filters.status && { status: filters.status }),
+        ...(filters.reason && { reason: filters.reason }),
+        ...(filters.country && { country: filters.country }),
+        ...(searchTerm && { search: searchTerm })
+      });
+
+      const response = await fetch(`/api/inquiries/list?${params}`);
       const data = await response.json();
-      setInquiries(data);
-      setFilteredInquiries(data);
+
+      if (append) {
+        setInquiries(prev => [...prev, ...data.inquiries]);
+        setFilteredInquiries(prev => [...prev, ...data.inquiries]);
+      } else {
+        setInquiries(data.inquiries);
+        setFilteredInquiries(data.inquiries);
+      }
+
+      setTotalCount(data.total);
+      setHasMore(data.inquiries.length === ITEMS_PER_PAGE);
+      setCurrentPage(page);
     } catch (error) {
       console.error('Failed to fetch inquiries:', error);
+    } finally {
+      setIsLoading(false);
+      setIsLoadingMore(false);
     }
   };
 
-  const applyFilters = () => {
-    let filtered = inquiries;
-
-    // Search filter
-    if (searchTerm) {
-      filtered = filtered.filter(inquiry =>
-        inquiry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        inquiry.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        inquiry.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        inquiry.message.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+  const loadMoreInquiries = useCallback(() => {
+    if (!isLoadingMore && hasMore) {
+      fetchInquiries(currentPage + 1, true);
     }
+  }, [currentPage, hasMore, isLoadingMore]);
 
-    // Status filter
-    if (filters.status) {
-      filtered = filtered.filter(inquiry => inquiry.status === filters.status);
-    }
+  // Reset and fetch first page when filters change
+  const handleFiltersChange = useCallback(() => {
+    setCurrentPage(1);
+    setInquiries([]);
+    setFilteredInquiries([]);
+    fetchInquiries(1, false);
+  }, []);
 
-    // Reason filter
-    if (filters.reason) {
-      filtered = filtered.filter(inquiry => inquiry.reason === filters.reason);
-    }
-
-    // Country filter
-    if (filters.country) {
-      filtered = filtered.filter(inquiry => inquiry.country === filters.country);
-    }
-
-    // Date range filter
-    if (filters.dateRange) {
-      const now = new Date();
-      const daysAgo = new Date();
-      
-      switch (filters.dateRange) {
-        case 'today':
-          daysAgo.setDate(now.getDate() - 1);
-          break;
-        case 'week':
-          daysAgo.setDate(now.getDate() - 7);
-          break;
-        case 'month':
-          daysAgo.setMonth(now.getMonth() - 1);
-          break;
-      }
-      
-      filtered = filtered.filter(inquiry => 
-        new Date(inquiry.createdAt) >= daysAgo
-      );
-    }
-
-    setFilteredInquiries(filtered);
-  };
-
+  // Use effect to trigger search when filters change
   useEffect(() => {
-    applyFilters();
-  }, [searchTerm, filters, inquiries]);
+    if (isAuthenticated) {
+      handleFiltersChange();
+    }
+  }, [searchTerm, filters, isAuthenticated, handleFiltersChange]);
+
+  // Initial load
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchInquiries(1, false);
+    }
+  }, [isAuthenticated]);
 
   const updateInquiryStatus = async (inquiryId: string, newStatus: string) => {
     try {
@@ -320,7 +324,12 @@ export default function InquiriesPage() {
               Export CSV
             </button>
             <button
-              onClick={fetchInquiries}
+              onClick={() => {
+                setCurrentPage(1);
+                setInquiries([]);
+                setFilteredInquiries([]);
+                fetchInquiries(1, false);
+              }}
               className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
             >
               <RefreshCw className="w-4 h-4" />
@@ -532,16 +541,14 @@ export default function InquiriesPage() {
                         >
                           <MessageSquare className="w-4 h-4" />
                         </button>
-                        <select
-                          value={inquiry.status}
-                          onChange={(e) => updateInquiryStatus(inquiry.id, e.target.value)}
-                          className="text-xs border border-gray-300 dark:border-gray-600 rounded px-2 py-1 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                        >
-                          <option value="new">New</option>
-                          <option value="pending">Pending</option>
-                          <option value="responded">Responded</option>
-                          <option value="closed">Closed</option>
-                        </select>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          inquiry.status === 'new' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
+                          inquiry.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
+                          inquiry.status === 'responded' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                          'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+                        }`}>
+                          {inquiry.status}
+                        </span>
                       </div>
                     </td>
                   </tr>
@@ -549,6 +556,40 @@ export default function InquiriesPage() {
               </tbody>
             </table>
           </div>
+
+          {/* Load More Button */}
+          {hasMore && (
+            <div className="text-center py-6">
+              <button
+                onClick={loadMoreInquiries}
+                disabled={isLoadingMore}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              >
+                {isLoadingMore ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    Load More Inquiries
+                    <span className="text-sm bg-blue-500 px-2 py-1 rounded">
+                      {filteredInquiries.length} of {totalCount}
+                    </span>
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+
+          {/* End of list indicator */}
+          {!hasMore && filteredInquiries.length > 0 && (
+            <div className="text-center py-6 text-gray-500 dark:text-gray-400">
+              <div className="text-sm">
+                All inquiries loaded ({filteredInquiries.length} total)
+              </div>
+            </div>
+          )}
         </div>
 
         {/* No Results */}

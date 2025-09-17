@@ -24,6 +24,7 @@ interface AnalyticsData {
 interface ChartData {
   name: string;
   value: number;
+  [key: string]: any; // Add index signature for recharts compatibility
 }
 
 const COLORS = ['#8b5cf6', '#a855f7', '#c084fc', '#d8b4fe', '#e9d5ff', '#f3e8ff'];
@@ -41,7 +42,11 @@ export default function HomeDataVisualization() {
         // Fetch inquiries data
         const inquiriesResponse = await fetch('/api/inquiries/list');
         if (inquiriesResponse.ok) {
-          const inquiries = await inquiriesResponse.json();
+          const inquiriesResponseData = await inquiriesResponse.json();
+          // Handle both old and new API response formats
+          const inquiries = Array.isArray(inquiriesResponseData) 
+            ? inquiriesResponseData 
+            : inquiriesResponseData.inquiries || [];
           setInquiriesData(inquiries);
 
           // Process reason distribution

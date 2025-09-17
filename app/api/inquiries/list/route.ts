@@ -76,12 +76,15 @@ export async function GET(request: NextRequest) {
     
     const totalCount = totalCountResult.length;
 
-    return NextResponse.json(results, { 
+    return NextResponse.json({
+      inquiries: results,
+      total: totalCount,
+      page,
+      limit,
+      hasMore: results.length === limit
+    }, { 
       status: 200,
       headers: {
-        'X-Total-Count': totalCount.toString(),
-        'X-Page': page.toString(),
-        'X-Limit': limit.toString(),
         'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
         'Pragma': 'no-cache',
         'Expires': '0'
