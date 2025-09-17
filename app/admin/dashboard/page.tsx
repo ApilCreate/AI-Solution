@@ -51,6 +51,7 @@ interface ChartData {
 interface CategoryData {
   name: string;
   value: number;
+  [key: string]: any; // Add index signature for recharts compatibility
 }
 
 interface CountryData {
