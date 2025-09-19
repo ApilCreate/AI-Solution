@@ -35,6 +35,11 @@ interface AnalyticsData {
     count: number;
     percentage: number;
   }>;
+  bySource: Array<{
+    source: string;
+    count: number;
+    percentage: number;
+  }>;
   overTime: Array<{
     month: string;
     count: number;
@@ -106,7 +111,7 @@ export default function AnalyticsPage() {
       setError(null);
       setIsLoading(true);
 
-      // Fetch all analytics data
+      // Fetch core analytics data first
       const [overviewRes, countryRes, reasonRes, timeRes] = await Promise.all([
         fetch('/api/analytics/overview'),
         fetch('/api/analytics/by-country'),
@@ -114,15 +119,29 @@ export default function AnalyticsPage() {
         fetch('/api/analytics/over-time')
       ]);
 
-      // Check if all responses are ok
+      // Check if core responses are ok
       if (!overviewRes.ok || !countryRes.ok || !reasonRes.ok || !timeRes.ok) {
-        throw new Error('Failed to fetch analytics data');
+        throw new Error('Failed to fetch core analytics data');
       }
 
       const overview = await overviewRes.json();
       const byCountry = await countryRes.json();
       const byReason = await reasonRes.json();
       const overTime = await timeRes.json();
+
+      // Try to fetch source data separately with fallback
+      let bySource = { stats: [] };
+      try {
+        const sourceRes = await fetch('/api/analytics/by-source');
+        if (sourceRes.ok) {
+          bySource = await sourceRes.json();
+        } else {
+          console.warn('Source analytics endpoint not available yet');
+        }
+      } catch (sourceError) {
+        console.warn('Failed to fetch source analytics:', sourceError);
+        // Continue without source data
+      }
 
       // Calculate percentages
       const total = overview.total || 0;
@@ -159,6 +178,7 @@ export default function AnalyticsPage() {
         overview,
         byCountry: countryData,
         byReason: reasonData,
+        bySource: bySource.stats || [],
         overTime,
         byStatus: statusData,
         conversionRates
@@ -172,6 +192,7 @@ export default function AnalyticsPage() {
         overview: { total: 0, last7: 0, pending: 0 },
         byCountry: [],
         byReason: [],
+        bySource: [],
         overTime: [],
         byStatus: [],
         conversionRates: { totalInquiries: 0, responded: 0, converted: 0, rate: 0 }
@@ -202,6 +223,13 @@ export default function AnalyticsPage() {
       ['Reason', 'Count', 'Percentage'],
       ...analyticsData.byReason.map(item => [
         item.reason,
+        item.count,
+        `${item.percentage.toFixed(1)}%`
+      ]),
+      [''],
+      ['Referral Source', 'Count', 'Percentage'],
+      ...analyticsData.bySource.map(item => [
+        item.source,
         item.count,
         `${item.percentage.toFixed(1)}%`
       ])
@@ -738,6 +766,240 @@ export default function AnalyticsPage() {
                 </div>
               </motion.div>
             </div>
+
+            {/* Referral Source Distribution */}
+            {analyticsData.bySource && analyticsData.bySource.length > 0 && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+                className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 hover:shadow-2xl transition-all duration-300"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                      How Did They Hear About Us?
+                    </h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Referral source distribution
+                    </p>
+                  </div>
+                  <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg shadow-lg">
+                    <BarChart3 className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Modern Donut Chart */}
+                  <div className="lg:col-span-1 flex items-center justify-center">
+                    <div className="relative w-56 h-56">
+                      {/* Background Chart */}
+                      <div className="relative w-full h-full">
+                        <svg className="w-full h-full" viewBox="0 0 160 160">
+                          {/* Background circle */}
+                          <circle
+                            cx="80"
+                            cy="80"
+                            r="60"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="24"
+                            className="text-gray-100 dark:text-gray-700"
+                          />
+                          
+                          {/* Data segments */}
+                          {(() => {
+                            if (!analyticsData.bySource || analyticsData.bySource.length === 0) {
+                              return null;
+                            }
+                            
+                            let cumulativePercentage = 0;
+                            const radius = 60;
+                            const circumference = 2 * Math.PI * radius;
+                            
+                            return analyticsData.bySource.map((source, index) => {
+                              const percentage = source.percentage;
+                              const strokeDasharray = `${(percentage / 100) * circumference} ${circumference}`;
+                              const strokeDashoffset = -((cumulativePercentage / 100) * circumference);
+                              cumulativePercentage += percentage;
+                              
+                              const colors = [
+                                '#3B82F6', // blue
+                                '#10B981', // emerald
+                                '#8B5CF6', // purple
+                                '#F59E0B', // orange
+                                '#EF4444', // red
+                                '#6366F1', // indigo
+                                '#14B8A6', // teal
+                                '#F97316', // orange-500
+                                '#EC4899', // pink
+                                '#84CC16'  // lime
+                              ];
+                              
+                              return (
+                                <motion.circle
+                                  key={index}
+                                  cx="80"
+                                  cy="80"
+                                  r={radius}
+                                  fill="none"
+                                  stroke={colors[index % colors.length]}
+                                  strokeWidth="24"
+                                  strokeLinecap="round"
+                                  style={{
+                                    strokeDasharray,
+                                    strokeDashoffset,
+                                    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
+                                  }}
+                                  initial={{ strokeDasharray: `0 ${circumference}` }}
+                                  animate={{ 
+                                    strokeDasharray,
+                                    strokeDashoffset 
+                                  }}
+                                  transition={{ 
+                                    delay: 0.5 + index * 0.1, 
+                                    duration: 1,
+                                    ease: "easeOut"
+                                  }}
+                                />
+                              );
+                            });
+                          })()}
+                        </svg>
+                      </div>
+                      
+                      {/* Center content */}
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <motion.div 
+                          className="text-center"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.8, duration: 0.5 }}
+                        >
+                          <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
+                            {analyticsData.bySource ? analyticsData.bySource.reduce((sum, source) => sum + source.count, 0) : 0}
+                          </div>
+                          <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            Total Inquiries
+                          </div>
+                        </motion.div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Compact Legend List */}
+                  <div className="lg:col-span-2">
+                    <div className="space-y-3">
+                      {analyticsData.bySource && analyticsData.bySource.slice(0, 8).map((source, index) => {
+                        const colors = [
+                          { hex: '#3B82F6', light: 'bg-blue-50 dark:bg-blue-900/10', text: 'text-blue-600 dark:text-blue-400' },
+                          { hex: '#10B981', light: 'bg-emerald-50 dark:bg-emerald-900/10', text: 'text-emerald-600 dark:text-emerald-400' },
+                          { hex: '#8B5CF6', light: 'bg-purple-50 dark:bg-purple-900/10', text: 'text-purple-600 dark:text-purple-400' },
+                          { hex: '#F59E0B', light: 'bg-orange-50 dark:bg-orange-900/10', text: 'text-orange-600 dark:text-orange-400' },
+                          { hex: '#EF4444', light: 'bg-red-50 dark:bg-red-900/10', text: 'text-red-600 dark:text-red-400' },
+                          { hex: '#6366F1', light: 'bg-indigo-50 dark:bg-indigo-900/10', text: 'text-indigo-600 dark:text-indigo-400' },
+                          { hex: '#14B8A6', light: 'bg-teal-50 dark:bg-teal-900/10', text: 'text-teal-600 dark:text-teal-400' },
+                          { hex: '#F97316', light: 'bg-orange-50 dark:bg-orange-900/10', text: 'text-orange-600 dark:text-orange-400' }
+                        ];
+                        const colorScheme = colors[index % colors.length];
+                        
+                        return (
+                          <motion.div
+                            key={index}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.6 + index * 0.05 }}
+                            className="flex items-center justify-between py-3 px-4 rounded-lg bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:shadow-sm transition-all duration-200"
+                          >
+                            <div className="flex items-center gap-3">
+                              {/* Color indicator */}
+                              <div 
+                                className="w-3 h-3 rounded-full flex-shrink-0"
+                                style={{ backgroundColor: colorScheme.hex }}
+                              ></div>
+                              
+                              <div className="flex items-center gap-2">
+                                {/* Source icon */}
+                                {source.source === 'Google' && <Users className={`w-4 h-4 ${colorScheme.text}`} />}
+                                {source.source === 'LinkedIn' && <Target className={`w-4 h-4 ${colorScheme.text}`} />}
+                                {source.source === 'Social Media' && <Activity className={`w-4 h-4 ${colorScheme.text}`} />}
+                                {source.source === 'Email Marketing' && <TrendingUp className={`w-4 h-4 ${colorScheme.text}`} />}
+                                {source.source === 'Referral' && <Award className={`w-4 h-4 ${colorScheme.text}`} />}
+                                {source.source === 'Event' && <BarChart3 className={`w-4 h-4 ${colorScheme.text}`} />}
+                                {(source.source === 'Other' || source.source === 'Not specified') && <Clock className={`w-4 h-4 ${colorScheme.text}`} />}
+                                {source.source === 'Word of Mouth' && <Users className={`w-4 h-4 ${colorScheme.text}`} />}
+                                {source.source === 'Partner Recommendation' && <Award className={`w-4 h-4 ${colorScheme.text}`} />}
+                                {source.source === 'Industry Report' && <BarChart3 className={`w-4 h-4 ${colorScheme.text}`} />}
+                                
+                                <div>
+                                  <span className={`text-sm font-medium ${colorScheme.text}`}>
+                                    {source.source}
+                                  </span>
+                                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                                    {source.count} inquiries
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {/* Percentage */}
+                            <div className="text-right">
+                              <div className={`text-lg font-bold ${colorScheme.text}`}>
+                                {source.percentage.toFixed(1)}%
+                              </div>
+                              {source.percentage > 15 && (
+                                <div className="text-xs text-yellow-600 dark:text-yellow-400 font-medium">
+                                  🏆 Top
+                                </div>
+                              )}
+                            </div>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                    
+                    {/* Show remaining sources count if more than 8 */}
+                    {analyticsData.bySource && analyticsData.bySource.length > 8 && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1.2 }}
+                        className="mt-4 text-center"
+                      >
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm text-gray-600 dark:text-gray-400">
+                          <span>+{analyticsData.bySource.length - 8} more sources</span>
+                        </div>
+                      </motion.div>
+                    )}
+                    
+                    {/* Quick stats */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 1.0 }}
+                      className="mt-6 grid grid-cols-2 gap-4"
+                    >
+                      <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/10 dark:to-blue-800/10 rounded-lg p-4 text-center border border-blue-200 dark:border-blue-800">
+                        <div className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                          {analyticsData.bySource && analyticsData.bySource.length > 0 ? analyticsData.bySource[0].source : 'N/A'}
+                        </div>
+                        <div className="text-xs text-blue-500 dark:text-blue-400 font-medium">
+                          Top Source
+                        </div>
+                      </div>
+                      <div className="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/10 dark:to-purple-800/10 rounded-lg p-4 text-center border border-purple-200 dark:border-purple-800">
+                        <div className="text-lg font-bold text-purple-600 dark:text-purple-400">
+                          {analyticsData.bySource ? analyticsData.bySource.length : 0} sources
+                        </div>
+                        <div className="text-xs text-purple-500 dark:text-purple-400 font-medium">
+                          Active Channels
+                        </div>
+                      </div>
+                    </motion.div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
 
             {/* Performance Over Time - Simple */}
             {analyticsData.overTime.length > 0 && (
