@@ -147,26 +147,38 @@ export default function AdminDashboard() {
   const fetchDashboardData = async () => {
     setIsLoading(true);
     try {
+      console.log('🔄 Starting fetchDashboardData...');
+      
       // Fetch inquiries data
-      const inquiriesRes = await fetch('/api/inquiries/list');
+      const inquiriesRes = await fetch('/api/inquiries/list', {
+        method: 'GET'
+      });
+      
+      console.log('Inquiries response status:', inquiriesRes.status);
+      
       if (inquiriesRes.ok) {
         const inquiriesData = await inquiriesRes.json();
-        const inquiries = Array.isArray(inquiriesData) ? inquiriesData : [];
+        console.log('Inquiries data received:', inquiriesData);
+        
+        // Handle the API response structure { inquiries: [], total, page, limit, hasMore }
+        const inquiries = Array.isArray(inquiriesData) ? inquiriesData : (inquiriesData.inquiries || []);
+        console.log('📊 Processed inquiries array:', inquiries);
+        console.log('📈 Total inquiries count:', inquiries.length);
         
         // Calculate stats
         const totalCount = inquiries.length;
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
         
-        const newThisWeek = inquiries.filter(inquiry => 
+        const newThisWeek = inquiries.filter((inquiry: any) =>
           new Date(inquiry.createdAt) >= sevenDaysAgo
         ).length;
         
-        const pendingCount = inquiries.filter(inquiry => 
+        const pendingCount = inquiries.filter((inquiry: any) => 
           inquiry.status === 'new' || inquiry.status === 'pending'
         ).length;
         
-        const completedCount = inquiries.filter(inquiry => 
+        const completedCount = inquiries.filter((inquiry: any) => 
           inquiry.status === 'resolved' || inquiry.status === 'completed'
         ).length;
 
@@ -181,16 +193,16 @@ export default function AdminDashboard() {
           const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
           const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
           
-          const monthInquiries = inquiries.filter(inquiry => {
+          const monthInquiries = inquiries.filter((inquiry: any) => {
             const inquiryDate = new Date(inquiry.createdAt);
             return inquiryDate >= monthStart && inquiryDate <= monthEnd;
           });
           
-          const monthCompleted = monthInquiries.filter(inquiry => 
+          const monthCompleted = monthInquiries.filter((inquiry: any) => 
             inquiry.status === 'resolved' || inquiry.status === 'completed'
           ).length;
           
-          const monthPending = monthInquiries.filter(inquiry => 
+          const monthPending = monthInquiries.filter((inquiry: any) => 
             inquiry.status === 'new' || inquiry.status === 'pending'
           ).length;
           
@@ -203,7 +215,7 @@ export default function AdminDashboard() {
         }
 
         // Generate category data based on inquiry reasons
-        const reasonCounts = inquiries.reduce((acc: any, inquiry) => {
+        const reasonCounts = inquiries.reduce((acc: any, inquiry: any) => {
           const reason = inquiry.reason || 'Other';
           acc[reason] = (acc[reason] || 0) + 1;
           return acc;
@@ -215,7 +227,7 @@ export default function AdminDashboard() {
         }));
 
         // Generate country data based on inquiry countries
-        const countryCounts = inquiries.reduce((acc: any, inquiry) => {
+        const countryCounts = inquiries.reduce((acc: any, inquiry: any) => {
           const country = inquiry.country || 'Unknown';
           acc[country] = (acc[country] || 0) + 1;
           return acc;
@@ -231,9 +243,9 @@ export default function AdminDashboard() {
 
         // Get recent inquiries (latest 4)
         const recent = inquiries
-          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+          .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
           .slice(0, 4)
-          .map(inquiry => ({
+          .map((inquiry: any) => ({
             id: inquiry.id,
             name: inquiry.name,
             email: inquiry.email,
@@ -255,6 +267,10 @@ export default function AdminDashboard() {
         setCategoryData(categories);
         setCountryData(countries);
         setRecentInquiries(recent);
+      } else {
+        console.error('Failed to fetch inquiries:', inquiriesRes.status, inquiriesRes.statusText);
+        const errorData = await inquiriesRes.text();
+        console.error('Error response:', errorData);
       }
     } catch (error) {
       console.error('Error fetching dashboard data:', error);

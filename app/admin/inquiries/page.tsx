@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { 
@@ -52,6 +52,7 @@ export default function InquiriesPage() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingInquiries, setIsLoadingInquiries] = useState(false);
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [filteredInquiries, setFilteredInquiries] = useState<Inquiry[]>([]);
   const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
@@ -60,6 +61,7 @@ export default function InquiriesPage() {
   const [responseMessage, setResponseMessage] = useState("");
   const [isSendingResponse, setIsSendingResponse] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [filters, setFilters] = useState<FilterOptions>({
     status: "",
     reason: "",
@@ -74,6 +76,15 @@ export default function InquiriesPage() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const ITEMS_PER_PAGE = 20;
+
+  // Debounce search term to prevent API calls on every keystroke
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
   useEffect(() => {
     // Check authentication
@@ -106,7 +117,7 @@ export default function InquiriesPage() {
   const fetchInquiries = async (page = 1, append = false) => {
     try {
       setIsLoadingMore(append);
-      if (!append) setIsLoading(true);
+      if (!append) setIsLoadingInquiries(true);
 
       const params = new URLSearchParams({
         page: page.toString(),
@@ -114,7 +125,7 @@ export default function InquiriesPage() {
         ...(filters.status && { status: filters.status }),
         ...(filters.reason && { reason: filters.reason }),
         ...(filters.country && { country: filters.country }),
-        ...(searchTerm && { search: searchTerm })
+        ...(debouncedSearchTerm && { search: debouncedSearchTerm })
       });
 
       const response = await fetch(`/api/inquiries/list?${params}`);
@@ -124,17 +135,17 @@ export default function InquiriesPage() {
         setInquiries(prev => [...prev, ...data.inquiries]);
         setFilteredInquiries(prev => [...prev, ...data.inquiries]);
       } else {
-        setInquiries(data.inquiries);
-        setFilteredInquiries(data.inquiries);
+        setInquiries(data.inquiries || []);
+        setFilteredInquiries(data.inquiries || []);
       }
 
-      setTotalCount(data.total);
-      setHasMore(data.inquiries.length === ITEMS_PER_PAGE);
+      setTotalCount(data.total || 0);
+      setHasMore((data.inquiries || []).length === ITEMS_PER_PAGE);
       setCurrentPage(page);
     } catch (error) {
       console.error('Failed to fetch inquiries:', error);
     } finally {
-      setIsLoading(false);
+      setIsLoadingInquiries(false);
       setIsLoadingMore(false);
     }
   };
@@ -145,20 +156,35 @@ export default function InquiriesPage() {
     }
   }, [currentPage, hasMore, isLoadingMore]);
 
-  // Reset and fetch first page when filters change
+  // Manual search function
+  const handleSearch = useCallback(() => {
+    setCurrentPage(1);
+    setInquiries([]);
+    setFilteredInquiries([]);
+    fetchInquiries(1, false);
+  }, [filters, debouncedSearchTerm]);
+
+  // Handle filter changes (but not search term)
   const handleFiltersChange = useCallback(() => {
     setCurrentPage(1);
     setInquiries([]);
     setFilteredInquiries([]);
     fetchInquiries(1, false);
-  }, []);
+  }, [filters, debouncedSearchTerm]);
 
-  // Use effect to trigger search when filters change
+  // Auto-trigger search when debounced search term changes
+  useEffect(() => {
+    if (isAuthenticated && debouncedSearchTerm !== searchTerm) {
+      handleSearch();
+    }
+  }, [debouncedSearchTerm, isAuthenticated, handleSearch]);
+
+  // Use effect to trigger search when filters change (but not search term)
   useEffect(() => {
     if (isAuthenticated) {
       handleFiltersChange();
     }
-  }, [searchTerm, filters, isAuthenticated, handleFiltersChange]);
+  }, [filters, isAuthenticated, handleFiltersChange]);
 
   // Initial load
   useEffect(() => {
@@ -341,15 +367,30 @@ export default function InquiriesPage() {
         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Search */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Search inquiries..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
+            <div className="flex-1 flex gap-2">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="Search inquiries..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
+              <button
+                onClick={handleSearch}
+                disabled={isLoadingInquiries}
+                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 flex items-center gap-2"
+              >
+                {isLoadingInquiries ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Search className="w-4 h-4" />
+                )}
+                Search
+              </button>
             </div>
 
             {/* Filter Toggle */}
@@ -378,8 +419,10 @@ export default function InquiriesPage() {
                 >
                   <option value="">All Statuses</option>
                   <option value="new">New</option>
+                  <option value="in-progress">In Progress</option>
                   <option value="pending">Pending</option>
-                  <option value="responded">Responded</option>
+                  <option value="completed">Completed</option>
+                  <option value="resolved">Resolved</option>
                   <option value="closed">Closed</option>
                 </select>
 
@@ -389,12 +432,12 @@ export default function InquiriesPage() {
                   className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 >
                   <option value="">All Reasons</option>
-                  <option value="general-inquiry">General Inquiry</option>
-                  <option value="technical-support">Technical Support</option>
-                  <option value="book-demo">Book a Demo</option>
-                  <option value="careers">Careers</option>
-                  <option value="partnerships">Partnerships</option>
-                  <option value="events-inquiry">Events Inquiry</option>
+                  <option value="General Inquiry">General Inquiry</option>
+                  <option value="Technical Support">Technical Support</option>
+                  <option value="Book a Demo">Book a Demo</option>
+                  <option value="Careers">Careers</option>
+                  <option value="Partnerships">Partnerships</option>
+                  <option value="Events Inquiry">Events Inquiry</option>
                 </select>
 
                 <select
@@ -403,7 +446,7 @@ export default function InquiriesPage() {
                   className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 >
                   <option value="">All Countries</option>
-                  {Array.from(new Set(inquiries.map(i => i.country))).map(country => (
+                  {Array.from(new Set(inquiries.filter(i => i.country).map(i => i.country))).sort().map(country => (
                     <option key={country} value={country}>{country}</option>
                   ))}
                 </select>
@@ -426,34 +469,57 @@ export default function InquiriesPage() {
         {/* Results Count */}
         <div className="flex items-center justify-between">
           <p className="text-gray-600 dark:text-gray-400">
-            Showing {filteredInquiries.length} of {inquiries.length} inquiries
+            {isLoadingInquiries ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Loading inquiries...
+              </span>
+            ) : (
+              `Showing ${filteredInquiries.length} of ${totalCount} inquiries`
+            )}
           </p>
         </div>
 
         {/* Inquiries List */}
         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Customer
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Details
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+          {isLoadingInquiries ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400">
+                <Loader2 className="w-6 h-6 animate-spin" />
+                <span>Loading inquiries...</span>
+              </div>
+            </div>
+          ) : filteredInquiries.length === 0 ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center text-gray-500 dark:text-gray-400">
+                <Mail className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p className="text-lg font-medium">No inquiries found</p>
+                <p className="text-sm">Try adjusting your search or filters</p>
+              </div>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 dark:bg-gray-700">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Customer
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Details
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {filteredInquiries.map((inquiry) => (
                   <tr key={inquiry.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -556,47 +622,37 @@ export default function InquiriesPage() {
               </tbody>
             </table>
           </div>
+        )}
 
-          {/* Load More Button */}
-          {hasMore && (
-            <div className="text-center py-6">
-              <button
-                onClick={loadMoreInquiries}
-                disabled={isLoadingMore}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-              >
-                {isLoadingMore ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Loading...
-                  </>
-                ) : (
-                  <>
-                    Load More Inquiries
-                    <span className="text-sm bg-blue-500 px-2 py-1 rounded">
-                      {filteredInquiries.length} of {totalCount}
-                    </span>
-                  </>
-                )}
-              </button>
-            </div>
-          )}
+        {/* Load More Button */}
+        {!isLoadingInquiries && hasMore && (
+          <div className="text-center py-6">
+            <button
+              onClick={loadMoreInquiries}
+              disabled={isLoadingMore}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+            >
+              {isLoadingMore ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                <>
+                  Load More Inquiries
+                  <span className="text-sm bg-blue-500 px-2 py-1 rounded">
+                    {filteredInquiries.length} of {totalCount}
+                  </span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
 
-          {/* End of list indicator */}
-          {!hasMore && filteredInquiries.length > 0 && (
-            <div className="text-center py-6 text-gray-500 dark:text-gray-400">
-              <div className="text-sm">
-                All inquiries loaded ({filteredInquiries.length} total)
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* No Results */}
-        {filteredInquiries.length === 0 && (
-          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-            <Mail className="w-12 h-12 mx-auto mb-3 opacity-50" />
-            <p>No inquiries found matching your criteria</p>
+        {/* End of list indicator */}
+        {!isLoadingInquiries && !hasMore && filteredInquiries.length > 0 && (
+          <div className="text-center py-4 text-gray-500 dark:text-gray-400 text-sm">
+            You've reached the end of the list
           </div>
         )}
       </div>
@@ -850,7 +906,8 @@ export default function InquiriesPage() {
             </div>
           </div>
         </div>
-      )}
+        )}
+      </div>
     </DashboardLayout>
   );
 }

@@ -1,172 +1,124 @@
-import { config } from 'dotenv';
-import { join } from 'path';
-
-// Load environment variables from .env.local
-config({ path: join(process.cwd(), '.env.local') });
-
-import { db } from '../db';
+﻿import { drizzle } from 'drizzle-orm/neon-http';
+import { neon } from '@neondatabase/serverless';
 import { inquiries } from '../db/schema';
-import { randomUUID } from 'crypto';
+import * as dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config({ path: '.env.local' });
+
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL not found in environment variables');
+}
+
+const sql = neon(process.env.DATABASE_URL);
+const db = drizzle(sql);
+
+// Sample inquiries for each missing approved reason
+const sampleInquiries = [
+  {
+    name: 'Alex Johnson',
+    email: 'alex.johnson@techhelp.com',
+    company: 'TechHelp Solutions',
+    phone: '+1-555-0101',
+    messageTitle: 'System Integration Issue',
+    message: 'We are experiencing difficulties integrating your AI solution with our existing CRM system. Could you provide technical assistance to resolve the compatibility issues? We need guidance on API configuration and data synchronization.',
+    reason: 'Technical Support',
+    status: 'new' as const
+  },
+  {
+    name: 'Maria Rodriguez',
+    email: 'maria.rodriguez@startup.io',
+    company: 'InnovateCorp',
+    phone: '+1-555-0202',
+    messageTitle: 'Product Demonstration Request',
+    message: 'Our team is interested in seeing a live demonstration of your AI platform capabilities. We would like to schedule a demo session to understand how your solution can address our business automation needs and improve our operational efficiency.',
+    reason: 'Book a Demo',
+    status: 'new' as const
+  },
+  {
+    name: 'David Chen',
+    email: 'david.chen@university.edu',
+    company: 'Research University',
+    phone: '+1-555-0303',
+    messageTitle: 'Strategic Partnership Proposal',
+    message: 'We are a leading research institution interested in establishing a strategic partnership for AI research and development. We would like to explore collaboration opportunities in machine learning projects and joint research initiatives.',
+    reason: 'Partnerships',
+    status: 'new' as const
+  },
+  {
+    name: 'Sarah Kim',
+    email: 'sarah.kim@eventscorp.com',
+    company: 'EventsCorp',
+    phone: '+1-555-0404',
+    messageTitle: 'Conference Speaking Opportunity',
+    message: 'We are organizing the AI Innovation Summit 2025 and would like to invite your team to participate as keynote speakers. The event focuses on cutting-edge AI applications and industry trends. We would also be interested in potential sponsorship opportunities.',
+    reason: 'Events Inquiry',
+    status: 'new' as const
+  }
+];
 
 async function addSampleInquiries() {
   try {
-    console.log('📝 Adding sample inquiries...');
+    console.log(' Adding sample inquiries for missing approved reasons...');
+    console.log('=========================================================');
     
-    const sampleInquiries = [
-      {
-        id: randomUUID(),
-        name: 'John Smith',
-        email: 'john.smith@techcorp.com',
-        phone: '+1-555-0123',
-        company: 'TechCorp Solutions',
-        country: 'United States',
-        occupation: 'CTO',
-        reason: 'ai-implementation',
-        howDidYouHear: 'google-search',
-        messageTitle: 'AI Implementation for Enterprise',
-        message: 'We are looking to implement AI solutions across our enterprise infrastructure. Would like to discuss custom AI models for our business processes.',
-        status: 'new',
-        tags: ['enterprise', 'custom-ai', 'high-priority'],
-        source: 'web-form'
-      },
-      {
-        id: randomUUID(),
-        name: 'Sarah Johnson',
-        email: 'sarah.j@startupinc.io',
-        phone: '+1-555-0456',
-        company: 'StartupInc',
-        country: 'Canada',
-        occupation: 'Product Manager',
-        reason: 'consultation',
-        howDidYouHear: 'social-media',
-        messageTitle: 'AI Strategy Consultation',
-        message: 'Our startup is in the fintech space and we need guidance on incorporating AI into our product roadmap. Looking for strategic consultation.',
-        status: 'in-progress',
-        tags: ['consultation', 'fintech', 'startup'],
-        source: 'web-form'
-      },
-      {
-        id: randomUUID(),
-        name: 'Michael Chen',
-        email: 'mchen@innovate.edu',
-        phone: '+1-555-0789',
-        company: 'Innovate University',
-        country: 'United Kingdom',
-        occupation: 'Research Director',
-        reason: 'partnership',
-        howDidYouHear: 'referral',
-        messageTitle: 'Research Partnership Opportunity',
-        message: 'We are interested in establishing a research partnership focused on machine learning applications in education technology.',
-        status: 'new',
-        tags: ['research', 'education', 'partnership'],
-        source: 'web-form'
-      },
-      {
-        id: randomUUID(),
-        name: 'Emily Rodriguez',
-        email: 'e.rodriguez@healthtech.com',
-        phone: '+1-555-0321',
-        company: 'HealthTech Innovation',
-        country: 'Spain',
-        occupation: 'CEO',
-        reason: 'ai-development',
-        howDidYouHear: 'conference',
-        messageTitle: 'Healthcare AI Solutions',
-        message: 'Looking to develop AI-powered diagnostic tools for our healthcare platform. Need expertise in medical AI applications.',
-        status: 'completed',
-        tags: ['healthcare', 'ai-development', 'diagnostic'],
-        source: 'web-form'
-      },
-      {
-        id: randomUUID(),
-        name: 'David Kim',
-        email: 'dkim@retailcorp.kr',
-        phone: '+82-10-1234-5678',
-        company: 'RetailCorp Korea',
-        country: 'South Korea',
-        occupation: 'VP Technology',
-        reason: 'consultation',
-        howDidYouHear: 'linkedin',
-        messageTitle: 'E-commerce AI Integration',
-        message: 'We want to integrate AI recommendation systems and chatbots into our e-commerce platform to enhance customer experience.',
-        status: 'pending',
-        tags: ['e-commerce', 'recommendations', 'chatbot'],
-        source: 'web-form'
-      },
-      {
-        id: randomUUID(),
-        name: 'Anna Petrov',
-        email: 'a.petrov@financeai.ru',
-        phone: '+7-495-123-4567',
-        company: 'FinanceAI Solutions',
-        country: 'Russia',
-        occupation: 'CTO',
-        reason: 'ai-implementation',
-        howDidYouHear: 'google-search',
-        messageTitle: 'Financial Risk Assessment AI',
-        message: 'Need to implement AI models for real-time financial risk assessment and fraud detection in our banking platform.',
-        status: 'new',
-        tags: ['finance', 'risk-assessment', 'fraud-detection'],
-        source: 'web-form'
-      },
-      {
-        id: randomUUID(),
-        name: 'Carlos Silva',
-        email: 'carlos@agrotech.br',
-        phone: '+55-11-9876-5432',
-        company: 'AgroTech Brazil',
-        country: 'Brazil',
-        occupation: 'Innovation Director',
-        reason: 'partnership',
-        howDidYouHear: 'referral',
-        messageTitle: 'Agricultural AI Solutions',
-        message: 'Interested in developing AI solutions for precision agriculture, crop monitoring, and yield prediction for Brazilian farmers.',
-        status: 'in-progress',
-        tags: ['agriculture', 'precision-farming', 'monitoring'],
-        source: 'web-form'
-      },
-      {
-        id: randomUUID(),
-        name: 'Priya Sharma',
-        email: 'priya.sharma@edtech.in',
-        phone: '+91-98765-43210',
-        company: 'EduTech India',
-        country: 'India',
-        occupation: 'Product Lead',
-        reason: 'ai-development',
-        howDidYouHear: 'social-media',
-        messageTitle: 'Educational AI Platform',
-        message: 'We are building an AI-powered personalized learning platform and need expertise in natural language processing and adaptive learning algorithms.',
-        status: 'new',
-        tags: ['education', 'personalized-learning', 'nlp'],
-        source: 'web-form'
+    // Check current state
+    const existingInquiries = await db.select().from(inquiries);
+    const existingReasons = new Set(existingInquiries.map(inq => inq.reason));
+    
+    console.log('\n Current inquiry reasons:');
+    const APPROVED_REASONS = ['General Inquiry', 'Technical Support', 'Book a Demo', 'Careers', 'Partnerships', 'Events Inquiry'];
+    
+    APPROVED_REASONS.forEach(reason => {
+      const count = existingInquiries.filter(inq => inq.reason === reason).length;
+      const status = count > 0 ? '' : '';
+      console.log(`  $${reason}: $${count} inquiries $${status}`);
+    });
+
+    console.log('\n Adding sample inquiries...');
+    
+    for (const sampleInquiry of sampleInquiries) {
+      if (!existingReasons.has(sampleInquiry.reason)) {
+        console.log(`   Adding sample for: $${sampleInquiry.reason}`);
+        await db.insert(inquiries).values(sampleInquiry);
+      } else {
+        console.log(`   Skipping $${sampleInquiry.reason} (already has data)`);
       }
-    ];
-
-    const insertedInquiries = await db.insert(inquiries).values(sampleInquiries).returning();
+    }
     
-    console.log('✅ Sample inquiries created:', insertedInquiries.length);
-    console.log('\n🎉 Sample data added successfully!');
+    console.log('\n Sample inquiries added successfully!');
     
-    return insertedInquiries;
+    // Show final state
+    console.log('\n Final inquiry distribution:');
+    const finalInquiries = await db.select().from(inquiries);
+    const finalReasonCounts: Record<string, number> = {};
+    
+    finalInquiries.forEach(inquiry => {
+      const reason = inquiry.reason || 'No Reason';
+      finalReasonCounts[reason] = (finalReasonCounts[reason] || 0) + 1;
+    });
+    
+    APPROVED_REASONS.forEach(reason => {
+      const count = finalReasonCounts[reason] || 0;
+      console.log(`  $${reason}: $${count} inquiries `);
+    });
 
+    console.log(`\n All approved reasons now have sample data!`);
+    console.log(`   Total inquiries: $${finalInquiries.length}`);
+    
   } catch (error) {
-    console.error('❌ Adding sample data failed:', error);
+    console.error(' Error adding sample inquiries:', error);
     throw error;
   }
 }
 
-// Run if called directly
-if (require.main === module) {
-  addSampleInquiries()
-    .then(() => {
-      console.log('\n✅ Sample data complete. Check your dashboard!');
-      process.exit(0);
-    })
-    .catch((error) => {
-      console.error('\n❌ Adding sample data failed:', error);
-      process.exit(1);
-    });
-}
-
-export { addSampleInquiries };
+// Run the script
+addSampleInquiries()
+  .then(() => {
+    console.log('\n Script completed successfully');
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error(' Script failed:', error);
+    process.exit(1);
+  });
