@@ -13,3 +13,4 @@ export { default as TestimonialCard } from './TestimonialCard';
 export { default as FAQItem } from './FAQItem';
 export { default as Badge } from './Badge';
 export { default as SectionHeader } from './SectionHeader';
+export { ToastProvider, useToast } from './Toast';

@@ -1,17 +1,95 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import blogs from "@/app/data/blogs";
+import staticBlogs from "@/app/data/blogs";
 import Link from "next/link";
-import { Clock, Calendar, ArrowRight } from "lucide-react";
+import { Clock, Calendar, ArrowRight, Loader2 } from "lucide-react";
 import { ArticleCard, GradientButton, SectionHeader, Badge } from "@/app/components/ui";
+
+interface Blog {
+  id: string;
+  title: string;
+  content: string;
+  excerpt?: string;
+  image?: string;
+  date: string;
+  readTime: string;
+  author?: string;
+  category?: string;
+  status?: string;
+  publishedAt?: string;
+}
 
 export default function BlogPage() {
   const [mounted, setMounted] = useState(false);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [databaseBlogsLoaded, setDatabaseBlogsLoaded] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    // Initialize with static blogs and automatically load database blogs
+    initializeBlogs();
   }, []);
+
+  const initializeBlogs = async () => {
+    // Convert static blogs to match the Blog interface
+    const convertedStaticBlogs: Blog[] = staticBlogs.map(blog => ({
+      id: blog.id,
+      title: blog.title,
+      content: blog.content,
+      excerpt: blog.content.slice(0, 120) + "...",
+      image: blog.image,
+      date: blog.date,
+      readTime: blog.readTime
+    }));
+    
+    setBlogs(convertedStaticBlogs);
+    
+    // Automatically load database blogs on page load
+    await loadDatabaseBlogs();
+  };
+
+  const loadDatabaseBlogs = async () => {
+    // Prevent multiple loads
+    if (databaseBlogsLoaded) return;
+    
+    setLoading(true);
+    try {
+      const response = await fetch('/api/blogs');
+      if (response.ok) {
+        const databaseBlogs = await response.json();
+        // Filter only published blogs
+        const publishedBlogs = databaseBlogs.filter((blog: any) => blog.status === 'published');
+        
+        // Convert database blogs to match the interface
+        const convertedDbBlogs: Blog[] = publishedBlogs.map((blog: any) => ({
+          id: `db-${blog.id}`, // Prefix to distinguish from static blogs
+          title: blog.title,
+          content: blog.content,
+          excerpt: blog.excerpt || blog.content.slice(0, 120) + "...",
+          image: blog.image,
+          date: blog.publishedAt ? new Date(blog.publishedAt).toLocaleDateString() : new Date(blog.createdAt).toLocaleDateString(),
+          readTime: blog.readTime || '5 min read',
+          author: blog.author,
+          category: blog.category
+        }));
+        
+        setBlogs(prev => [...prev, ...convertedDbBlogs]);
+        setDatabaseBlogsLoaded(true);
+        setHasMore(false); // All blogs loaded
+      } else {
+        console.error('Failed to fetch database blogs');
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error('Error loading database blogs:', error);
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!mounted) {
     return (
@@ -135,33 +213,52 @@ export default function BlogPage() {
 
           {/* Blog Grid */}
           <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
-            {blogs.map((blog, index) => (
-              <ArticleCard
-                key={blog.id}
-                id={blog.id}
-                title={blog.title}
-                excerpt={blog.content.slice(0, 120) + "..."}
-                image={blog.image}
-                date={blog.date}
-                readTime={blog.readTime}
-                href={`/blog/${blog.id}`}
-                index={index}
-              />
-            ))}
+            {blogs.map((blog, index) => {
+              // Determine the correct href based on blog type
+              const href = blog.id.startsWith('db-') 
+                ? `/blog/dynamic/${blog.id.replace('db-', '')}` 
+                : `/blog/${blog.id}`;
+              
+              return (
+                <ArticleCard
+                  key={blog.id}
+                  id={blog.id}
+                  title={blog.title}
+                  excerpt={blog.excerpt || blog.content.slice(0, 120) + "..."}
+                  image={blog.image || '/images/default-blog.png'}
+                  date={blog.date}
+                  readTime={blog.readTime}
+                  href={href}
+                  index={index}
+                />
+              );
+            })}
           </div>
 
-          {/* Load More Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mt-16"
-          >
-            <GradientButton variant="outline">
-              Load More Articles
-            </GradientButton>
-          </motion.div>
+          {/* Loading Indicator for Database Blogs */}
+          {loading && !databaseBlogsLoaded && (
+            <div className="text-center mt-16">
+              <div className="flex items-center justify-center gap-3">
+                <Loader2 className="w-6 h-6 animate-spin text-purple-400" />
+                <span className="text-gray-400">Loading more articles...</span>
+              </div>
+            </div>
+          )}
+
+          {/* Show completion message */}
+          {databaseBlogsLoaded && blogs.length > staticBlogs.length && (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="text-center mt-16"
+            >
+              <p className="text-gray-400">
+                All articles loaded! 📚 Check back soon for more insights.
+              </p>
+            </motion.div>
+          )}
         </div>
       </section>
     </main>

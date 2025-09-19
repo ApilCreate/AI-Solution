@@ -64,6 +64,23 @@ export const eventRsvps = pgTable('event_rsvps', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
+// Blogs table for managing blogs
+export const blogs = pgTable('blogs', {
+  id: uuid('id').primaryKey().$defaultFn(() => randomUUID()),
+  title: varchar('title', { length: 255 }).notNull(),
+  content: text('content').notNull(),
+  excerpt: text('excerpt'),
+  author: varchar('author', { length: 255 }).notNull(),
+  image: varchar('image', { length: 500 }),
+  category: varchar('category', { length: 100 }),
+  tags: jsonb('tags').$type<string[]>().default([]),
+  readTime: varchar('read_time', { length: 50 }),
+  status: varchar('status', { length: 20 }).default('draft').notNull(), // 'draft' or 'published'
+  publishedAt: timestamp('published_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
 // Type exports for TypeScript
 export type Inquiry = typeof inquiries.$inferSelect;
 export type NewInquiry = typeof inquiries.$inferInsert;
@@ -76,3 +93,6 @@ export type NewEvent = typeof events.$inferInsert;
 
 export type EventRsvp = typeof eventRsvps.$inferSelect;
 export type NewEventRsvp = typeof eventRsvps.$inferInsert;
+
+export type Blog = typeof blogs.$inferSelect;
+export type NewBlog = typeof blogs.$inferInsert;
