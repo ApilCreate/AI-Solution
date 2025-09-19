@@ -1,12 +1,13 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '../../../../db';
 import { sql } from 'drizzle-orm';
 
 export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const body = await request.json();
     const { title, description, date, location, bannerUrl } = body;
 
@@ -25,7 +26,7 @@ export async function PUT(
         date = ${date},
         location = ${location},
         banner_url = ${bannerUrl || null}
-      WHERE id = ${params.id}
+      WHERE id = ${id}
       RETURNING *
     `);
 
@@ -46,12 +47,13 @@ export async function PUT(
   }
 }
 export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const result = await db.execute(sql`
-      DELETE FROM events WHERE id = ${params.id}
+      DELETE FROM events WHERE id = ${id}
       RETURNING id
     `);
 
@@ -73,12 +75,13 @@ export async function DELETE(
 }
 
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const result = await db.execute(sql`
-      SELECT * FROM events WHERE id = ${params.id}
+      SELECT * FROM events WHERE id = ${id}
     `);
 
     if (result.rows.length === 0) {

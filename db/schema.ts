@@ -24,6 +24,8 @@ export const inquiries = pgTable('inquiries', {
   howDidYouHear: varchar('how_did_you_hear', { length: 100 }), // Dropdown value
   messageTitle: varchar('message_title', { length: 255 }).notNull(),
   message: text('message').notNull(),
+  adminResponse: text('admin_response'), // Admin's response to the inquiry
+  respondedAt: timestamp('responded_at', { withTimezone: true }), // When admin responded
   status: varchar('status', { length: 50 }).default('new').notNull(),
   tags: jsonb('tags').$type<string[]>().default([]), // Array of strings stored as JSONB
   source: varchar('source', { length: 50 }).default('web-form').notNull(),

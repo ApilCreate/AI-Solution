@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, inquiries } from '@/db';
+import { db, inquiries, withRetry } from '@/db';
 import { requireAdminSimple } from '@/app/lib/simple-auth';
 import { logError } from '@/lib/logger';
-import { desc, eq, like, gte, lte, or, and } from 'drizzle-orm';
+import { desc, eq, like, gte, lte, or, and, SQL } from 'drizzle-orm';
 
 export async function GET(request: NextRequest) {
   try {
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     const endDate = searchParams.get('endDate');
 
     // Build where conditions
-    const whereConditions = [];
+    const whereConditions: SQL[] = [];
 
     if (status) {
       whereConditions.push(eq(inquiries.status, status));
@@ -37,15 +37,16 @@ export async function GET(request: NextRequest) {
 
     if (search) {
       // Search across multiple fields using OR condition
-      whereConditions.push(
-        or(
-          like(inquiries.name, `%${search}%`),
-          like(inquiries.email, `%${search}%`),
-          like(inquiries.messageTitle, `%${search}%`),
-          like(inquiries.company, `%${search}%`),
-          like(inquiries.message, `%${search}%`)
-        )
+      const searchCondition = or(
+        like(inquiries.name, `%${search}%`),
+        like(inquiries.email, `%${search}%`),
+        like(inquiries.messageTitle, `%${search}%`),
+        like(inquiries.company, `%${search}%`),
+        like(inquiries.message, `%${search}%`)
       );
+      if (searchCondition) {
+        whereConditions.push(searchCondition);
+      }
     }
 
     if (startDate) {
@@ -59,28 +60,28 @@ export async function GET(request: NextRequest) {
     // Calculate offset
     const offset = (page - 1) * limit;
 
-    // Execute query with all conditions
-    const results = await db
-      .select()
-      .from(inquiries)
-      .where(
-        whereConditions.length > 0 
-          ? whereConditions.reduce((acc, condition) => acc ? and(acc, condition) : condition)
-          : undefined
-      )
-      .orderBy(desc(inquiries.createdAt))
-      .limit(limit)
-      .offset(offset);
+        // Execute query with all conditions using retry logic
+    const whereClause = whereConditions.length > 0 
+      ? whereConditions.reduce((acc, condition) => acc ? and(acc, condition) : condition, undefined as SQL | undefined)
+      : undefined;
 
-    // Get total count for pagination
-    const totalCountResult = await db
-      .select({ count: inquiries.id })
-      .from(inquiries)
-      .where(
-        whereConditions.length > 0 
-          ? whereConditions.reduce((acc, condition) => acc ? and(acc, condition) : condition)
-          : undefined
-      );
+    const results = await withRetry(async () => {
+      return await db
+        .select()
+        .from(inquiries)
+        .where(whereClause)
+        .orderBy(desc(inquiries.createdAt))
+        .limit(limit)
+        .offset(offset);
+    });
+
+    // Get total count for pagination using retry logic
+    const totalCountResult = await withRetry(async () => {
+      return await db
+        .select({ count: inquiries.id })
+        .from(inquiries)
+        .where(whereClause);
+    });
     
     const totalCount = totalCountResult.length;
 

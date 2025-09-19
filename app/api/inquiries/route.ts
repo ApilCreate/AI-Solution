@@ -74,8 +74,8 @@ export async function POST(request: NextRequest) {
     // Note: Email sending is optional and won't block the response
     // Remove the await to make it truly non-blocking in production
     Promise.allSettled([
-      // sendAdminNewInquiryEmail(inquiryWithId),
-      // sendUserConfirmationEmail(inquiryWithId)
+      sendAdminNewInquiryEmail(inquiryWithId),
+      sendUserConfirmationEmail(inquiryWithId)
     ]).catch(error => {
       logError('Email sending failed', { inquiryId: newInquiry.id, error });
     });

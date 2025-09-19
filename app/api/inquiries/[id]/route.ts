@@ -1,22 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, inquiries } from '@/db';
+import { db, inquiries, withRetry } from '@/db';
 import { eq } from 'drizzle-orm';
 import { requireAdminSimple } from '@/app/lib/simple-auth';
 import { logInfo, logError } from '@/lib/logger';
+import { sendAdminResponseEmail } from '@/app/lib/mail';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     // Require admin authentication
     await requireAdminSimple();
 
-    const { id } = await params;
+    const { id } = await context.params;
     const body = await request.json();
 
     // Validate the request body
-    const allowedFields = ['status', 'tags', 'messageTitle', 'message'];
+    const allowedFields = ['status', 'tags', 'messageTitle', 'message', 'adminResponse'];
     const updateData: Record<string, unknown> = {};
 
     // Only allow specific fields to be updated
@@ -26,6 +27,11 @@ export async function PUT(
       }
     }
 
+    // If adminResponse is being set, add respondedAt timestamp
+    if (body.adminResponse && typeof body.adminResponse === 'string' && body.adminResponse.trim()) {
+      updateData.respondedAt = new Date();
+    }
+
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json(
         { error: 'No valid fields to update' },
@@ -33,12 +39,14 @@ export async function PUT(
       );
     }
 
-    // Update the inquiry
-    const [updatedInquiry] = await db
-      .update(inquiries)
-      .set(updateData)
-      .where(eq(inquiries.id, id))
-      .returning();
+    // Update the inquiry using retry logic
+    const [updatedInquiry] = await withRetry(async () => {
+      return await db
+        .update(inquiries)
+        .set(updateData)
+        .where(eq(inquiries.id, id))
+        .returning();
+    });
 
     if (!updatedInquiry) {
       return NextResponse.json(
@@ -52,6 +60,41 @@ export async function PUT(
       updatedFields: Object.keys(updateData)
     });
 
+    // Send email response if adminResponse was provided
+    if (body.adminResponse && typeof body.adminResponse === 'string' && body.adminResponse.trim()) {
+      logInfo('About to send admin response email', {
+        inquiryId: id,
+        recipientEmail: updatedInquiry.email,
+        recipientName: updatedInquiry.name,
+        messageTitle: updatedInquiry.messageTitle
+      });
+
+      const emailResult = await sendAdminResponseEmail(
+        {
+          id: updatedInquiry.id,
+          name: updatedInquiry.name,
+          email: updatedInquiry.email,
+          messageTitle: updatedInquiry.messageTitle
+        },
+        body.adminResponse
+      );
+      
+      if (emailResult.success) {
+        logInfo('Admin response email sent successfully', { 
+          inquiryId: id,
+          messageId: emailResult.messageId,
+          recipientEmail: updatedInquiry.email
+        });
+      } else {
+        logError('Failed to send admin response email', { 
+          inquiryId: id,
+          error: emailResult.error,
+          recipientEmail: updatedInquiry.email
+        });
+        // Don't fail the update if email fails - but log the detailed error
+      }
+    }
+
     return NextResponse.json(updatedInquiry, { status: 200 });
 
   } catch (error) {
@@ -62,10 +105,10 @@ export async function PUT(
       );
     }
 
-    // Try to get the id from params if available
+    // Try to get the id from context if available
     let inquiryId = 'unknown';
     try {
-      const { id } = await params;
+      const { id } = await context.params;
       inquiryId = id;
     } catch {
       // If we can't get the id, use 'unknown'
@@ -83,21 +126,21 @@ export async function PUT(
 // PATCH handler - same as PUT for partial updates
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   // Use the same logic as PUT for PATCH requests
-  return PUT(request, { params });
+  return PUT(request, context);
 }
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     // Require admin authentication
     await requireAdminSimple();
 
-    const { id } = await params;
+    const { id } = await context.params;
 
     // Get the inquiry
     const [inquiry] = await db
@@ -123,10 +166,10 @@ export async function GET(
       );
     }
 
-    // Try to get the id from params if available
+    // Try to get the id from context if available
     let inquiryId = 'unknown';
     try {
-      const { id } = await params;
+      const { id } = await context.params;
       inquiryId = id;
     } catch {
       // If we can't get the id, use 'unknown'
@@ -143,13 +186,13 @@ export async function GET(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     // Require admin authentication
     await requireAdminSimple();
 
-    const { id } = await params;
+    const { id } = await context.params;
 
     // Delete the inquiry
     const [deletedInquiry] = await db
@@ -179,10 +222,10 @@ export async function DELETE(
       );
     }
 
-    // Try to get the id from params if available
+    // Try to get the id from context if available
     let inquiryId = 'unknown';
     try {
-      const { id } = await params;
+      const { id } = await context.params;
       inquiryId = id;
     } catch {
       // If we can't get the id, use 'unknown'

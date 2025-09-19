@@ -25,6 +25,7 @@
     "@splinetool/react-spline": "^4.1.0",
     "@tanstack/react-query": "^5.84.2",
     "@types/next-auth": "^3.13.0",
+    "@types/nodemailer": "^7.0.1",
     "@types/pg": "^8.15.5",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.1",
@@ -35,6 +36,7 @@
     "lucide-react": "^0.525.0",
     "next": "15.4.4",
     "next-auth": "^4.24.11",
+    "nodemailer": "^6.10.1",
     "pg": "^8.16.3",
     "react": "19.1.0",
     "react-country-flag": "^3.1.0",
@@ -42,7 +44,6 @@
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
     "recharts": "^3.2.1",
-    "resend": "^6.0.1",
     "tailwindcss": "^3.4.17",
     "zod": "^4.0.17"
   },

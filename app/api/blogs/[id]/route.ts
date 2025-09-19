@@ -8,16 +8,16 @@ if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL not found in environment variables');
 }
 
-const sql = neon(process.env.DATABASE_URL);
+const sql = neon(process.env.DATABASE_URL!);
 const db = drizzle(sql);
 
-// GET - Get single blog
+// GET /api/blogs/[id] - Get a specific blog
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
+    const { id } = await context.params;
     
     const [blog] = await db.select().from(blogs).where(eq(blogs.id, id));
     
@@ -38,14 +38,13 @@ export async function GET(
   }
 }
 
-// PUT - Update blog
+// PUT /api/blogs/[id] - Update a specific blog
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Skip auth for now
-    const { id } = await params;
+    const { id } = await context.params;
     const body = await request.json();
     
     const {
@@ -103,14 +102,13 @@ export async function PUT(
   }
 }
 
-// DELETE - Delete blog
+// DELETE /api/blogs/[id] - Delete a specific blog
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Skip auth for now
-    const { id } = await params;
+    const { id } = await context.params;
 
     const [deletedBlog] = await db
       .delete(blogs)

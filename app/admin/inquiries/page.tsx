@@ -34,6 +34,8 @@ interface Inquiry {
   howDidYouHear: string;
   messageTitle: string;
   message: string;
+  adminResponse?: string;
+  respondedAt?: string;
   status: string;
   tags: string[];
   source: string;
@@ -49,6 +51,29 @@ interface FilterOptions {
 
 export default function InquiriesPage() {
   const router = useRouter();
+  
+  // Add error handling for unhandled promise rejections
+  useEffect(() => {
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      console.error('Unhandled promise rejection:', event.reason);
+      event.preventDefault(); // Prevent default browser behavior
+    };
+
+    const handleError = (event: ErrorEvent) => {
+      console.error('Global error:', event.error);
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('unhandledrejection', handleUnhandledRejection);
+      window.addEventListener('error', handleError);
+
+      return () => {
+        window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+        window.removeEventListener('error', handleError);
+      };
+    }
+  }, []);
+  
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingInquiries, setIsLoadingInquiries] = useState(false);
@@ -285,25 +310,36 @@ export default function InquiriesPage() {
 
     setIsSendingResponse(true);
     try {
-      // Here you would integrate with your email service (Resend)
-      // For now, we'll just update the inquiry status
-      await updateInquiryStatus(selectedInquiry.id, 'responded');
-      
-      // TODO: Send email using Resend
-      // await sendEmail({
-      //   to: selectedInquiry.email,
-      //   subject: `Re: ${selectedInquiry.messageTitle}`,
-      //   html: responseMessage
-      // });
+      // Update inquiry with admin response - this will automatically send email
+      const response = await fetch(`/api/inquiries/${selectedInquiry.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status: 'responded',
+          adminResponse: responseMessage.trim()
+        }),
+      });
 
-      setShowResponseModal(false);
-      setResponseMessage("");
-      setSelectedInquiry(null);
-      
-      // Refresh inquiries
-      fetchInquiries();
+      if (response.ok) {
+        console.log('Response sent successfully!');
+        setShowResponseModal(false);
+        setResponseMessage("");
+        setSelectedInquiry(null);
+        
+        // Refresh inquiries
+        await fetchInquiries();
+      } else {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('Failed to send response:', errorData);
+        throw new Error(errorData.error || 'Failed to send response');
+      }
     } catch (error) {
       console.error('Failed to send response:', error);
+      // Show error message to user (you could use toast notification here)
+      const errorMessage = error instanceof Error ? error.message : 'Error sending response. Please try again.';
+      console.error('Error details:', errorMessage);
     } finally {
       setIsSendingResponse(false);
     }
@@ -796,8 +832,17 @@ export default function InquiriesPage() {
 
       {/* Inquiry Detail Modal */}
       {showDetailModal && selectedInquiry && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowDetailModal(false);
+            }
+          }}
+        >
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+               onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
                 Inquiry Details
@@ -923,17 +968,44 @@ export default function InquiriesPage() {
                   </div>
                 </div>
 
+                {/* Admin Response Section */}
+                {selectedInquiry.adminResponse && (
+                  <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                    <h4 className="font-semibold text-green-800 dark:text-green-200 mb-3 flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5" />
+                      Your Response
+                      {selectedInquiry.respondedAt && (
+                        <span className="text-sm font-normal text-green-600 dark:text-green-300">
+                          • Sent on {new Date(selectedInquiry.respondedAt).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </span>
+                      )}
+                    </h4>
+                    <div className="bg-white dark:bg-gray-800 border border-green-200 dark:border-green-700 rounded-lg p-4">
+                      <p className="text-gray-900 dark:text-white whitespace-pre-wrap leading-relaxed">
+                        {selectedInquiry.adminResponse}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.preventDefault();
                       setShowDetailModal(false);
                       setShowResponseModal(true);
                     }}
                     className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200"
                   >
                     <MessageSquare className="w-4 h-4" />
-                    Respond
+                    {selectedInquiry.adminResponse ? 'Send Follow-up' : 'Send Response'}
                   </button>
                   
                   <select
@@ -966,11 +1038,20 @@ export default function InquiriesPage() {
 
       {/* Response Modal */}
       {showResponseModal && selectedInquiry && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowResponseModal(false);
+            }
+          }}
+        >
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+               onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Respond to {selectedInquiry.name}
+                {selectedInquiry.adminResponse ? 'Send Follow-up to' : 'Respond to'} {selectedInquiry.name}
               </h3>
               <button
                 onClick={() => setShowResponseModal(false)}
@@ -1004,13 +1085,19 @@ export default function InquiriesPage() {
             
             <div className="flex items-center justify-end gap-3">
               <button
-                onClick={() => setShowResponseModal(false)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowResponseModal(false);
+                }}
                 className="px-4 py-2 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
               >
                 Cancel
               </button>
               <button
-                onClick={sendResponse}
+                onClick={(e) => {
+                  e.preventDefault();
+                  sendResponse();
+                }}
                 disabled={isSendingResponse || !responseMessage.trim()}
                 className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
               >

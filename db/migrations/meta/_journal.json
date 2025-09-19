@@ -15,6 +15,13 @@
       "when": 1758289177075,
       "tag": "0001_cuddly_squadron_sinister",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1758293051388,
+      "tag": "0002_deep_toad",
+      "breakpoints": true
     }
   ]
 }
