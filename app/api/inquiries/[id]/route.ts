@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, inquiries } from '@/db';
 import { eq } from 'drizzle-orm';
-import { requireAdmin } from '@/lib/auth';
+import { requireAdminSimple } from '@/app/lib/simple-auth';
 import { logInfo, logError } from '@/lib/logger';
 
 export async function PUT(
@@ -10,7 +10,7 @@ export async function PUT(
 ) {
   try {
     // Require admin authentication
-    await requireAdmin();
+    await requireAdminSimple();
 
     const { id } = await params;
     const body = await request.json();
@@ -80,13 +80,22 @@ export async function PUT(
   }
 }
 
+// PATCH handler - same as PUT for partial updates
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  // Use the same logic as PUT for PATCH requests
+  return PUT(request, { params });
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Require admin authentication
-    await requireAdmin();
+    await requireAdminSimple();
 
     const { id } = await params;
 
@@ -138,7 +147,7 @@ export async function DELETE(
 ) {
   try {
     // Require admin authentication
-    await requireAdmin();
+    await requireAdminSimple();
 
     const { id } = await params;
 

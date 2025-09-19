@@ -13,101 +13,215 @@ if (!process.env.DATABASE_URL) {
 const sql = neon(process.env.DATABASE_URL);
 const db = drizzle(sql);
 
-// Sample inquiries for each missing approved reason
-const sampleInquiries = [
-  {
-    name: 'Alex Johnson',
-    email: 'alex.johnson@techhelp.com',
-    company: 'TechHelp Solutions',
-    phone: '+1-555-0101',
-    messageTitle: 'System Integration Issue',
-    message: 'We are experiencing difficulties integrating your AI solution with our existing CRM system. Could you provide technical assistance to resolve the compatibility issues? We need guidance on API configuration and data synchronization.',
-    reason: 'Technical Support',
-    status: 'new' as const
-  },
-  {
-    name: 'Maria Rodriguez',
-    email: 'maria.rodriguez@startup.io',
-    company: 'InnovateCorp',
-    phone: '+1-555-0202',
-    messageTitle: 'Product Demonstration Request',
-    message: 'Our team is interested in seeing a live demonstration of your AI platform capabilities. We would like to schedule a demo session to understand how your solution can address our business automation needs and improve our operational efficiency.',
-    reason: 'Book a Demo',
-    status: 'new' as const
-  },
-  {
-    name: 'David Chen',
-    email: 'david.chen@university.edu',
-    company: 'Research University',
-    phone: '+1-555-0303',
-    messageTitle: 'Strategic Partnership Proposal',
-    message: 'We are a leading research institution interested in establishing a strategic partnership for AI research and development. We would like to explore collaboration opportunities in machine learning projects and joint research initiatives.',
-    reason: 'Partnerships',
-    status: 'new' as const
-  },
-  {
-    name: 'Sarah Kim',
-    email: 'sarah.kim@eventscorp.com',
-    company: 'EventsCorp',
-    phone: '+1-555-0404',
-    messageTitle: 'Conference Speaking Opportunity',
-    message: 'We are organizing the AI Innovation Summit 2025 and would like to invite your team to participate as keynote speakers. The event focuses on cutting-edge AI applications and industry trends. We would also be interested in potential sponsorship opportunities.',
-    reason: 'Events Inquiry',
-    status: 'new' as const
-  }
+// Data arrays for generating diverse sample data
+const REASONS = ['General Inquiry', 'Technical Support', 'Book a Demo', 'Careers', 'Partnerships', 'Events Inquiry'];
+const STATUSES = ['new', 'pending', 'responded', 'resolved', 'cancelled'];
+const COUNTRIES = [
+  'United States', 'Canada', 'United Kingdom', 'Germany', 'France', 'Italy', 'Spain', 'Netherlands',
+  'Sweden', 'Denmark', 'Norway', 'Finland', 'Australia', 'New Zealand', 'Japan', 'South Korea',
+  'Singapore', 'Hong Kong', 'India', 'Brazil', 'Mexico', 'Argentina', 'Chile', 'South Africa',
+  'Israel', 'UAE', 'Saudi Arabia', 'Turkey', 'Poland', 'Czech Republic', 'Hungary', 'Romania',
+  'Bulgaria', 'Croatia', 'Slovenia', 'Estonia', 'Latvia', 'Lithuania', 'Ireland', 'Portugal',
+  'Belgium', 'Austria', 'Switzerland', 'Luxembourg', 'Malta', 'Cyprus', 'Greece', 'Ukraine',
+  'Thailand', 'Malaysia', 'Indonesia', 'Philippines'
 ];
+
+const OCCUPATIONS = [
+  'CEO', 'CTO', 'CFO', 'CMO', 'VP Engineering', 'VP Sales', 'VP Marketing', 'Product Manager',
+  'Engineering Manager', 'Data Scientist', 'Software Engineer', 'DevOps Engineer', 'UX Designer',
+  'Business Analyst', 'Sales Manager', 'Marketing Manager', 'HR Manager', 'Operations Manager',
+  'Research Scientist', 'Professor', 'Student', 'Consultant', 'Entrepreneur', 'Founder',
+  'Director', 'Principal Engineer', 'Senior Developer', 'Project Manager', 'Architect'
+];
+
+const HOW_DID_YOU_HEAR = [
+  'Google Search', 'Social Media', 'Referral', 'LinkedIn', 'Conference', 'Blog Post', 'Newsletter',
+  'Partner Recommendation', 'Press Release', 'YouTube', 'Podcast', 'Industry Report', 'Word of Mouth'
+];
+
+// Generate random data
+function getRandomElement<T>(array: T[]): T {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
+
+
+function getRandomDate(start: Date, end: Date): Date {
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
+
+// Generate 50 diverse sample inquiries
+function generateSampleInquiries() {
+  const inquiries = [];
+  const names = [
+    'Alex Johnson', 'Maria Rodriguez', 'David Chen', 'Sarah Kim', 'Michael Brown', 'Emma Wilson',
+    'James Davis', 'Anna Garcia', 'Robert Miller', 'Lisa Anderson', 'John Taylor', 'Jennifer Moore',
+    'William Jackson', 'Elizabeth Martin', 'Christopher Lee', 'Jessica White', 'Daniel Harris',
+    'Ashley Clark', 'Matthew Lewis', 'Amanda Walker', 'Anthony Hall', 'Stephanie Young', 'Mark Allen',
+    'Michelle King', 'Steven Wright', 'Laura Green', 'Kevin Baker', 'Rachel Adams', 'Brian Nelson',
+    'Rebecca Hill', 'Jason Scott', 'Kimberly Turner', 'Eric Phillips', 'Donna Campbell', 'Ryan Parker',
+    'Sharon Evans', 'Jacob Edwards', 'Helen Collins', 'Nicholas Stewart', 'Deborah Sanchez',
+    'Samuel Morris', 'Cynthia Rogers', 'Patrick Reed', 'Kathleen Cook', 'Timothy Bailey', 'Amy Rivera',
+    'Jonathan Cooper', 'Angela Richardson', 'Brandon Cox', 'Brenda Howard'
+  ];
+
+  const companies = [
+    'TechCorp Solutions', 'InnovateLab', 'Global Dynamics', 'NextGen Systems', 'DataFlow Inc',
+    'CloudFirst Technologies', 'SmartBridge Consulting', 'FutureTech Ventures', 'QuantumLeap Labs',
+    'DigitalTransform Co', 'AI Innovations Group', 'CyberSecure Systems', 'DevOps Masters',
+    'ScaleUp Solutions', 'Enterprise Edge', 'StartupHub', 'Research Institute', 'University Labs',
+    'Healthcare Solutions', 'FinTech Pioneers', 'E-commerce Giants', 'Manufacturing Pro',
+    'Education Platform', 'Non-Profit Alliance', 'Media Dynamics', 'Gaming Studio',
+    'Automotive Tech', 'Aerospace Systems', 'Energy Solutions', 'Retail Innovation'
+  ];
+
+  const messageTitles = [
+    'AI Integration Consultation', 'Technical Support Request', 'Partnership Opportunity',
+    'Demo Scheduling Request', 'Career Opportunities Inquiry', 'Event Collaboration',
+    'Product Information Request', 'Custom Solution Development', 'Enterprise Licensing',
+    'Training and Education', 'API Documentation Request', 'Performance Optimization',
+    'Security Assessment Needed', 'Scaling Solutions Inquiry', 'Industry-Specific Use Case',
+    'Compliance Requirements', 'Migration Assistance', 'Feature Request Discussion',
+    'Pricing Information', 'Implementation Timeline', 'Support Package Options',
+    'Strategic Planning Session', 'Innovation Workshop', 'Proof of Concept Request',
+    'System Architecture Review', 'Data Analytics Consultation', 'Cloud Migration Support'
+  ];
+
+  const messageTemplates = [
+    'We are interested in implementing your AI solution for our business operations. Could you provide more information about features and pricing?',
+    'Our team is evaluating different AI platforms and would like to schedule a demonstration to understand your capabilities better.',
+    'We are experiencing technical difficulties with integration and need expert assistance to resolve the issues promptly.',
+    'I am reaching out to explore potential partnership opportunities between our organizations in the AI space.',
+    'Could you provide information about career opportunities and current openings in your engineering team?',
+    'We are organizing an industry event and would like to discuss potential collaboration and speaking opportunities.',
+    'Our enterprise needs a custom AI solution tailored to our specific industry requirements and compliance standards.',
+    'We need technical documentation and support for implementing your API in our existing system architecture.',
+    'Please provide information about your enterprise licensing options and volume pricing for large-scale deployments.',
+    'We require training sessions for our development team to effectively utilize your platform and tools.'
+  ];
+
+  // Generate past 12 months date range
+  const now = new Date();
+  const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 12, 1);
+
+  for (let i = 0; i < 50; i++) {
+    const inquiry = {
+      name: names[i],
+      email: `${names[i].toLowerCase().replace(' ', '.')}@${companies[i % companies.length].toLowerCase().replace(/[^a-z]/g, '')}.com`,
+      company: companies[i % companies.length],
+      phone: `+1-555-${String(i + 1).padStart(4, '0')}`,
+      country: getRandomElement(COUNTRIES),
+      occupation: getRandomElement(OCCUPATIONS),
+      messageTitle: getRandomElement(messageTitles),
+      message: getRandomElement(messageTemplates),
+      reason: getRandomElement(REASONS),
+      howDidYouHear: getRandomElement(HOW_DID_YOU_HEAR),
+      status: getRandomElement(STATUSES),
+      source: 'web-form',
+      createdAt: getRandomDate(twelveMonthsAgo, now)
+    };
+
+    inquiries.push(inquiry);
+  }
+
+  return inquiries;
+}
 
 async function addSampleInquiries() {
   try {
-    console.log(' Adding sample inquiries for missing approved reasons...');
-    console.log('=========================================================');
+    console.log('🚀 Adding 50 diverse sample inquiries...');
+    console.log('=========================================');
     
     // Check current state
     const existingInquiries = await db.select().from(inquiries);
-    const existingReasons = new Set(existingInquiries.map(inq => inq.reason));
+    console.log(`📊 Current inquiries in database: ${existingInquiries.length}`);
     
-    console.log('\n Current inquiry reasons:');
-    const APPROVED_REASONS = ['General Inquiry', 'Technical Support', 'Book a Demo', 'Careers', 'Partnerships', 'Events Inquiry'];
+    // Generate 50 new sample inquiries
+    const sampleInquiries = generateSampleInquiries();
+    console.log(`📝 Generated ${sampleInquiries.length} new sample inquiries`);
     
-    APPROVED_REASONS.forEach(reason => {
-      const count = existingInquiries.filter(inq => inq.reason === reason).length;
-      const status = count > 0 ? '' : '';
-      console.log(`  $${reason}: $${count} inquiries $${status}`);
-    });
-
-    console.log('\n Adding sample inquiries...');
+    console.log('\n🔄 Adding inquiries to database...');
     
-    for (const sampleInquiry of sampleInquiries) {
-      if (!existingReasons.has(sampleInquiry.reason)) {
-        console.log(`   Adding sample for: $${sampleInquiry.reason}`);
-        await db.insert(inquiries).values(sampleInquiry);
-      } else {
-        console.log(`   Skipping $${sampleInquiry.reason} (already has data)`);
+    // Insert all inquiries
+    let addedCount = 0;
+    for (const inquiry of sampleInquiries) {
+      try {
+        await db.insert(inquiries).values(inquiry);
+        addedCount++;
+        if (addedCount % 10 === 0) {
+          console.log(`   ✅ Added ${addedCount}/${sampleInquiries.length} inquiries...`);
+        }
+      } catch (error) {
+        console.error(`   ❌ Failed to add inquiry for ${inquiry.name}:`, error);
       }
     }
     
-    console.log('\n Sample inquiries added successfully!');
+    console.log('\n✅ Sample inquiries added successfully!');
     
-    // Show final state
-    console.log('\n Final inquiry distribution:');
+    // Show final statistics
     const finalInquiries = await db.select().from(inquiries);
-    const finalReasonCounts: Record<string, number> = {};
+    console.log('\n📈 Final Database Statistics:');
+    console.log(`   Total inquiries: ${finalInquiries.length}`);
+    console.log(`   New inquiries added: ${addedCount}`);
     
+    // Show distribution by reason
+    const reasonCounts: Record<string, number> = {};
     finalInquiries.forEach(inquiry => {
       const reason = inquiry.reason || 'No Reason';
-      finalReasonCounts[reason] = (finalReasonCounts[reason] || 0) + 1;
+      reasonCounts[reason] = (reasonCounts[reason] || 0) + 1;
     });
     
-    APPROVED_REASONS.forEach(reason => {
-      const count = finalReasonCounts[reason] || 0;
-      console.log(`  $${reason}: $${count} inquiries `);
+    console.log('\n📊 Distribution by Reason:');
+    Object.entries(reasonCounts).forEach(([reason, count]) => {
+      console.log(`   ${reason}: ${count} inquiries`);
     });
-
-    console.log(`\n All approved reasons now have sample data!`);
-    console.log(`   Total inquiries: $${finalInquiries.length}`);
+    
+    // Show distribution by status
+    const statusCounts: Record<string, number> = {};
+    finalInquiries.forEach(inquiry => {
+      const status = inquiry.status || 'No Status';
+      statusCounts[status] = (statusCounts[status] || 0) + 1;
+    });
+    
+    console.log('\n🏷️ Distribution by Status:');
+    Object.entries(statusCounts).forEach(([status, count]) => {
+      console.log(`   ${status}: ${count} inquiries`);
+    });
+    
+    // Show distribution by country (top 10)
+    const countryCounts: Record<string, number> = {};
+    finalInquiries.forEach(inquiry => {
+      const country = inquiry.country || 'No Country';
+      countryCounts[country] = (countryCounts[country] || 0) + 1;
+    });
+    
+    const topCountries = Object.entries(countryCounts)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 10);
+    
+    console.log('\n🌍 Top 10 Countries:');
+    topCountries.forEach(([country, count]) => {
+      console.log(`   ${country}: ${count} inquiries`);
+    });
+    
+    // Show month distribution
+    const monthCounts: Record<string, number> = {};
+    finalInquiries.forEach(inquiry => {
+      if (inquiry.createdAt) {
+        const month = inquiry.createdAt.toISOString().slice(0, 7); // YYYY-MM format
+        monthCounts[month] = (monthCounts[month] || 0) + 1;
+      }
+    });
+    
+    console.log('\n📅 Distribution by Month:');
+    Object.entries(monthCounts)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .forEach(([month, count]) => {
+        console.log(`   ${month}: ${count} inquiries`);
+      });
     
   } catch (error) {
-    console.error(' Error adding sample inquiries:', error);
+    console.error('❌ Error adding sample inquiries:', error);
     throw error;
   }
 }

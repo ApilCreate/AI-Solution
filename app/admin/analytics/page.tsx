@@ -225,7 +225,18 @@ export default function AnalyticsPage() {
       'GERMANY': 'DE', 'Germany': 'DE', 'FRANCE': 'FR', 'France': 'FR',
       'UNITED KINGDOM': 'GB', 'United Kingdom': 'GB', 'UK': 'GB',
       'CHINA': 'CN', 'China': 'CN', 'JAPAN': 'JP', 'Japan': 'JP',
-      'AUSTRALIA': 'AU', 'Australia': 'AU', 'ITALY': 'IT', 'Italy': 'IT'
+      'AUSTRALIA': 'AU', 'Australia': 'AU', 'ITALY': 'IT', 'Italy': 'IT',
+      'Sweden': 'SE', 'Denmark': 'DK', 'Norway': 'NO', 'Finland': 'FI',
+      'New Zealand': 'NZ', 'South Korea': 'KR', 'Singapore': 'SG',
+      'Hong Kong': 'HK', 'Mexico': 'MX', 'Argentina': 'AR', 'Chile': 'CL',
+      'South Africa': 'ZA', 'Israel': 'IL', 'UAE': 'AE', 'Saudi Arabia': 'SA',
+      'Turkey': 'TR', 'Poland': 'PL', 'Czech Republic': 'CZ', 'Hungary': 'HU',
+      'Romania': 'RO', 'Bulgaria': 'BG', 'Croatia': 'HR', 'Slovenia': 'SI',
+      'Estonia': 'EE', 'Latvia': 'LV', 'Lithuania': 'LT', 'Ireland': 'IE',
+      'Portugal': 'PT', 'Belgium': 'BE', 'Austria': 'AT', 'Switzerland': 'CH',
+      'Luxembourg': 'LU', 'Malta': 'MT', 'Cyprus': 'CY', 'Greece': 'GR',
+      'Ukraine': 'UA', 'Thailand': 'TH', 'Malaysia': 'MY', 'Indonesia': 'ID',
+      'Philippines': 'PH', 'Netherlands': 'NL'
     };
     
     const countryCode = countryCodeMap[country] || 'XX';
@@ -550,7 +561,7 @@ export default function AnalyticsPage() {
                 <div className="flex items-center justify-between mb-8">
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                      Top Countries
+                      Top 7 Countries
                     </h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       Geographic distribution of inquiries
@@ -561,7 +572,7 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
                 <div className="space-y-6">
-                  {analyticsData.byCountry.slice(0, 6).map((country, index) => (
+                  {analyticsData.byCountry.slice(0, 7).map((country, index) => (
                     <motion.div 
                       key={index}
                       initial={{ opacity: 0, x: -10 }}

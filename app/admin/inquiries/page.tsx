@@ -10,7 +10,6 @@ import {
   Phone,
   Building,
   Globe,
-  Tag,
   MessageSquare,
   Eye,
   CheckCircle,
@@ -77,6 +76,15 @@ export default function InquiriesPage() {
   const [totalCount, setTotalCount] = useState(0);
   const ITEMS_PER_PAGE = 20;
 
+  // Status counts state
+  const [statusCounts, setStatusCounts] = useState({
+    new: 0,
+    pending: 0,
+    responded: 0,
+    resolved: 0,
+    cancelled: 0
+  });
+
   // Debounce search term to prevent API calls on every keystroke
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -100,6 +108,7 @@ export default function InquiriesPage() {
         if (sessionDuration < 86400000) {
           setIsAuthenticated(true);
           fetchInquiries();
+          fetchStatusCounts();
         } else {
           localStorage.removeItem("adminAuthenticated");
           localStorage.removeItem("adminLoginTime");
@@ -113,6 +122,27 @@ export default function InquiriesPage() {
 
     checkAuth();
   }, [router]);
+
+  const fetchStatusCounts = async () => {
+    try {
+      console.log('Fetching status counts from /api/inquiries/stats');
+      const response = await fetch('/api/inquiries/stats');
+      console.log('Status counts response status:', response.status);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Status counts data:', data);
+        setStatusCounts(data.statusCounts);
+        setTotalCount(data.total);
+      } else {
+        console.error('Failed to fetch status counts:', response.status, response.statusText);
+        const errorText = await response.text();
+        console.error('Response body:', errorText);
+      }
+    } catch (error) {
+      console.error('Error fetching status counts:', error);
+    }
+  };
 
   const fetchInquiries = async (page = 1, append = false) => {
     try {
@@ -195,13 +225,21 @@ export default function InquiriesPage() {
 
   const updateInquiryStatus = async (inquiryId: string, newStatus: string) => {
     try {
+      console.log(`Updating inquiry ${inquiryId} to status: ${newStatus}`);
+      
       const response = await fetch(`/api/inquiries/${inquiryId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
       });
 
+      console.log(`Response status: ${response.status}`);
+
       if (response.ok) {
+        const updatedInquiry = await response.json();
+        console.log('Successfully updated inquiry:', updatedInquiry);
+        
+        // Update local state immediately
         setInquiries(prev => 
           prev.map(inquiry => 
             inquiry.id === inquiryId 
@@ -209,36 +247,36 @@ export default function InquiriesPage() {
               : inquiry
           )
         );
-      }
-    } catch (error) {
-      console.error('Failed to update status:', error);
-    }
-  };
-
-  // Function to add tags to inquiries (placeholder for future use)
-  const addTag = async (inquiryId: string, tag: string) => {
-    try {
-      const inquiry = inquiries.find(i => i.id === inquiryId);
-      if (!inquiry) return;
-
-      const newTags = [...(inquiry.tags || []), tag];
-      const response = await fetch(`/api/inquiries/${inquiryId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tags: newTags })
-      });
-
-      if (response.ok) {
-        setInquiries(prev => 
-          prev.map(i => 
-            i.id === inquiryId 
-              ? { ...i, tags: newTags }
-              : i
+        
+        // Also update filtered inquiries
+        setFilteredInquiries(prev => 
+          prev.map(inquiry => 
+            inquiry.id === inquiryId 
+              ? { ...inquiry, status: newStatus }
+              : inquiry
           )
         );
+
+        console.log(`Status updated to ${newStatus} for inquiry ${inquiryId}`);
+        
+        // Refresh status counts
+        fetchStatusCounts();
+      } else {
+        const errorText = await response.text();
+        console.error('Failed to update status. Response:', errorText);
+        console.error('Status:', response.status, 'Status Text:', response.statusText);
+        
+        try {
+          const errorData = JSON.parse(errorText);
+          console.error('Error data:', errorData);
+          alert(`Failed to update status: ${errorData.error || 'Unknown error'}`);
+        } catch {
+          alert(`Failed to update status. Server returned: ${response.status} ${response.statusText}`);
+        }
       }
     } catch (error) {
-      console.error('Failed to add tag:', error);
+      console.error('Network error while updating status:', error);
+      alert('Failed to update status. Please check your connection and try again.');
     }
   };
 
@@ -299,8 +337,9 @@ export default function InquiriesPage() {
     switch (status) {
       case 'new': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400';
       case 'pending': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400';
-      case 'responded': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
-      case 'closed': return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400';
+      case 'responded': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400';
+      case 'resolved': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
+      case 'cancelled': return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400';
       default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400';
     }
   };
@@ -309,8 +348,9 @@ export default function InquiriesPage() {
     switch (status) {
       case 'new': return <AlertCircle className="w-4 h-4" />;
       case 'pending': return <Clock className="w-4 h-4" />;
-      case 'responded': return <CheckCircle className="w-4 h-4" />;
-      case 'closed': return <CheckCircle className="w-4 h-4" />;
+      case 'responded': return <Send className="w-4 h-4" />;
+      case 'resolved': return <CheckCircle className="w-4 h-4" />;
+      case 'cancelled': return <AlertCircle className="w-4 h-4" />;
       default: return <Clock className="w-4 h-4" />;
     }
   };
@@ -393,14 +433,62 @@ export default function InquiriesPage() {
               </button>
             </div>
 
-            {/* Filter Toggle */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200"
-            >
-              <Filter className="w-4 h-4" />
-              Filters
-            </button>
+            {/* Quick Filter Buttons */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                onClick={() => {
+                  const newStatus = filters.status === 'resolved' ? '' : 'resolved';
+                  setFilters(prev => ({ ...prev, status: newStatus }));
+                }}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 text-sm ${
+                  filters.status === 'resolved'
+                    ? 'bg-green-600 text-white'
+                    : 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/30'
+                }`}
+              >
+                <CheckCircle className="w-4 h-4" />
+                {filters.status === 'resolved' ? 'Show All' : 'Resolved'}
+              </button>
+
+              <button
+                onClick={() => {
+                  const newStatus = filters.status === 'new' ? '' : 'new';
+                  setFilters(prev => ({ ...prev, status: newStatus }));
+                }}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 text-sm ${
+                  filters.status === 'new'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/30'
+                }`}
+              >
+                <AlertCircle className="w-4 h-4" />
+                {filters.status === 'new' ? 'Show All' : 'New'}
+              </button>
+
+              <button
+                onClick={() => {
+                  const newStatus = filters.status === 'pending' ? '' : 'pending';
+                  setFilters(prev => ({ ...prev, status: newStatus }));
+                }}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 text-sm ${
+                  filters.status === 'pending'
+                    ? 'bg-yellow-600 text-white'
+                    : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400 hover:bg-yellow-200 dark:hover:bg-yellow-900/30'
+                }`}
+              >
+                <Clock className="w-4 h-4" />
+                {filters.status === 'pending' ? 'Show All' : 'Pending'}
+              </button>
+
+              {/* Filter Toggle */}
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center gap-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200 text-sm"
+              >
+                <Filter className="w-4 h-4" />
+                More Filters
+              </button>
+            </div>
           </div>
 
           {/* Advanced Filters */}
@@ -419,11 +507,10 @@ export default function InquiriesPage() {
                 >
                   <option value="">All Statuses</option>
                   <option value="new">New</option>
-                  <option value="in-progress">In Progress</option>
                   <option value="pending">Pending</option>
-                  <option value="completed">Completed</option>
+                  <option value="responded">Responded</option>
                   <option value="resolved">Resolved</option>
-                  <option value="closed">Closed</option>
+                  <option value="cancelled">Cancelled</option>
                 </select>
 
                 <select
@@ -466,6 +553,57 @@ export default function InquiriesPage() {
           )}
         </div>
 
+        {/* Status Summary */}
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          {[
+            { status: 'new', label: 'New', icon: AlertCircle, color: 'blue' },
+            { status: 'pending', label: 'Pending', icon: Clock, color: 'yellow' },
+            { status: 'responded', label: 'Responded', icon: Send, color: 'purple' },
+            { status: 'resolved', label: 'Resolved', icon: CheckCircle, color: 'green' },
+            { status: 'cancelled', label: 'Cancelled', icon: AlertCircle, color: 'red' }
+          ].map(({ status, label, icon: Icon, color }) => {
+            const count = statusCounts[status as keyof typeof statusCounts];
+            const isActive = filters.status === status;
+            
+            return (
+              <button
+                key={status}
+                onClick={() => {
+                  const newStatus = filters.status === status ? '' : status;
+                  setFilters(prev => ({ ...prev, status: newStatus }));
+                }}
+                className={`p-4 rounded-xl border transition-all duration-200 ${
+                  isActive
+                    ? `bg-${color}-50 border-${color}-200 dark:bg-${color}-900/20 dark:border-${color}-800`
+                    : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <Icon className={`w-5 h-5 ${
+                    isActive 
+                      ? `text-${color}-600 dark:text-${color}-400` 
+                      : 'text-gray-400 dark:text-gray-500'
+                  }`} />
+                  <span className={`text-2xl font-bold ${
+                    isActive 
+                      ? `text-${color}-600 dark:text-${color}-400` 
+                      : 'text-gray-900 dark:text-white'
+                  }`}>
+                    {count}
+                  </span>
+                </div>
+                <p className={`text-sm font-medium ${
+                  isActive 
+                    ? `text-${color}-700 dark:text-${color}-300` 
+                    : 'text-gray-600 dark:text-gray-400'
+                }`}>
+                  {label}
+                </p>
+              </button>
+            );
+          })}
+        </div>
+
         {/* Results Count */}
         <div className="flex items-center justify-between">
           <p className="text-gray-600 dark:text-gray-400">
@@ -478,6 +616,14 @@ export default function InquiriesPage() {
               `Showing ${filteredInquiries.length} of ${totalCount} inquiries`
             )}
           </p>
+          {filters.status && (
+            <button
+              onClick={() => setFilters(prev => ({ ...prev, status: '' }))}
+              className="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-200"
+            >
+              Clear status filter
+            </button>
+          )}
         </div>
 
         {/* Inquiries List */}
@@ -562,7 +708,7 @@ export default function InquiriesPage() {
                           </span>
                         </div>
                         <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-                          <Tag className="w-3 h-3" />
+                          <MessageSquare className="w-3 h-3" />
                           {inquiry.reason}
                         </div>
                       </div>
@@ -574,15 +720,6 @@ export default function InquiriesPage() {
                           {inquiry.status}
                         </span>
                       </div>
-                      {inquiry.tags && inquiry.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mt-2">
-                          {inquiry.tags.map((tag, index) => (
-                            <span key={index} className="px-2 py-1 text-xs bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-400 rounded">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {new Date(inquiry.createdAt).toLocaleDateString()}
@@ -726,7 +863,7 @@ export default function InquiriesPage() {
 
                 <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                   <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                    <Tag className="w-5 h-5" />
+                    <MessageSquare className="w-5 h-5" />
                     Inquiry Details
                   </h4>
                   <div className="space-y-3">
@@ -759,21 +896,6 @@ export default function InquiriesPage() {
                         minute: '2-digit'
                       })}</p>
                     </div>
-                    {selectedInquiry.tags && selectedInquiry.tags.length > 0 && (
-                      <div>
-                        <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Tags</label>
-                        <div className="flex flex-wrap gap-2 mt-1">
-                          {selectedInquiry.tags.map((tag, index) => (
-                            <span
-                              key={index}
-                              className="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs rounded-full"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -825,7 +947,8 @@ export default function InquiriesPage() {
                     <option value="new">New</option>
                     <option value="pending">Pending</option>
                     <option value="responded">Responded</option>
-                    <option value="closed">Closed</option>
+                    <option value="resolved">Resolved</option>
+                    <option value="cancelled">Cancelled</option>
                   </select>
                   
                   <button
