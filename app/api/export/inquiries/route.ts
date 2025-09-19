@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, inquiries } from '@/db';
-import { requireAdmin } from '@/lib/auth';
-import { logError } from '@/lib/logger';
+import { requireAdminSimple } from '@/app/lib/simple-auth';
+import { logError } from '@/app/lib/logger';
 import { and, or, like, gte, lte, eq, desc } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -33,7 +33,7 @@ function escapeCsvField(field: string | null | undefined): string {
 export async function GET(request: NextRequest) {
   try {
     // Require admin authentication
-    await requireAdmin();
+    await requireAdminSimple();
 
     const { searchParams } = new URL(request.url);
     const queryParams = Object.fromEntries(searchParams.entries());

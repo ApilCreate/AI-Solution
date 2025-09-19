@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db, inquiries } from '@/db';
 import { createInquirySchema } from '@/lib/validations/inquiry';
 import { logInfo, logError } from '@/lib/logger';
-import { sendAdminNewInquiryEmail, sendUserConfirmationEmail } from '@/lib/mail';
+import { sendUserConfirmationEmail } from '@/lib/mail';
 
 export async function POST(request: NextRequest) {
   try {

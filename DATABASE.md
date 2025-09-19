@@ -153,7 +153,7 @@ npm run db:query -- "SELECT
 1. **Integrate with Contact Form**: Connect your frontend contact form to insert inquiries
 2. **Admin Dashboard**: Build admin interface using the admin_users table
 3. **Event Management**: Implement event creation and RSVP functionality
-4. **Email Notifications**: Set up email alerts for new inquiries
+4. **User Confirmation Emails**: Set up email confirmations for new inquiries
 5. **Analytics**: Create dashboards showing inquiry trends and statistics
 
 Your database is production-ready and fully functional! 🎉

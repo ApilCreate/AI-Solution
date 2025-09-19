@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminSimple } from '@/app/lib/simple-auth';
-import { logInfo, logError } from '@/lib/logger';
+import { logInfo, logError } from '@/app/lib/logger';
 
 export async function POST(request: NextRequest) {
   try {

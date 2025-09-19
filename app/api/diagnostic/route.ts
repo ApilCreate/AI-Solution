@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminSimple } from '@/app/lib/simple-auth';
 import { db, inquiries, withRetry } from '@/db';
 import { sendAdminResponseEmail } from '@/app/lib/mail';
-import { logInfo, logError } from '@/lib/logger';
+import { logInfo, logError } from '@/app/lib/logger';
 import { desc } from 'drizzle-orm';
 
 export async function GET(request: NextRequest) {

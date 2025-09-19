@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db, inquiries } from '@/db';
 import { createInquirySchema } from '../../lib/validations/inquiry';
 import { logInfo, logError } from '../../lib/logger';
-import { sendAdminNewInquiryEmail, sendUserConfirmationEmail } from '../../lib/mail';
+import { sendUserConfirmationEmail } from '../../lib/mail';
 
 export async function POST(request: NextRequest) {
   try {
@@ -68,16 +68,12 @@ export async function POST(request: NextRequest) {
       reason: validatedData.reason 
     });
 
-    // Send notification emails (non-blocking)
+    // Send confirmation email to user (non-blocking)
     const inquiryWithId = { ...validatedData, id: newInquiry.id };
     
     // Note: Email sending is optional and won't block the response
-    // Remove the await to make it truly non-blocking in production
-    Promise.allSettled([
-      sendAdminNewInquiryEmail(inquiryWithId),
-      sendUserConfirmationEmail(inquiryWithId)
-    ]).catch(error => {
-      logError('Email sending failed', { inquiryId: newInquiry.id, error });
+    sendUserConfirmationEmail(inquiryWithId).catch(error => {
+      logError('User confirmation email failed', { inquiryId: newInquiry.id, error });
     });
 
     return NextResponse.json(

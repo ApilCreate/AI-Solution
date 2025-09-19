@@ -2,7 +2,6 @@
 
 import {
   BarChart3,
-  Bell,
   Calendar,
   FileText,
   Home,
@@ -27,13 +26,11 @@ const navigationItems = [
   { name: 'Analysis', href: '/admin/analytics', icon: BarChart3 },
   { name: 'Inquiries', href: '/admin/inquiries', icon: Mail },
   { name: 'Event Management', href: '/admin/events', icon: Calendar },
-  { name: 'Notifications', href: '/admin/notifications', icon: Bell },
   { name: 'Blog Management', href: '/admin/blog', icon: FileText },
 ];
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [notifications] = useState(2);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -158,16 +155,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   className="bg-transparent border-none outline-none text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 w-48"
                 />
               </div>
-
-              {/* Notifications */}
-              <button className="relative p-2 rounded-lg text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200">
-                <Bell className="w-5 h-5" />
-                {notifications > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
-                    {notifications}
-                  </span>
-                )}
-              </button>
 
               {/* Theme toggle */}
               <ThemeToggle />

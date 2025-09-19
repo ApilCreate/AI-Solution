@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db, inquiries, withRetry } from '@/db';
 import { eq } from 'drizzle-orm';
 import { requireAdminSimple } from '@/app/lib/simple-auth';
-import { logInfo, logError } from '@/lib/logger';
+import { logInfo, logError } from '@/app/lib/logger';
 import { sendAdminResponseEmail } from '@/app/lib/mail';
 
 export async function PUT(

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, inquiries } from '@/db';
 import { requireAdminSimple } from '@/app/lib/simple-auth';
-import { logError } from '@/lib/logger';
+import { logError } from '@/app/lib/logger';
 import { count, sql } from 'drizzle-orm';
 
 export async function GET() {
