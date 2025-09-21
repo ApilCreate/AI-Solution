@@ -1,364 +1,582 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
-import dynamic from "next/dynamic";
-import { 
-  BrainCircuit, Bot, FileText, Eye, Mic, LineChart, Rocket, Wand2, ShieldCheck,
-  ArrowRight, CheckCircle, Zap, Users, TrendingUp, Clock, Shield, Globe
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  ArrowRight,
+  Award,
+  Bot,
+  Building2,
+  CheckCircle,
+  ChevronRight,
+  Eye,
+  FileText,
+  Globe,
+  LineChart,
+  Mic,
+  Phone,
+  Rocket,
+  Shield,
+  Sparkles,
+  Target,
+  TrendingUp,
+  Users,
+  X,
+  Zap
 } from "lucide-react";
-import { GradientButton, FeatureCard, SectionHeader, Badge, StatCard, SolutionCard, PrimaryButton, SecondaryButton } from "../components/ui";
-import OptimizedSpline from "../components/OptimizedSpline";
-import OptimizedMotion, { fadeInUp, fadeIn, staggerContainer } from "../components/OptimizedMotion";
-
-// Dynamically import Spline with better error handling
-const Spline = dynamic(() => import("@splinetool/react-spline"), { 
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-full bg-gradient-to-br from-purple-500/20 via-fuchsia-500/30 to-indigo-500/20 animate-pulse" />
-  )
-});
-
-// Simple Error Boundary component
-function ErrorBoundary({ children, fallback }: { children: React.ReactNode; fallback: React.ReactNode }) {
-  const [hasError, setHasError] = useState(false);
-
-  useEffect(() => {
-    const handleError = () => setHasError(true);
-    window.addEventListener('error', handleError);
-    return () => window.removeEventListener('error', handleError);
-  }, []);
-
-  if (hasError) {
-    return <>{fallback}</>;
-  }
-
-  return <>{children}</>;
-}
+import { useRouter } from "next/navigation";
+import { useEffect, useId, useRef, useState } from "react";
+import Beams from "../../components/Beams";
+import Magnet from "../../components/Magnet";
+import { BackgroundBeams } from "../../components/ui/background-beams";
+import { useOutsideClick } from "../../hooks/use-outside-click";
 
 const solutions = [
   {
+    id: "ai-chatbots",
     title: "AI Chatbots",
-    description: "Transform customer interactions with intelligent conversational AI that understands context, learns from interactions, and provides 24/7 multilingual support.",
-    icon: <Bot size={32} className="text-purple-300" />,
-    features: ["Natural Language Processing", "Multi-platform Integration", "Real-time Learning"],
-    useCases: ["Customer Support", "Sales Assistance", "Internal Help Desk"],
-    metrics: "90% faster response times"
+    shortDescription: "Transform customer interactions with intelligent conversational AI",
+    description: "Transform customer interactions with intelligent conversational AI that understands context, learns from interactions, and provides 24/7 multilingual support across all platforms.",
+    icon: <Bot size={32} className="text-white" />,
+    badge: "Most Popular",
+    features: ["Natural Language Processing", "Multi-platform Integration", "Real-time Learning", "Sentiment Analysis"],
+    useCases: ["Customer Support", "Sales Assistance", "Internal Help Desk", "E-commerce Support"],
+    metrics: "90% faster response times",
+    color: "from-slate-700/20 to-slate-800/20",
+    borderColor: "border-slate-600/30",
+    category: "Communication"
   },
   {
+    id: "document-ai",
     title: "Document AI",
+    shortDescription: "Revolutionize document processing with advanced OCR",
     description: "Revolutionize document processing with advanced OCR, intelligent data extraction, and automated workflow integration for contracts, invoices, and reports.",
-    icon: <FileText size={32} className="text-purple-300" />,
-    features: ["Smart OCR Technology", "Data Validation", "Workflow Automation"],
-    useCases: ["Contract Analysis", "Invoice Processing", "Compliance Reporting"],
-    metrics: "85% reduction in processing time"
+    icon: <FileText size={32} className="text-white" />,
+    badge: "Enterprise Ready",
+    features: ["Smart OCR Technology", "Data Validation", "Workflow Automation", "Compliance Tracking"],
+    useCases: ["Contract Analysis", "Invoice Processing", "Compliance Reporting", "Legal Document Review"],
+    metrics: "85% reduction in processing time",
+    color: "from-gray-700/20 to-gray-800/20",
+    borderColor: "border-gray-600/30",
+    category: "Automation"
   },
   {
+    id: "vision-ai",
     title: "Vision AI",
-    description: "Deploy cutting-edge computer vision for real-time object detection, quality control, security monitoring, and visual content analysis.",
-    icon: <Eye size={32} className="text-purple-300" />,
-    features: ["Real-time Detection", "Custom Model Training", "Edge Computing"],
-    useCases: ["Quality Control", "Security Systems", "Inventory Management"],
-    metrics: "99.2% accuracy rate"
+    shortDescription: "Deploy cutting-edge computer vision solutions",
+    description: "Deploy cutting-edge computer vision for real-time object detection, quality control, security monitoring, and visual content analysis with enterprise-grade accuracy.",
+    icon: <Eye size={32} className="text-white" />,
+    badge: "High Accuracy",
+    features: ["Real-time Detection", "Custom Model Training", "Edge Computing", "3D Object Recognition"],
+    useCases: ["Quality Control", "Security Systems", "Inventory Management", "Medical Imaging"],
+    metrics: "99.2% accuracy rate",
+    color: "from-slate-600/20 to-slate-700/20",
+    borderColor: "border-slate-500/30",
+    category: "Vision"
   },
   {
+    id: "voice-ai",
     title: "Voice AI",
+    shortDescription: "Enable natural voice interactions with advanced speech recognition",
     description: "Enable natural voice interactions with advanced speech recognition, sentiment analysis, and text-to-speech capabilities for seamless user experiences.",
-    icon: <Mic size={32} className="text-purple-300" />,
-    features: ["Speech Recognition", "Voice Synthesis", "Emotion Detection"],
-    useCases: ["Voice Assistants", "Call Analytics", "Accessibility Solutions"],
-    metrics: "95% voice recognition accuracy"
+    icon: <Mic size={32} className="text-white" />,
+    badge: "Voice First",
+    features: ["Speech Recognition", "Voice Synthesis", "Emotion Detection", "Multi-language Support"],
+    useCases: ["Voice Assistants", "Call Analytics", "Accessibility Solutions", "Voice Commerce"],
+    metrics: "95% voice recognition accuracy",
+    color: "from-gray-800/20 to-black/20",
+    borderColor: "border-gray-700/30",
+    category: "Speech"
   },
   {
+    id: "predictive-analytics",
     title: "Predictive Analytics",
-    description: "Harness the power of machine learning to forecast trends, optimize operations, and make data-driven decisions that drive business growth.",
-    icon: <LineChart size={32} className="text-purple-300" />,
-    features: ["Time Series Forecasting", "Anomaly Detection", "Risk Assessment"],
-    useCases: ["Demand Forecasting", "Fraud Detection", "Market Analysis"],
-    metrics: "40% improvement in forecasting accuracy"
+    shortDescription: "Harness machine learning to forecast trends and optimize operations",
+    description: "Harness the power of machine learning to forecast trends, optimize operations, and make data-driven decisions that drive business growth and competitive advantage.",
+    icon: <LineChart size={32} className="text-white" />,
+    badge: "AI Powered",
+    features: ["Time Series Forecasting", "Anomaly Detection", "Risk Assessment", "Pattern Recognition"],
+    useCases: ["Demand Forecasting", "Fraud Detection", "Market Analysis", "Supply Chain Optimization"],
+    metrics: "40% improvement in forecasting accuracy",
+    color: "from-slate-800/20 to-gray-900/20",
+    borderColor: "border-slate-700/30",
+    category: "Analytics"
   },
   {
+    id: "recommendation-engines",
     title: "Recommendation Engines",
-    description: "Boost engagement and revenue with AI-powered personalization that adapts to user behavior, preferences, and contextual signals in real-time.",
-    icon: <Rocket size={32} className="text-purple-300" />,
-    features: ["Collaborative Filtering", "Content-based Filtering", "Hybrid Models"],
-    useCases: ["E-commerce", "Content Platforms", "Product Discovery"],
-    metrics: "35% increase in user engagement"
-  },
-  {
-    title: "Automation Tools",
-    description: "Deploy intelligent AI agents that streamline complex workflows, reduce manual tasks, and optimize business processes across departments.",
-    icon: <Wand2 size={32} className="text-purple-300" />,
-    features: ["Process Mining", "RPA Integration", "Decision Automation"],
-    useCases: ["Data Processing", "Report Generation", "Task Scheduling"],
-    metrics: "70% reduction in manual work"
-  },
-  {
-    title: "Secure AI Infrastructure",
-    description: "Build enterprise-grade AI systems with advanced security, compliance monitoring, model governance, and scalable cloud architecture.",
-    icon: <ShieldCheck size={32} className="text-purple-300" />,
-    features: ["End-to-End Encryption", "Model Governance", "Compliance Monitoring"],
-    useCases: ["Enterprise AI", "Regulated Industries", "Data Protection"],
-    metrics: "100% compliance adherence"
-  },
+    shortDescription: "Boost engagement with AI-powered personalization",
+    description: "Boost engagement and revenue with AI-powered personalization that adapts to user behavior, preferences, and contextual signals in real-time to deliver perfect matches.",
+    icon: <Rocket size={32} className="text-white" />,
+    badge: "Revenue Boost",
+    features: ["Collaborative Filtering", "Content-based Filtering", "Hybrid Models", "Real-time Adaptation"],
+    useCases: ["E-commerce", "Content Platforms", "Product Discovery", "Personalized Marketing"],
+    metrics: "35% increase in user engagement",
+    color: "from-gray-600/20 to-slate-700/20",
+    borderColor: "border-gray-600/30",
+    category: "Personalization"
+  }
 ];
 
 const benefits = [
   {
-    icon: <Zap className="text-yellow-400" size={24} />,
+    icon: <Zap className="text-white" size={24} />,
     title: "Rapid Implementation",
-    description: "Deploy AI solutions in weeks, not months, with our proven methodologies"
+    description: "Deploy AI solutions in weeks, not months, with our proven methodologies",
+    color: "from-slate-700/20 to-gray-800/20"
   },
   {
-    icon: <Users className="text-blue-400" size={24} />,
+    icon: <Users className="text-white" size={24} />,
     title: "Expert Support",
-    description: "Dedicated AI specialists guide you through every step of the journey"
+    description: "Dedicated AI specialists guide you through every step of the journey",
+    color: "from-gray-700/20 to-slate-800/20"
   },
   {
-    icon: <TrendingUp className="text-green-400" size={24} />,
+    icon: <TrendingUp className="text-white" size={24} />,
     title: "Measurable ROI",
-    description: "Track performance with detailed analytics and impact measurements"
+    description: "Track performance with detailed analytics and impact measurements",
+    color: "from-slate-600/20 to-gray-700/20"
   },
   {
-    icon: <Shield className="text-purple-400" size={24} />,
+    icon: <Shield className="text-white" size={24} />,
     title: "Enterprise Security",
-    description: "Bank-level security with compliance standards and data protection"
+    description: "Bank-level security with compliance standards and data protection",
+    color: "from-gray-800/20 to-black/20"
   }
 ];
 
 export default function SolutionsPage() {
-  const [showContent, setShowContent] = useState(false);
-  const [activeCard, setActiveCard] = useState<number | null>(null);
-  const [splineError, setSplineError] = useState(false);
-  const [splineLoaded, setSplineLoaded] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  const handleSplineError = useCallback((error: any) => {
-    console.warn('Spline loading error:', error);
-    setSplineError(true);
-  }, []);
-
-  const handleSplineLoad = useCallback(() => {
-    setSplineLoaded(true);
-  }, []);
+  const router = useRouter();
+  const [active, setActive] = useState<(typeof solutions)[number] | boolean | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const id = useId();
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setMounted(true);
-    const delay = setTimeout(() => setShowContent(true), 1500);
-    
-    // Fallback timeout for Spline loading
-    const splineTimeout = setTimeout(() => {
-      if (!splineLoaded && !splineError) {
-        console.warn('Spline loading timeout, switching to fallback');
-        setSplineError(true);
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setActive(false);
       }
-    }, 5000);
-    
-    return () => {
-      clearTimeout(delay);
-      clearTimeout(splineTimeout);
-    };
-  }, [splineLoaded, splineError]);
+    }
+
+    if (active && typeof active === "object") {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [active]);
+
+  useOutsideClick(ref as React.RefObject<HTMLDivElement>, () => setActive(null));
+
+  const handleLearnMore = (solution: typeof solutions[number]) => {
+    setActive(solution);
+  };
 
   return (
-    <main className="relative w-full overflow-hidden bg-[#05010D] text-[#e0e0ff]">
-      {/* Hide Spline watermarks */}
+    <main className="relative w-full overflow-hidden bg-black text-white">
+      {/* Add CSS for expandable cards */}
       <style jsx global>{`
-        #spline-watermark,
-        .spline-watermark,
-        [class*="watermark"],
-        .spline-logo,
-        [data-spline*="logo"],
-        [class*="spline-logo"],
-        canvas + div,
-        canvas ~ div,
-        div[style*="position: absolute"][style*="bottom"],
-        div[style*="position: absolute"][style*="right"],
-        div[style*="position: fixed"][style*="bottom"],
-        div[style*="position: fixed"][style*="right"],
-        [class*="logo"],
-        [id*="logo"],
-        [data-*="logo"],
-        a[href*="spline"],
-        div[style*="z-index: 999"],
-        div[style*="z-index: 9999"],
-        iframe + div,
-        canvas + a,
-        [style*="position: absolute; bottom: 20px"],
-        [style*="position: absolute; right: 20px"],
-        [style*="cursor: pointer"][style*="position: absolute"] {
-          display: none !important;
-          visibility: hidden !important;
-          opacity: 0 !important;
-          pointer-events: none !important;
-          z-index: -9999 !important;
-          width: 0 !important;
-          height: 0 !important;
-          overflow: hidden !important;
+        /* Smooth animations for expandable cards */
+        .expandable-card {
+          transform-origin: center !important;
+          backface-visibility: hidden !important;
+          -webkit-backface-visibility: hidden !important;
+          will-change: transform !important;
         }
         
-        /* Hide small clickable elements that might be logos */
-        div[style*="width: 40px"],
-        div[style*="width: 50px"],
-        div[style*="width: 60px"],
-        div[style*="height: 40px"],
-        div[style*="height: 50px"],
-        div[style*="height: 60px"] {
-          display: none !important;
-        }
-
-        /* Additional logo hiding for Spline */
-        canvas ~ * {
-          display: none !important;
+        /* Prevent text selection during animations */
+        .expandable-card {
+          user-select: none !important;
+          -webkit-user-select: none !important;
+          -moz-user-select: none !important;
+          -ms-user-select: none !important;
         }
         
-        /* Force hide any remaining watermarks */
-        * [class*="watermark"], 
-        * [id*="watermark"],
-        * [class*="logo"],
-        * [id*="logo"] {
-          display: none !important;
-          visibility: hidden !important;
-          opacity: 0 !important;
+        /* Line clamp utility for card descriptions */
+        .line-clamp-3 {
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 3;
         }
       `}</style>
-
-      {/* Hero Section w/ 3D background */}
-      <section className="relative min-h-screen flex flex-col justify-center items-center text-center px-6 pt-20 pb-32 z-10">
-        <div className="absolute inset-0 z-0 pointer-events-none">
-          {!splineError ? (
-            <div className="relative w-full h-full">
-              {mounted && (
-                <OptimizedSpline
-                  scene="https://prod.spline.design/dL3Q4AD8LjqF02yB/scene.splinecode"
-                  onError={handleSplineError}
-                  onLoad={handleSplineLoad}
-                  style={{ 
-                    width: '100%', 
-                    height: '100%',
-                    background: 'transparent',
-                    pointerEvents: 'none'
-                  }}
-                />
-              )}
-              {/* Strong dark overlay to completely hide Spline logo */}
-              <div className="absolute inset-0 pointer-events-none">
-                {/* Bottom overlay - larger and darker */}
-                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/95 via-black/70 to-transparent"></div>
-                {/* Right overlay - larger coverage */}
-                <div className="absolute bottom-0 right-0 w-48 h-32 bg-gradient-to-tl from-black/95 via-black/70 to-transparent"></div>
-                {/* Additional corner coverage with blur for seamless blending */}
-                <div className="absolute bottom-0 right-0 w-40 h-28 bg-black/85 blur-sm"></div>
-                {/* Extra edge coverage */}
-                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-black/60 to-transparent"></div>
-                <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-black/60 to-transparent"></div>
-                <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-black/60 to-transparent"></div>
-              </div>
-              {!splineLoaded && (
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-fuchsia-500/30 to-indigo-500/20 animate-pulse" />
-              )}
-            </div>
-          ) : (
-            // Fallback gradient background when Spline fails
-            <div className="w-full h-full bg-gradient-to-br from-purple-500/20 via-fuchsia-500/30 to-indigo-500/20" />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#05010D]/20 to-[#05010D] pointer-events-none" />
+      
+      {/* Hero Section with RippleGrid Background */}
+      <section className="relative min-h-screen flex items-center justify-center px-6 py-24">
+        {/* Background */}
+        <div className="absolute inset-0">
+          <Beams />
+          <div className="absolute inset-0 bg-black/40"></div>
         </div>
-
-        {showContent && (
+        
+        {/* Centered Content */}
+        <div className="relative z-10 max-w-6xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-            className="relative z-10 max-w-5xl space-y-8 bg-black/20 backdrop-blur-lg border border-white/10 rounded-3xl p-12 shadow-2xl"
+            transition={{ duration: 0.8 }}
           >
-            <Badge
-              variant="purple"
-              icon={<BrainCircuit size={16} />}
-              size="md"
-            >
-              Cutting-Edge AI Solutions
-            </Badge>
-            
-            <h1 className="text-5xl md:text-7xl font-extrabold leading-tight">
-              <span className="bg-gradient-to-r from-purple-300 via-fuchsia-400 to-indigo-300 bg-clip-text text-transparent drop-shadow-[0_4px_12px_rgba(147,51,234,0.8)]">
-                Transform Your Business
+            {/* Badge */}
+            <div className="bg-slate-800 no-underline group cursor-default relative shadow-2xl shadow-slate-900 rounded-xl p-px text-xs font-semibold leading-6 text-white inline-block mb-8">
+              <span className="absolute inset-0 overflow-hidden rounded-xl">
+                <span className="absolute inset-0 rounded-xl bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_75%)] opacity-100"></span>
               </span>
-              <br />
-              <span className="text-white/90 text-4xl md:text-5xl font-semibold">
-                with AI-Powered Solutions
+              <div className="relative flex space-x-2 items-center justify-center z-10 rounded-xl bg-slate-950 px-6 py-2 ring-1 ring-white/10">
+                <Sparkles className="w-4 h-4 text-white" />
+                <span className="text-white text-sm">
+                  AI Solutions Portfolio
+                </span>
+              </div>
+              <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-slate-400/0 via-slate-400/90 to-slate-400/0"></span>
+            </div>
+            
+            {/* Main Title */}
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+              AI Solutions for
+              <span className="block bg-gradient-to-r from-white via-slate-300 to-white bg-clip-text text-transparent">
+                Modern Business
               </span>
             </h1>
             
-            <p className="text-gray-300 text-xl max-w-3xl mx-auto leading-relaxed">
-              Unlock the full potential of artificial intelligence with our comprehensive suite of AI solutions. 
-              From intelligent automation to predictive analytics, we help companies innovate, scale, and stay ahead of the competition.
+            {/* Description */}
+            <p className="text-xl md:text-2xl text-slate-400 max-w-4xl mx-auto mb-12 leading-relaxed">
+              Transform your business with cutting-edge AI solutions designed to automate, 
+              optimize, and scale your operations. From intelligent chatbots to predictive analytics, 
+              we deliver enterprise-grade AI that drives real results.
             </p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.6 }}
-              className="flex flex-wrap justify-center items-center gap-6 pt-6"
-            >
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <CheckCircle size={16} className="text-purple-400" />
-                <span>Enterprise-Ready</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <CheckCircle size={16} className="text-purple-400" />
-                <span>Scalable Architecture</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <CheckCircle size={16} className="text-purple-400" />
-                <span>24/7 Support</span>
-              </div>
-            </motion.div>
+            {/* CTA Button */}
+            <Magnet magnetStrength={2} padding={100}>
+              <button 
+                onClick={() => router.push('/contact')}
+                className="bg-white text-black no-underline group cursor-pointer relative shadow-2xl shadow-white/20 rounded-full px-8 py-4 text-lg font-semibold leading-6 inline-block transition-all duration-300 hover:scale-105 hover:shadow-white/40"
+              >
+                <span className="absolute inset-0 overflow-hidden rounded-full">
+                  <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
+                </span>
+                <div className="relative flex space-x-2 items-center z-10 rounded-full">
+                  <span className="text-black font-medium">Explore Solutions</span>
+                  <ArrowRight className="w-5 h-5 text-black group-hover:translate-x-1 transition-transform" />
+                </div>
+                <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-black/0 via-black/30 to-black/0 transition-opacity duration-500 group-hover:opacity-40"></span>
+              </button>
+            </Magnet>
           </motion.div>
-        )}
+        </div>
       </section>
 
-      {/* Solutions Grid */}
-      <section className="relative z-10 px-6 pb-24 max-w-7xl mx-auto">
-        <SectionHeader
-          title="Our AI Solutions Portfolio"
-          description="Choose from our comprehensive range of AI-powered tools and services, each designed to address specific business challenges and drive measurable results."
-        />
+      {/* Solutions Section with Expandable Cards */}
+      <section className="relative bg-black mt-10">
+        {/* Section Header */}
+        <div className="relative z-10 px-6 py-24">
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              {/* Badge */}
+              <div className="bg-slate-800 no-underline group cursor-default relative shadow-2xl shadow-slate-900 rounded-xl p-px text-xs font-semibold leading-6 text-white inline-block mb-8">
+                <span className="absolute inset-0 overflow-hidden rounded-xl">
+                  <span className="absolute inset-0 rounded-xl bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_75%)] opacity-100"></span>
+                </span>
+                <div className="relative flex space-x-2 items-center justify-center z-10 rounded-xl bg-slate-950 px-6 py-2 ring-1 ring-white/10">
+                  <Target className="w-4 h-4 text-white" />
+                  <span className="text-white text-sm">Our Solutions</span>
+                </div>
+                <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-slate-400/0 via-slate-400/90 to-slate-400/0"></span>
+              </div>
+              
+              <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+                Enterprise AI Solutions
+              </h2>
+              
+              <p className="text-xl text-slate-400 max-w-3xl mx-auto">
+                Discover powerful AI solutions designed to transform your business operations, 
+                enhance customer experiences, and drive sustainable growth.
+              </p>
+            </motion.div>
+          </div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, staggerChildren: 0.1 }}
-          className="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8"
-        >
-          {solutions.map((solution, index) => (
-            <SolutionCard 
-              key={index} 
-              {...solution}
-              index={index}
-              activeCard={activeCard}
-              setActiveCard={setActiveCard}
-            />
-          ))}
-        </motion.div>
+        {/* Expandable Cards Grid */}
+        <div className="max-w-7xl mx-auto px-6 pb-24">
+          {/* Expandable Card Modal */}
+          <AnimatePresence>
+            {active && typeof active === "object" && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/80 h-full w-full z-50"
+              />
+            )}
+          </AnimatePresence>
+          
+          <AnimatePresence>
+            {active && typeof active === "object" ? (
+              <div className="fixed inset-0 grid place-items-center z-[100] p-4">
+                <motion.button
+                  key={`button-${active.title}-${id}`}
+                  layout
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, transition: { duration: 0.05 } }}
+                  className="flex absolute top-4 right-4 items-center justify-center bg-white/20 backdrop-blur-sm border border-white/30 rounded-full h-10 w-10 text-white hover:bg-white/30 transition-colors z-[110]"
+                  onClick={() => setActive(null)}
+                >
+                  <X className="w-5 h-5" />
+                </motion.button>
+                
+                <motion.div
+                  layoutId={`card-${active.title}-${id}`}
+                  ref={ref}
+                  className="w-full max-w-4xl h-full md:h-fit md:max-h-[90%] flex flex-col bg-gradient-to-br from-slate-900/95 to-black/95 backdrop-blur-xl border border-slate-700/50 sm:rounded-3xl overflow-hidden shadow-2xl"
+                >
+                  {/* Header */}
+                  <div className="p-8 border-b border-slate-700/50">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-6">
+                        <motion.div 
+                          layoutId={`icon-${active.title}-${id}`}
+                          className="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm"
+                        >
+                          {active.icon}
+                        </motion.div>
+                        <div>
+                          <div className="text-lg text-slate-400 mb-2 uppercase tracking-wider">{active.category}</div>
+                          <motion.h3
+                            layoutId={`title-${active.title}-${id}`}
+                            className="text-4xl font-bold text-white"
+                          >
+                            {active.title}
+                          </motion.h3>
+                        </div>
+                      </div>
+                      
+                      {active.badge && (
+                        <div className="bg-white text-black px-4 py-2 rounded-full text-sm font-semibold mt-3">
+                          {active.badge}
+                        </div>
+                      )}
+                    </div>
+                    
+                    <motion.p
+                      layoutId={`description-${active.description}-${id}`}
+                      className="text-slate-300 text-xl mt-4 leading-relaxed"
+                    >
+                      {active.description}
+                    </motion.p>
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 p-8 overflow-auto">
+                    <motion.div
+                      layout
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="grid md:grid-cols-2 gap-8"
+                    >
+                      {/* Key Features */}
+                      <div>
+                        <h4 className="text-white font-semibold mb-6 flex items-center gap-3 text-2xl">
+                          <Award className="w-8 h-8" />
+                          Key Features
+                        </h4>
+                        <div className="space-y-4">
+                          {active.features.map((feature, idx) => (
+                            <div key={idx} className="flex items-start gap-3 text-slate-300">
+                              <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5" />
+                              <span className="leading-relaxed text-lg">{feature}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Use Cases */}
+                      <div>
+                        <h4 className="text-white font-semibold mb-6 flex items-center gap-3 text-2xl">
+                          <Building2 className="w-8 h-8" />
+                          Use Cases
+                        </h4>
+                        <div className="space-y-4">
+                          {active.useCases.map((useCase, idx) => (
+                            <div key={idx} className="flex items-start gap-3 text-slate-300">
+                              <div className="w-3 h-3 bg-blue-400 rounded-full flex-shrink-0 mt-2"></div>
+                              <span className="leading-relaxed text-lg">{useCase}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                    
+                    {/* Metrics */}
+                    <div className="mt-8 p-6 bg-white/5 rounded-xl border border-white/10">
+                      <div className="flex items-center gap-3 text-white">
+                        <TrendingUp className="w-8 h-8 text-green-400" />
+                        <span className="text-2xl font-semibold">Performance Metrics</span>
+                      </div>
+                      <p className="text-slate-300 mt-2 text-xl">{active.metrics}</p>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="p-8 border-t border-slate-700/50">
+                    <div className="flex justify-between items-center">
+                      <div className="text-slate-400 text-lg">
+                        Category: <span className="text-white font-semibold">{active.category}</span>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setActive(null);
+                          router.push(`/solutions/${active.id}`);
+                        }}
+                        className="bg-white text-black px-8 py-4 rounded-lg font-semibold hover:bg-slate-200 transition-colors flex items-center gap-2 text-lg"
+                      >
+                        <span>Book a Demo</span>
+                        <ChevronRight className="w-6 h-6" />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            ) : null}
+          </AnimatePresence>
+
+          {/* Solutions Grid with Proper Hover Effects */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {solutions.map((solution, index) => (
+              <div
+                key={`hover-card-${solution.title}-${id}`}
+                className="relative group block p-2 h-full w-full"
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                {/* Animated Hover Background from card-hover-effect */}
+                <AnimatePresence>
+                  {hoveredIndex === index && (
+                    <motion.span
+                      className="absolute inset-0 h-full w-full bg-slate-800/[0.8] block rounded-3xl"
+                      layoutId="hoverBackground"
+                      initial={{ opacity: 3 }}
+                      animate={{
+                        opacity: 5,
+                        transition: { duration: 0.15 },
+                      }}
+                      exit={{
+                        opacity: 0,
+                        transition: { duration: 0.15, delay: 0.8 },
+                      }}
+                    />
+                  )}
+                </AnimatePresence>
+                
+                {/* Expandable Card Content */}
+                <motion.div
+                  layoutId={`card-${solution.title}-${id}`}
+                  onClick={() => setActive(solution)}
+                  className="relative z-20 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 group-hover:border-slate-600/70 rounded-2xl p-8 cursor-pointer transition-all duration-300 hover:scale-[1.02] h-full overflow-hidden"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  {/* Badge */}
+                  {solution.badge && (
+                    <div className="absolute -top-3 -right-3 bg-white text-black px-4 py-2 rounded-full text-sm font-semibold shadow-lg z-30 mt-7 mr-5">
+                      {solution.badge}
+                    </div>
+                  )}
+                  
+                  {/* Card Inner Content with z-50 to stay above hover effect */}
+                  <div className="relative z-50">
+                    {/* Header */}
+                    <div className="flex items-center gap-4 mb-6">
+                      <motion.div 
+                        layoutId={`icon-${solution.title}-${id}`}
+                        className="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm group-hover:bg-white/15 transition-colors"
+                      >
+                        {solution.icon}
+                      </motion.div>
+                      <div>
+                        <div className="text-sm text-slate-400 uppercase tracking-wider">{solution.category}</div>
+                        <motion.h3
+                          layoutId={`title-${solution.title}-${id}`}
+                          className="text-white font-bold text-2xl group-hover:text-slate-100 transition-colors"
+                        >
+                          {solution.title}
+                        </motion.h3>
+                      </div>
+                    </div>
+
+                    {/* Description */}
+                    <motion.p
+                      layoutId={`description-${solution.description}-${id}`}
+                      className="text-slate-300 text-lg leading-relaxed mb-6 line-clamp-3"
+                    >
+                      {solution.shortDescription}
+                    </motion.p>
+
+                    {/* Metrics */}
+                    <div className="flex items-center gap-3 text-slate-400 text-lg mb-6">
+                      <TrendingUp className="w-5 h-5" />
+                      <span>{solution.metrics}</span>
+                    </div>
+
+                    {/* Features Preview */}
+                    <div className="mb-6">
+                      <div className="text-lg text-slate-400 mb-3 flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4" />
+                        Key Features
+                      </div>
+                      <div className="space-y-2">
+                        {solution.features.slice(0, 2).map((feature, idx) => (
+                          <div key={idx} className="text-base text-slate-300 flex items-center gap-3">
+                            <div className="w-2 h-2 bg-slate-400 rounded-full"></div>
+                            <span className="truncate">{feature}</span>
+                          </div>
+                        ))}
+                        {solution.features.length > 2 && (
+                          <div className="text-base text-slate-400">+{solution.features.length - 2} more features</div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Action */}
+                    <div className="flex justify-between items-center pt-4 border-t border-slate-700/50">
+                      <span className="text-base text-slate-500">Click to expand</span>
+                      <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
-      {/* Benefits Section */}
-      <section className="relative z-10 px-6 py-24 bg-gradient-to-b from-transparent to-purple-900/10">
-        <div className="max-w-7xl mx-auto">
+      {/* Benefits Section with BackgroundBeams */}
+      <section className="relative px-6 py-24 bg-black overflow-hidden mt-14">
+        <BackgroundBeams />
+        
+        <div className="relative z-10 max-w-6xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-white mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Why Choose Our AI Solutions?
             </h2>
-            <p className="text-gray-400 text-lg max-w-3xl mx-auto">
-              We combine cutting-edge technology with deep industry expertise to deliver AI solutions that drive real business value.
+            <p className="text-slate-400 text-lg max-w-3xl mx-auto">
+              We combine cutting-edge technology with deep industry expertise to deliver 
+              AI solutions that drive real business value and sustainable growth.
             </p>
           </motion.div>
 
@@ -366,17 +584,21 @@ export default function SolutionsPage() {
             {benefits.map((benefit, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="text-center p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all duration-300"
+                className={`group relative p-6 rounded-2xl bg-gradient-to-br ${benefit.color} border border-white/10 backdrop-blur-sm hover:scale-105 transition-all duration-300`}
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 rounded-2xl mb-4 border border-white/20">
-                  {benefit.icon}
+                <div className="btn-shimmer absolute inset-0 bg-[image:radial-gradient(88%_100%_at_top,rgba(255,255,255,0.05),transparent)] opacity-20 rounded-2xl hover:bg-black/40 transition duration-300 overflow-hidden"></div>
+                
+                <div className="relative z-10 text-center">
+                  <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    {benefit.icon}
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-3">{benefit.title}</h3>
+                  <p className="text-slate-300 text-sm leading-relaxed">{benefit.description}</p>
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-2">{benefit.title}</h3>
-                <p className="text-gray-400 text-sm">{benefit.description}</p>
               </motion.div>
             ))}
           </div>
@@ -384,30 +606,43 @@ export default function SolutionsPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative z-10 px-6 py-24">
+      <section className="relative px-6 py-24 bg-slate-950">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="bg-gradient-to-r from-purple-500/20 to-indigo-500/20 p-12 rounded-3xl border border-purple-400/30 backdrop-blur-lg"
+            className="bg-gradient-to-r from-slate-900/20 to-gray-900/20 p-12 rounded-3xl border border-white/10 backdrop-blur-lg relative overflow-hidden"
           >
-            <Globe size={48} className="text-purple-300 mx-auto mb-6" />
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Ready to Transform Your Business?
-            </h2>
-            <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
-              Whether you're building a new AI product or integrating smart automation into your existing systems, 
-              our solutions are built to scale, adapt, and deliver measurable impact across industries.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <GradientButton variant="secondary" size="lg">
-                Contact Us
-              </GradientButton>
-              <GradientButton variant="outline" size="lg">
-                View Testimonials
-              </GradientButton>
+            {/* Background Pattern */}
+            <div className="absolute inset-0 bg-[image:radial-gradient(88%_100%_at_top,rgba(255,255,255,0.05),transparent)] opacity-20"></div>
+            
+            <div className="relative z-10">
+              <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Globe size={32} className="text-white" />
+              </div>
+              
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+                Ready to Transform Your Business?
+              </h2>
+              
+              <p className="text-slate-300 text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
+                Whether you're building a new AI product or integrating smart automation into your existing systems, 
+                our solutions are built to scale, adapt, and deliver measurable impact across industries.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <Magnet magnetStrength={1.5} padding={50}>
+                  <button
+                    onClick={() => router.push('/contact')}
+                    className="group bg-white text-black px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 hover:bg-gray-200 hover:scale-105 flex items-center gap-3 shadow-2xl shadow-white/10"
+                  >
+                    <Phone className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                    Get Started Today
+                  </button>
+                </Magnet>
+              </div>
             </div>
           </motion.div>
         </div>

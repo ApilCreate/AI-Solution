@@ -182,10 +182,10 @@ const Beams: FC<BeamsProps> = ({
   beamHeight = 15,
   beamNumber = 12,
   lightColor = '#ffffff',
-  speed = 2,
-  noiseIntensity = 1.75,
+  speed = 4,
+  noiseIntensity = 0,
   scale = 0.2,
-  rotation = 0
+  rotation = 150
 }) => {
   const meshRef = useRef<THREE.Mesh<THREE.BufferGeometry, THREE.ShaderMaterial>>(null!);
 
