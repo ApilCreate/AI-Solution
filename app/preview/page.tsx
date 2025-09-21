@@ -1,12 +1,14 @@
 ﻿"use client";
 
-import { Activity, BarChart3, Bot, Check, CheckSquare, Clipboard, Globe, Link, RefreshCw, Rocket, Settings, Shield, Shuffle, TrendingUp, Users, Webhook } from "lucide-react";
-import Magnet from "../components/Magnet";
-import { CometCard } from "../components/ui/comet-card";
-import { ContainerScroll } from "../components/ui/container-scroll-animation";
-import { HorizontalScroll } from "../components/ui/horizontal-scroll-reveal";
-import { InfiniteMovingCards } from "../components/ui/infinite-moving-cards";
-import { SparklesCore } from "../components/ui/sparkles";
+import { Check, BarChart3, Bot, TrendingUp, Activity, Link, Rocket, Clipboard, Settings, Users, CheckSquare, Globe, RefreshCw, Webhook, Shuffle, Shield } from "lucide-react";
+import React from "react";
+import { SparklesCore } from "../../components/ui/sparkles";
+import Magnet from "../../components/Magnet";
+import { ContainerScroll } from "../../components/ui/container-scroll-animation";
+import { CometCard } from "../../components/ui/comet-card";
+import { StickyScroll } from "../../components/ui/sticky-scroll-reveal";
+import { HorizontalScroll } from "../../components/ui/horizontal-scroll-reveal";
+import { InfiniteMovingCards } from "../../components/ui/infinite-moving-cards";
 
 export default function AILandingPage() {
   const horizontalSections = [

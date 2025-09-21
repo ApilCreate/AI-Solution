@@ -76,7 +76,12 @@ export default function BlogPage() {
           category: blog.category
         }));
         
-        setBlogs(prev => [...prev, ...convertedDbBlogs]);
+        // Prevent duplicates by checking existing IDs
+        setBlogs(prev => {
+          const existingIds = new Set(prev.map(blog => blog.id));
+          const newBlogs = convertedDbBlogs.filter(blog => !existingIds.has(blog.id));
+          return [...prev, ...newBlogs];
+        });
         setDatabaseBlogsLoaded(true);
         setHasMore(false); // All blogs loaded
       } else {
@@ -221,7 +226,7 @@ export default function BlogPage() {
               
               return (
                 <ArticleCard
-                  key={blog.id}
+                  key={`${blog.id}-${index}`}
                   id={blog.id}
                   title={blog.title}
                   excerpt={blog.excerpt || blog.content.slice(0, 120) + "..."}

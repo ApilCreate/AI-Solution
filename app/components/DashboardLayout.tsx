@@ -1,36 +1,80 @@
 "use client";
 
-import {
-  BarChart3,
-  Calendar,
-  FileText,
-  Home,
-  LogOut,
-  Mail,
-  Menu,
-  Search,
-  X
-} from 'lucide-react';
-import { signOut } from 'next-auth/react';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { signOut } from 'next-auth/react';
+import { usePathname, useRouter } from 'next/navigation';
+import { 
+  IconHome,
+  IconChartBar,
+  IconMail,
+  IconCalendar,
+  IconFileText,
+  IconLogout,
+  IconSearch
+} from '@tabler/icons-react';
 import ThemeToggle from './ui/ThemeToggle';
+import { Sidebar, SidebarBody, SidebarLink, useSidebar } from '../../components/ui/sidebar';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
 const navigationItems = [
-  { name: 'Home', href: '/admin/dashboard', icon: Home },
-  { name: 'Analysis', href: '/admin/analytics', icon: BarChart3 },
-  { name: 'Inquiries', href: '/admin/inquiries', icon: Mail },
-  { name: 'Event Management', href: '/admin/events', icon: Calendar },
-  { name: 'Blog Management', href: '/admin/blog', icon: FileText },
+  { 
+    label: 'Home', 
+    href: '/admin/dashboard', 
+    icon: <IconHome className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0" />
+  },
+  { 
+    label: 'Analytics', 
+    href: '/admin/analytics', 
+    icon: <IconChartBar className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0" />
+  },
+  { 
+    label: 'Inquiries', 
+    href: '/admin/inquiries', 
+    icon: <IconMail className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0" />
+  },
+  { 
+    label: 'Events', 
+    href: '/admin/events', 
+    icon: <IconCalendar className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0" />
+  },
+  { 
+    label: 'Blog', 
+    href: '/admin/blog', 
+    icon: <IconFileText className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0" />
+  },
 ];
 
+const UserSection = ({ handleLogout }: { handleLogout: () => void }) => {
+  const { open } = useSidebar();
+  
+  return (
+    <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+      {/* Logout Button */}
+      <div className="relative">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 w-full px-2 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200"
+          title={!open ? "Log out" : ""}
+        >
+          <div className="flex items-center justify-center min-w-[24px]">
+            <IconLogout className="h-5 w-5 shrink-0" />
+          </div>
+          <span className={`transition-all duration-200 overflow-hidden whitespace-nowrap ${
+            open ? 'opacity-100 w-auto' : 'opacity-0 w-0'
+          }`}>
+            Log out
+          </span>
+        </button>
+      </div>
+    </div>
+  );
+};
+
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -46,100 +90,60 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     return pathname.startsWith(href);
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
-      {/* Mobile sidebar overlay */}
-      {sidebarOpen && (
-        <div 
-          className="fixed inset-0 z-40 lg:hidden bg-black/50"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+  const getCurrentPageName = () => {
+    const currentItem = navigationItems.find(item => isActiveRoute(item.href));
+    return currentItem?.label || 'Dashboard';
+  };
 
-      {/* Main layout container */}
-      <div className="flex min-h-screen">
-        {/* Sidebar */}
-        <div className={`fixed inset-y-0 left-0 z-50 w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 lg:translate-x-0 lg:static lg:inset-0 transition-transform duration-300 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-        }`}>
-        <div className="flex flex-col h-full">
-          {/* Logo */}
-          <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-600 rounded-lg flex items-center justify-center">
+  return (
+    <div className="h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200 flex">
+      <Sidebar open={open} setOpen={setOpen}>
+        <SidebarBody className="justify-between bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 px-2 h-screen">
+          <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden py-4">
+            {/* Logo */}
+            <div className="flex items-center gap-3 py-2 px-2 mb-8">
+              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-600 rounded-lg flex items-center justify-center shrink-0">
                 <span className="text-white font-bold text-sm">AI</span>
               </div>
-              <span className="font-bold text-xl text-gray-900 dark:text-white">
+              <div className={`font-bold text-lg text-gray-900 dark:text-white whitespace-nowrap transition-all duration-200 overflow-hidden ${
+                open ? 'opacity-100 w-auto' : 'opacity-0 w-0'
+              }`}>
                 AI SOLUTIONS
-              </span>
+              </div>
             </div>
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="lg:hidden p-1 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
 
-          {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-2">
-            {navigationItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = isActiveRoute(item.href);
-              
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    isActive
+            {/* Navigation Links */}
+            <div className="flex flex-col gap-2 flex-1">
+              {navigationItems.map((link, idx) => (
+                <SidebarLink
+                  key={idx}
+                  link={link}
+                  className={`transition-all duration-200 ${
+                    isActiveRoute(link.href)
                       ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50'
                   }`}
-                >
-                  <Icon className={`w-5 h-5 ${
-                    isActive ? 'text-purple-600 dark:text-purple-400' : 'text-gray-500 dark:text-gray-400'
-                  }`} />
-                  {item.name}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Bottom section */}
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-3 w-full px-3 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200"
-            >
-              <LogOut className="w-5 h-5" />
-              Log out
-            </button>
+                />
+              ))}
+            </div>
           </div>
-        </div>
-        </div>
 
-        {/* Main content */}
-        <div className="flex-1">
-          {/* Header */}
-          <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
+          <UserSection handleLogout={handleLogout} />
+        </SidebarBody>
+      </Sidebar>
+
+      {/* Main content */}
+      <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
           <div className="flex items-center justify-between h-16 px-6">
-            {/* Left side */}
+            {/* Left side - Breadcrumbs */}
             <div className="flex items-center gap-4">
-              <button
-                onClick={() => setSidebarOpen(true)}
-                className="lg:hidden p-2 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-              >
-                <Menu className="w-5 h-5" />
-              </button>
-              
-              {/* Breadcrumbs */}
-              <nav className="hidden sm:flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+              <nav className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                 <span>Home</span>
                 <span>/</span>
                 <span className="text-gray-900 dark:text-white font-medium">
-                  {navigationItems.find(item => isActiveRoute(item.href))?.name || 'Dashboard'}
+                  {getCurrentPageName()}
                 </span>
               </nav>
             </div>
@@ -148,7 +152,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <div className="flex items-center gap-3">
               {/* Search */}
               <div className="hidden md:flex items-center gap-2 px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                <Search className="w-4 h-4 text-gray-500" />
+                <IconSearch className="w-4 h-4 text-gray-500" />
                 <input
                   type="text"
                   placeholder="Search..."
@@ -158,26 +162,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
               {/* Theme toggle */}
               <ThemeToggle />
-
-              {/* User menu */}
-              <div className="flex items-center gap-3 pl-3 border-l border-gray-200 dark:border-gray-700">
-                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-medium text-sm">A</span>
-                </div>
-                <div className="hidden sm:block">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">Admin</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">admin@aisolutions.com</p>
-                </div>
-              </div>
             </div>
           </div>
         </header>
 
         {/* Page content */}
-        <main className="p-6">
+        <main className="flex-1 p-6 overflow-auto">
           {children}
         </main>
-      </div>
       </div>
     </div>
   );
