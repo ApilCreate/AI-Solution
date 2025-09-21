@@ -7,7 +7,7 @@ import {
   useTransform,
   useMotionTemplate,
 } from "motion/react";
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 
 export const CometCard = ({
   rotateDepth = 17.5,

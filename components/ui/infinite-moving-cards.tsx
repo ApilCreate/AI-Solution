@@ -1,7 +1,7 @@
 "use client";
 
-import { cn } from "../../lib/utils";
 import React, { useEffect, useState } from "react";
+import { cn } from "../../lib/utils";
 
 export const InfiniteMovingCards = ({
   items,
@@ -86,7 +86,7 @@ export const InfiniteMovingCards = ({
           pauseOnHover && "hover:[animation-play-state:paused]",
         )}
       >
-        {items.map((item, idx) => (
+        {items.map((item) => (
           <li
             className="relative w-[350px] max-w-full shrink-0 rounded-2xl border border-zinc-700 bg-gradient-to-b from-zinc-900 to-zinc-950 px-8 py-6 md:w-[450px] shadow-xl"
             key={item.name}
