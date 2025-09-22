@@ -23,7 +23,7 @@
     "@hookform/resolvers": "^5.2.1",
     "@neondatabase/serverless": "^1.0.1",
     "@react-three/drei": "^10.7.6",
-    "@react-three/fiber": "^9.3.0",
+    "@react-three/fiber": "^9.0.0-alpha.8",
     "@splinetool/react-spline": "^4.1.0",
     "@tabler/icons-react": "^3.35.0",
     "@tanstack/react-query": "^5.84.2",
@@ -44,7 +44,7 @@
     "lenis": "^1.3.11",
     "lucide-react": "^0.525.0",
     "mathjs": "^14.7.0",
-    "motion": "^12.23.16",
+    "motion": "^12.23.18",
     "next": "15.4.4",
     "next-auth": "^4.24.11",
     "nodemailer": "^6.10.1",
@@ -60,6 +60,7 @@
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.180.0",
+    "three-globe": "^2.44.0",
     "zod": "^4.0.17"
   },
   "devDependencies": {

@@ -368,3 +368,14 @@ body {
 .animate-scroll {
   animation: scroll var(--animation-duration) var(--animation-direction) linear infinite;
 }
+
+/* Vertical Infinite Moving Cards Animation */
+@keyframes scrollVertical {
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+.animate-scroll-vertical {
+  animation: scrollVertical var(--animation-duration) var(--animation-direction) linear infinite;
+}

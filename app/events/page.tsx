@@ -87,107 +87,76 @@ export default function EventsPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="relative min-h-screen w-full overflow-hidden bg-black text-white">
+      {/* Background Effects */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-gray-900 to-black" />
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-slate-500/10 rounded-full blur-3xl" />
+      </div>
+
       {/* Hero Section */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center px-6">
-        {/* Hero Background with Tech Image */}
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop&crop=center"
-            alt="Tech Conference"
-            className="w-full h-full object-cover opacity-20"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/90"></div>
+      <section ref={heroRef} className="relative z-10 min-h-screen flex items-center pt-32 pb-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="space-y-6"
+            >
+              <div className="flex justify-center">
+                <span className="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-lg text-slate-300 border border-white/20">
+                  <Bot className="w-5 h-5 inline mr-2" />
+                  AI Solutions Events
+                </span>
+              </div>
+              <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                AI Innovation Events
+              </h1>
+              <p className="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+                Join our exclusive AI workshops, solution demonstrations, and industry insights sessions designed to showcase the future of intelligent automation.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
+                <button className="px-8 py-4 bg-white text-black font-semibold rounded-xl hover:bg-slate-100 transition-colors text-lg">
+                  View AI Events
+                </button>
+                <button className="px-8 py-4 bg-transparent text-white font-semibold rounded-xl border border-white/20 hover:border-white/40 transition-colors text-lg">
+                  Request AI Demo
+                </button>
+              </div>
+            </motion.div>
+          </div>
         </div>
-
-        {/* Simple Background Elements */}
-        <motion.div 
-          style={{ y: heroY }}
-          className="absolute inset-0 opacity-10 z-10"
-        >
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500 rounded-full blur-3xl"></div>
-        </motion.div>
-
-        <motion.div 
-          style={{ opacity: heroOpacity }}
-          className="relative z-20 text-center max-w-4xl mx-auto"
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="mb-6"
-          >
-            <span className="inline-block px-4 py-2 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 text-sm font-medium backdrop-blur-sm">
-              <Bot className="w-4 h-4 inline mr-2" />
-              AI Solutions Events
-            </span>
-          </motion.div>
-
-          <motion.h1 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-purple-300 to-white bg-clip-text text-transparent"
-          >
-            AI Innovation Events
-          </motion.h1>
-
-          <motion.p 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed"
-          >
-            Join our exclusive AI workshops, solution demonstrations, and industry insights sessions 
-            designed to showcase the future of intelligent automation and business transformation.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-          >
-            <GradientButton size="lg" className="rounded-full">
-              View AI Events
-            </GradientButton>
-            
-            <GradientButton variant="outline" size="lg" className="rounded-full">
-              Request AI Demo
-            </GradientButton>
-          </motion.div>
-        </motion.div>
       </section>
 
       {/* Upcoming Events */}
-      <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
+      <section className="relative z-10 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-purple-300 to-white bg-clip-text text-transparent">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Upcoming AI Events
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+            <p className="text-xl text-slate-300 max-w-2xl mx-auto">
               Don't miss out on our latest AI workshops, demos, and business strategy sessions designed to showcase intelligent solutions.
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {loading ? (
               // Loading skeleton
               Array.from({ length: 3 }).map((_, index) => (
-                <div key={index} className="bg-white/5 rounded-2xl p-6 animate-pulse">
-                  <div className="h-48 bg-gray-700 rounded-lg mb-4"></div>
-                  <div className="h-6 bg-gray-700 rounded mb-2"></div>
-                  <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
-                  <div className="h-4 bg-gray-700 rounded w-1/2"></div>
+                <div key={index} className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-2xl p-6 animate-pulse">
+                  <div className="h-48 bg-slate-700/50 rounded-lg mb-4"></div>
+                  <div className="h-6 bg-slate-700/50 rounded mb-2"></div>
+                  <div className="h-4 bg-slate-700/50 rounded w-3/4 mb-2"></div>
+                  <div className="h-4 bg-slate-700/50 rounded w-1/2"></div>
                 </div>
               ))
             ) : upcomingEvents.length > 0 ? (
@@ -196,10 +165,9 @@ export default function EventsPage() {
                   key={event.id}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.4, delay: index * 0.05, ease: "easeOut" }}
-                  whileHover={{ y: -4 }}
-                  className="group bg-white/5 rounded-2xl overflow-hidden border border-white/10 hover:border-purple-500/30 transition-all duration-300 backdrop-blur-sm"
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="group bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 hover:border-slate-600/70 rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.02]"
                 >
                   <div className="relative h-48 overflow-hidden">
                     {event.bannerUrl ? (
@@ -210,15 +178,15 @@ export default function EventsPage() {
                         loading="lazy"
                       />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center">
-                        <Calendar className="w-16 h-16 text-purple-400" />
+                      <div className="w-full h-full bg-gradient-to-br from-white/10 to-slate-500/20 flex items-center justify-center">
+                        <Calendar className="w-16 h-16 text-white/40" />
                       </div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                     
                     {/* Category Badge */}
                     <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 rounded-full bg-purple-500/20 backdrop-blur-sm text-purple-300 text-xs font-medium border border-purple-500/30">
+                      <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm text-white text-xs font-medium border border-white/20">
                         {event.category}
                       </span>
                     </div>
@@ -226,25 +194,25 @@ export default function EventsPage() {
 
                   <div className="p-6">
                     <Link href={`/events/${event.id}`}>
-                      <h3 className="text-xl font-semibold mb-3 text-white group-hover:text-purple-300 transition-colors cursor-pointer hover:underline">
+                      <h3 className="text-xl font-semibold mb-3 text-white group-hover:text-slate-200 transition-colors cursor-pointer">
                         {event.title}
                       </h3>
                     </Link>
                     
                     <div className="space-y-2 mb-4">
-                      <div className="flex items-center gap-2 text-gray-400">
+                      <div className="flex items-center gap-2 text-slate-400">
                         <Calendar className="w-4 h-4" />
                         <span className="text-sm">{new Date(event.date).toLocaleDateString()}</span>
                       </div>
                       
                       {event.time && (
-                        <div className="flex items-center gap-2 text-gray-400">
+                        <div className="flex items-center gap-2 text-slate-400">
                           <Clock className="w-4 h-4" />
                           <span className="text-sm">{event.time}</span>
                         </div>
                       )}
                       
-                      <div className="flex items-center gap-2 text-gray-400">
+                      <div className="flex items-center gap-2 text-slate-400">
                         <MapPin className="w-4 h-4" />
                         <span className="text-sm">{event.location}</span>
                       </div>
@@ -333,49 +301,32 @@ export default function EventsPage() {
       />
 
       {/* Call to Action */}
-      <section className="py-20 px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="text-center max-w-4xl mx-auto"
-        >
-          <div className="relative">
-            <img 
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=400&fit=crop&crop=center"
-              alt="Team Collaboration"
-              className="w-full h-64 object-cover rounded-2xl opacity-20 mb-8"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent rounded-2xl"></div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center">
-                <h3 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-purple-300 to-white bg-clip-text text-transparent">
-                  Ready to Transform Your Business with AI?
-                </h3>
-                <p className="text-gray-300 mb-6 max-w-xl mx-auto text-lg">
-                  Whether you want to attend our AI workshops, discuss custom solutions, or explore partnership opportunities, we'd love to connect.
-                </p>
-                
-                <motion.a
-                  href="/contact"
-                  whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(168, 85, 247, 0.4)" }}
-                  whileTap={{ scale: 0.98 }}
-                  className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full font-semibold text-lg hover:from-purple-500 hover:to-pink-500 transition-all duration-300"
-                >
-                  <Mail className="w-5 h-5 mr-2" />
-                  <span>Get In Touch</span>
-                  <motion.div
-                    whileHover={{ x: 2 }}
-                    className="ml-2"
-                  >
-                    <ArrowRight className="w-5 h-5" />
-                  </motion.div>
-                </motion.a>
-              </div>
+      <section className="relative z-10 py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-12"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Ready to Transform Your Business with AI?
+            </h2>
+            <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
+              Whether you want to attend our AI workshops, discuss custom solutions, or explore partnership opportunities, we'd love to connect.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="px-8 py-4 bg-white text-black font-semibold rounded-xl hover:bg-slate-100 transition-colors text-lg flex items-center justify-center gap-2">
+                <Mail className="w-5 h-5" />
+                Get In Touch
+              </button>
+              <button className="px-8 py-4 bg-transparent text-white font-semibold rounded-xl border border-white/20 hover:border-white/40 transition-colors text-lg">
+                Schedule a Demo
+              </button>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </section>
     </main>
   );

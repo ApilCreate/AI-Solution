@@ -16,14 +16,13 @@ import {
   Loader2,
   ChevronDown,
 } from "lucide-react";
-import { GlassCard, GradientButton, SectionHeader, Badge } from "../components/ui";
 import FAQSection from "../components/FAQSection";
 
 // Lazy load Spline with proper Next.js import
 const Spline = dynamic(() => import("@splinetool/react-spline"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full bg-gradient-to-br from-purple-500/10 via-slate-900/80 to-indigo-500/10" />
+    <div className="w-full h-full bg-gradient-to-br from-gray-500/10 via-slate-900/80 to-gray-500/10" />
   ),
 });
 
@@ -245,7 +244,7 @@ export default function ContactPage() {
               style={{ width: "100%", height: "100%" }}
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-purple-600/20 via-slate-900/90 to-indigo-600/20" />
+            <div className="w-full h-full bg-gradient-to-br from-gray-500/10 via-slate-900/80 to-gray-500/10" />
           )}
           <div className="absolute inset-0 bg-gradient-to-b from-[#05010D]/80 via-[#05010D]/60 to-[#05010D]/95" />
         </motion.div>
@@ -266,7 +265,7 @@ export default function ContactPage() {
                 transition={{ delay: 0.2, duration: 0.6 }}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm"
               >
-                <MessageCircle className="w-4 h-4 text-purple-400" />
+                <MessageCircle className="w-4 h-4 text-slate-400" />
                 <span className="text-sm font-medium text-gray-300">Ready to Help You Succeed</span>
               </motion.div>
 
@@ -278,7 +277,7 @@ export default function ContactPage() {
               >
                 <span className="text-white">Get in Touch</span>
                 <br />
-                <span className="bg-gradient-to-r from-purple-400 via-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-gray-200 to-slate-300 bg-clip-text text-transparent">
                   With Our Team
                 </span>
               </motion.h1>
@@ -306,15 +305,14 @@ export default function ContactPage() {
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    whileHover={{ y: -5, scale: 1.02, transition: { duration: 0.2 } }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.6 + index * 0.1, duration: 0.6 }}
-                    className="p-5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 hover:border-purple-500/30 transition-all duration-300 cursor-default"
+                    className="p-5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm cursor-default"
                   >
                     <div className="flex items-center gap-3 mb-2">
-                      <motion.div className="text-purple-400" whileHover={{ scale: 1.1, rotate: 5 }} transition={{ duration: 0.2 }}>
+                      <div className="text-slate-400">
                         {item.icon}
-                      </motion.div>
+                      </div>
                       <h3 className="font-semibold text-white">{item.title}</h3>
                     </div>
                     <p className="text-gray-300 font-medium mb-1">{item.info}</p>
@@ -332,7 +330,7 @@ export default function ContactPage() {
               transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
               className="relative"
             >
-              <motion.div className="relative" whileHover={{ scale: 1.01 }} transition={{ duration: 0.3 }}>
+              <div className="relative">
                 <div className="absolute -inset-1" />
                 <div className="relative p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl">
                   <motion.div
@@ -342,9 +340,9 @@ export default function ContactPage() {
                     viewport={{ once: true }}
                     transition={{ delay: 0.4, duration: 0.6 }}
                   >
-                    <motion.div className="p-2 rounded-lg bg-purple-500/20" whileHover={{ scale: 1.1, rotate: 5 }} transition={{ duration: 0.2 }}>
-                      <Users className="w-5 h-5 text-purple-400" />
-                    </motion.div>
+                    <div className="p-2 rounded-lg bg-slate-500/20">
+                      <Users className="w-5 h-5 text-slate-400" />
+                    </div>
                     <div>
                       <h2 className="text-2xl font-bold text-white">Send Us a Message</h2>
                       <p className="text-gray-400 text-sm">Fill out the form below and we'll get back to you</p>
@@ -359,7 +357,7 @@ export default function ContactPage() {
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
                       onSubmit={handleSubmit}
-                      className="space-y-6"
+                      className="space-y-6 flex-1"
                     >
                       {/* Name & Email */}
                       <motion.div
@@ -382,7 +380,7 @@ export default function ContactPage() {
                             required
                             whileFocus={{ scale: 1.02 }}
                             transition={{ duration: 0.2 }}
-                            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
+                            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
                             placeholder="John Doe"
                           />
                         </div>
@@ -399,7 +397,7 @@ export default function ContactPage() {
                             required
                             whileFocus={{ scale: 1.02 }}
                             transition={{ duration: 0.2 }}
-                            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
+                            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
                             placeholder="john@company.com"
                             autoComplete="email"
                           />
@@ -428,7 +426,7 @@ export default function ContactPage() {
                             pattern="^[+]?[\d\s()-]{7,20}$"
                             whileFocus={{ scale: 1.02 }}
                             transition={{ duration: 0.2 }}
-                            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
+                            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
                             placeholder="+1 555 123 4567"
                             autoComplete="tel"
                           />
@@ -445,7 +443,7 @@ export default function ContactPage() {
                             onChange={handleInputChange}
                             whileFocus={{ scale: 1.02 }}
                             transition={{ duration: 0.2 }}
-                            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
+                            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
                             placeholder="Your Company"
                           />
                         </div>
@@ -472,7 +470,7 @@ export default function ContactPage() {
                               required
                               whileFocus={{ scale: 1.02 }}
                               transition={{ duration: 0.2 }}
-                              className="w-full px-4 py-3 pr-10 rounded-lg bg-white/5 border border-white/10 text-white focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 appearance-none cursor-pointer"
+                              className="w-full px-4 py-3 pr-10 rounded-lg bg-white/5 border border-white/10 text-white focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 appearance-none cursor-pointer"
                             >
                               <option value="" className="bg-slate-900">
                                 Select your country
@@ -499,7 +497,7 @@ export default function ContactPage() {
                               required
                               whileFocus={{ scale: 1.02 }}
                               transition={{ duration: 0.2 }}
-                              className="w-full px-4 py-3 pr-10 rounded-lg bg-white/5 border border-white/10 text-white focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 appearance-none cursor-pointer"
+                              className="w-full px-4 py-3 pr-10 rounded-lg bg-white/5 border border-white/10 text-white focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 appearance-none cursor-pointer"
                             >
                               <option value="" className="bg-slate-900">
                                 Select your occupation
@@ -536,7 +534,7 @@ export default function ContactPage() {
                               required
                               whileFocus={{ scale: 1.02 }}
                               transition={{ duration: 0.2 }}
-                              className="w-full px-4 py-3 pr-10 rounded-lg bg-white/5 border border-white/10 text-white focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 appearance-none cursor-pointer"
+                              className="w-full px-4 py-3 pr-10 rounded-lg bg-white/5 border border-white/10 text-white focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 appearance-none cursor-pointer"
                             >
                               <option value="" className="bg-slate-900">
                                 Select a reason
@@ -563,7 +561,7 @@ export default function ContactPage() {
                               onChange={handleInputChange}
                               whileFocus={{ scale: 1.02 }}
                               transition={{ duration: 0.2 }}
-                              className="w-full px-4 py-3 pr-10 rounded-lg bg-white/5 border border-white/10 text-white focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 appearance-none cursor-pointer"
+                              className="w-full px-4 py-3 pr-10 rounded-lg bg-white/5 border border-white/10 text-white focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 appearance-none cursor-pointer"
                             >
                               <option value="" className="bg-slate-900">
                                 Select an option (optional)
@@ -598,7 +596,7 @@ export default function ContactPage() {
                           required
                           whileFocus={{ scale: 1.02 }}
                           transition={{ duration: 0.2 }}
-                          className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
+                          className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
                           placeholder="Brief title for your message"
                         />
                       </motion.div>
@@ -622,7 +620,7 @@ export default function ContactPage() {
                           rows={5}
                           whileFocus={{ scale: 1.02 }}
                           transition={{ duration: 0.2 }}
-                          className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 resize-none"
+                          className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 resize-none"
                           placeholder="Provide detailed information about your requirements..."
                         />
                       </motion.div>
@@ -641,7 +639,7 @@ export default function ContactPage() {
                           type="checkbox"
                           checked={formData.consent}
                           onChange={handleInputChange}
-                          className="mt-1 h-4 w-4 rounded border-white/20 bg-white/10 text-purple-500 focus:ring-0"
+                          className="mt-1 h-4 w-4 rounded border-white/20 bg-white/10 text-slate-400 focus:ring-0"
                           required
                         />
                         <label htmlFor="consent" className="text-sm text-gray-300">
@@ -692,11 +690,11 @@ export default function ContactPage() {
                         <motion.button
                           type="submit"
                           disabled={isSubmitting}
-                          whileHover={{ scale: isSubmitting ? 1 : 1.02, y: isSubmitting ? 0 : -2 }}
+                          whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
                           whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
-                          className="w-full group relative overflow-hidden px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="w-full group relative overflow-hidden px-8 py-4 bg-gradient-to-r from-slate-700 to-gray-700 text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-xl hover:shadow-slate-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          <div className="absolute inset-0 bg-gradient-to-r from-purple-700 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          <div className="absolute inset-0 bg-gradient-to-r from-slate-600 to-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                           <div className="relative flex items-center justify-center gap-2">
                             {isSubmitting ? (
                               <>
@@ -715,21 +713,12 @@ export default function ContactPage() {
                     </motion.form>
                   </AnimatePresence>
                 </div>
-              </motion.div>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-      >
-        <FAQSection />
-      </motion.div>
     </main>
   );
 }
