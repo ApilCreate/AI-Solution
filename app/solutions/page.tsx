@@ -28,6 +28,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import Beams from "../../components/Beams";
 import Magnet from "../../components/Magnet";
 import { BackgroundBeams } from "../../components/ui/background-beams";
+import { PointerHighlight } from "../../components/ui/pointer-highlight";
 import { useOutsideClick } from "../../hooks/use-outside-click";
 
 const solutions = [
@@ -235,13 +236,20 @@ export default function SolutionsPage() {
             {/* Main Title */}
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
               AI Solutions for
-              <span className="block bg-gradient-to-r from-white via-slate-300 to-white bg-clip-text text-transparent">
-                Modern Business
-              </span>
+              <div className="flex justify-center">
+                <PointerHighlight
+                  pointerClassName="text-cyan-400"
+                  rectangleClassName="border-cyan-400/50"
+                >
+                  <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                    Modern Business
+                  </span>
+                </PointerHighlight>
+              </div>
             </h1>
             
             {/* Description */}
-            <p className="text-xl md:text-2xl text-slate-400 max-w-4xl mx-auto mb-12 leading-relaxed">
+            <p className="text-lg md:text-xl text-gray-200 max-w-4xl mx-auto mb-12 leading-relaxed">
               Transform your business with cutting-edge AI solutions designed to automate, 
               optimize, and scale your operations. From intelligent chatbots to predictive analytics, 
               we deliver enterprise-grade AI that drives real results.
@@ -290,11 +298,18 @@ export default function SolutionsPage() {
                 <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-slate-400/0 via-slate-400/90 to-slate-400/0"></span>
               </div>
               
-              <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
-                Enterprise AI Solutions
-              </h2>
+              <div className="flex justify-center">
+                <PointerHighlight
+                  pointerClassName="text-cyan-400"
+                  rectangleClassName="border-cyan-400/50"
+                >
+                  <h2 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                    Enterprise AI Solutions
+                  </h2>
+                </PointerHighlight>
+              </div>
               
-              <p className="text-xl text-slate-400 max-w-3xl mx-auto">
+              <p className="text-lg text-gray-200 max-w-3xl mx-auto">
                 Discover powerful AI solutions designed to transform your business operations, 
                 enhance customer experiences, and drive sustainable growth.
               </p>
@@ -427,7 +442,7 @@ export default function SolutionsPage() {
                   {/* Footer */}
                   <div className="p-8 border-t border-slate-700/50">
                     <div className="flex justify-between items-center">
-                      <div className="text-slate-400 text-lg">
+                      <div className="text-gray-200 text-lg">
                         Category: <span className="text-white font-semibold">{active.category}</span>
                       </div>
                       <button
@@ -516,7 +531,7 @@ export default function SolutionsPage() {
                     {/* Description */}
                     <motion.p
                       layoutId={`description-${solution.description}-${id}`}
-                      className="text-slate-300 text-lg leading-relaxed mb-6 line-clamp-3"
+                      className="text-gray-200 text-lg leading-relaxed mb-6 line-clamp-3"
                     >
                       {solution.shortDescription}
                     </motion.p>
@@ -571,10 +586,17 @@ export default function SolutionsPage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Why Choose Our AI Solutions?
-            </h2>
-            <p className="text-slate-400 text-lg max-w-3xl mx-auto">
+            <div className="flex justify-center">
+              <PointerHighlight
+                pointerClassName="text-cyan-400"
+                rectangleClassName="border-cyan-400/50"
+              >
+                <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                  Why Choose Our AI Solutions?
+                </h2>
+              </PointerHighlight>
+            </div>
+            <p className="text-gray-200 text-lg max-w-3xl mx-auto">
               We combine cutting-edge technology with deep industry expertise to deliver 
               AI solutions that drive real business value and sustainable growth.
             </p>
@@ -621,7 +643,7 @@ export default function SolutionsPage() {
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
               Frequently Asked Questions
             </h2>
-            <p className="text-slate-300 text-lg max-w-2xl mx-auto leading-relaxed">
+            <p className="text-gray-200 text-lg max-w-2xl mx-auto leading-relaxed">
               Get answers to common questions about our AI solutions and implementation process
             </p>
           </motion.div>
@@ -683,11 +705,18 @@ export default function SolutionsPage() {
                 <Globe size={32} className="text-white" />
               </div>
               
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                Ready to Transform Your Business?
-              </h2>
+              <div className="flex justify-center">
+                <PointerHighlight
+                  pointerClassName="text-cyan-400"
+                  rectangleClassName="border-cyan-400/50"
+                >
+                  <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                    Ready to Transform Your Business?
+                  </h2>
+                </PointerHighlight>
+              </div>
               
-              <p className="text-slate-300 text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-gray-200 text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
                 Whether you're building a new AI product or integrating smart automation into your existing systems, 
                 our solutions are built to scale, adapt, and deliver measurable impact across industries.
               </p>

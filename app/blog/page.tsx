@@ -5,6 +5,7 @@ import staticBlogs from "@/data/blogs";
 import Link from "next/link";
 import { Clock, Calendar, ArrowRight, Loader2 } from "lucide-react";
 import Galaxy from "../../components/Galaxy";
+import { PointerHighlight } from "../../components/ui/pointer-highlight";
 
 interface Blog {
   id: string;
@@ -141,9 +142,16 @@ export default function BlogPage() {
                 </span>
               </div>
               <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-                Discover Our Latest Insights
+                Discover Our 
+                <div className="flex justify-center">
+                  <PointerHighlight>
+                    <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                      Latest Insights
+                    </span>
+                  </PointerHighlight>
+                </div>
               </h1>
-              <p className="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
                 Explore cutting-edge insights, innovative ideas, and transformative stories that shape tomorrow's world of AI and technology.
               </p>
             </motion.div>
@@ -175,9 +183,15 @@ export default function BlogPage() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Featured Articles
+              <div className="flex justify-center">
+                <PointerHighlight>
+                  <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                    Featured Articles
+                  </span>
+                </PointerHighlight>
+              </div>
             </h2>
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-200 max-w-2xl mx-auto">
               Dive deep into the world of AI with our curated collection of insights, trends, and breakthrough innovations
             </p>
           </motion.div>

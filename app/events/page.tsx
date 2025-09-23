@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
   Bot,
@@ -9,18 +9,13 @@ import {
   Mail,
   MapPin
 } from "lucide-react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import GradientBlinds from "../../components/GradientBlinds";
 import { GradientButton } from "../../components/ui";
+import { PointerHighlight } from "../../components/ui/pointer-highlight";
 
-// Dynamically import Spline to improve loading performance
-const Spline = dynamic(() => import("@splinetool/react-spline").then(mod => ({ default: mod.default })), { 
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-full bg-gradient-to-br from-gray-800/20 via-gray-700/30 to-gray-900/20 animate-pulse" />
-  )
-});
+
 
 interface Event {
   id: string;
@@ -49,13 +44,7 @@ export default function EventsPage() {
   const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"]
-  });
 
-  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -82,16 +71,26 @@ export default function EventsPage() {
 
   return (
     <main className="relative min-h-screen w-full overflow-hidden bg-black text-white">
-      {/* Background Effects */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-gray-900 to-black" />
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-slate-500/10 rounded-full blur-3xl" />
-      </div>
-
-      {/* Hero Section */}
+      {/* Hero Section with Gradient Blinds Background */}
       <section ref={heroRef} className="relative z-10 min-h-screen flex items-center pt-32 pb-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        {/* Gradient Blinds Background */}
+        <div className="absolute inset-0 z-0">
+          <GradientBlinds
+            className="w-full h-full"
+            gradientColors={['#ffffff', '#808080']}
+            angle={54}
+            noise={0}
+            blindCount={14}
+            blindMinWidth={60}
+            mouseDampening={0.46}
+            spotlightRadius={0.3}
+            distortAmount={0}
+            shineDirection="left"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-gray-900/80 to-black" />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
           <div className="text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -100,15 +99,21 @@ export default function EventsPage() {
               className="space-y-6"
             >
               <div className="flex justify-center">
-                <span className="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-lg text-slate-300 border border-white/20">
+                <span className="px-4 py-2 bg-white/15 backdrop-blur-sm rounded-full text-lg text-slate-300 border border-white/20">
                   <Bot className="w-5 h-5 inline mr-2" />
                   AI Solutions Events
                 </span>
               </div>
               <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-                AI Innovation Events
+                <div className="flex justify-center">
+                  <PointerHighlight>
+                    <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                      AI Innovation Events
+                    </span>
+                  </PointerHighlight>
+                </div>
               </h1>
-              <p className="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
                 Join our exclusive AI workshops, solution demonstrations, and industry insights sessions designed to showcase the future of intelligent automation.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
@@ -135,9 +140,15 @@ export default function EventsPage() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Upcoming AI Events
+              <div className="flex justify-center">
+                <PointerHighlight>
+                  <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                    Upcoming AI Events
+                  </span>
+                </PointerHighlight>
+              </div>
             </h2>
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-200 max-w-2xl mx-auto">
               Don't miss out on our latest AI workshops, demos, and business strategy sessions designed to showcase intelligent solutions.
             </p>
           </motion.div>
@@ -254,7 +265,7 @@ export default function EventsPage() {
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
               AI Solution Gallery
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+            <p className="text-gray-200 max-w-2xl mx-auto text-lg">
               Take a look at moments from our AI demonstrations, client presentations, and innovative solution showcases.
             </p>
           </motion.div>
@@ -300,9 +311,16 @@ export default function EventsPage() {
             className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-12"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Ready to Transform Your Business with AI?
+              Ready to Transform Your 
+              <div className="flex justify-center">
+                <PointerHighlight>
+                  <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                    Business with AI?
+                  </span>
+                </PointerHighlight>
+              </div>
             </h2>
-            <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-200 mb-8 max-w-2xl mx-auto">
               Whether you want to attend our AI workshops, discuss custom solutions, or explore partnership opportunities, we'd love to connect.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -1,16 +1,18 @@
 ﻿"use client";
 
-import React, { useState } from "react";
+import { Activity, BarChart3, Bot, Brain, CheckSquare, Clipboard, Clock, Crown, Database, Globe, Link, Mail, Phone, RefreshCw, Rocket, Settings, Shield, Shuffle, Sparkles, Star, TrendingUp, Users, Webhook, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Activity, BarChart3, Bot, CheckSquare, Clipboard, Globe, Link, RefreshCw, Rocket, Settings, Shield, Shuffle, TrendingUp, Users, Webhook, Check, Star, Zap, Crown, Sparkles, Database, Brain, Clock, Phone, Mail } from "lucide-react";
+import { useState } from "react";
+import LaserFlow from "../components/LaserFlow";
+import LightRays from "../components/LightRays";
+import LogoLoop from "../components/LogoLoop";
 import Magnet from "../components/Magnet";
+import { BackgroundBeams } from "../components/ui/background-beams";
 import { CometCard } from "../components/ui/comet-card";
 import { ContainerScroll } from "../components/ui/container-scroll-animation";
 import { HorizontalScroll } from "../components/ui/horizontal-scroll-reveal";
 import { InfiniteMovingCards } from "../components/ui/infinite-moving-cards";
-import { SparklesCore } from "../components/ui/sparkles";
-import LightRays from "../components/LightRays";
-import { BackgroundBeams } from "../components/ui/background-beams";
+import { PointerHighlight } from "../components/ui/pointer-highlight";
 
 export default function AILandingPage() {
   const router = useRouter();
@@ -132,7 +134,7 @@ export default function AILandingPage() {
               </span>
             </div>
             <div className="flex items-center justify-center gap-2">
-              <span className="text-slate-400 text-lg">
+              <span className="text-gray-200 text-lg">
                 {plan[billing].note}
               </span>
               {billing === "yearly" && savings > 0 && (
@@ -218,11 +220,18 @@ export default function AILandingPage() {
             <h2 className="text-4xl md:text-6xl font-bold mb-6 text-white">
               Choose Your AI
               <br />
-              <span className="text-gray-400">
-                Transformation Plan
-              </span>
+              <div className="flex justify-center">
+                <PointerHighlight
+                  pointerClassName="text-cyan-400"
+                  rectangleClassName="border-cyan-400/50"
+                >
+                  <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                    Transformation Plan
+                  </span>
+                </PointerHighlight>
+              </div>
             </h2>
-            <p className="text-slate-400 text-lg mt-6 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-gray-200 text-lg mt-6 max-w-3xl mx-auto leading-relaxed">
               Unlock the power of artificial intelligence for your business. From individuals to enterprises,
               we have the perfect plan to accelerate your AI journey with cutting-edge automation and insights.
             </p>
@@ -302,7 +311,7 @@ export default function AILandingPage() {
       title: "Simplify Intricate business operations with AI",
       description: (
         <div className="space-y-4">
-          <p className="text-lg mb-6">Leverage cutting-edge AI technology to transform your business operations, enhance productivity, and unlock new growth opportunities with our comprehensive solution suite.</p>
+          <p className="text-gray-200 text-lg mb-6">Leverage cutting-edge AI technology to transform your business operations, enhance productivity, and unlock new growth opportunities with our comprehensive solution suite.</p>
           
           <div className="flex items-center gap-3 text-white">
             <BarChart3 className="w-5 h-5 text-blue-400" />
@@ -363,7 +372,7 @@ export default function AILandingPage() {
       title: "Streamline Operations with Intelligent Automation", 
       description: (
         <div className="space-y-4">
-          <p className="text-lg mb-6">Transform your business operations with our comprehensive automation suite designed specifically for modern enterprises and growing businesses.</p>
+          <p className="text-gray-200 text-lg mb-6">Transform your business operations with our comprehensive automation suite designed specifically for modern enterprises and growing businesses.</p>
           
           <div className="flex items-center gap-3 text-white">
             <Rocket className="w-5 h-5 text-orange-400" />
@@ -424,7 +433,7 @@ export default function AILandingPage() {
       title: "Expand Possibilities with Seamless API Integration",
       description: (
         <div className="space-y-4">
-          <p className="text-lg mb-6">Connect and integrate with over 1000+ applications and services through our robust and scalable API ecosystem built for enterprise needs.</p>
+          <p className="text-gray-200 text-lg mb-6">Connect and integrate with over 1000+ applications and services through our robust and scalable API ecosystem built for enterprise needs.</p>
           
           <div className="flex items-center gap-3 text-white">
             <Globe className="w-5 h-5 text-blue-400" />
@@ -556,101 +565,134 @@ export default function AILandingPage() {
       `}</style>
       {/* Hero Section */}
       <section className="min-h-screen flex justify-center items-center relative">
-        {/* Silk Background */}
-        <div className="absolute inset-0 opacity-70">
-          <div className="min-h-screen relative w-full bg-black flex flex-col items-center justify-center overflow-hidden">
-            <div className="w-full absolute inset-0 min-h-screen">
-              <SparklesCore
-                id="tsparticlesfullpage"
-                background="transparent"
-                minSize={0.6}
-                maxSize={1.4}
-                particleDensity={100}
-                className="w-full h-full min-h-screen"
-                particleColor="#FFFFFF"
-              />
-            </div>
-          </div>
+        {/* Simple background first */}
+        <div className="absolute inset-0 bg-black"></div>
+        
+        {/* LaserFlow Background - Curved edges for immersive effect */}
+        <div className="absolute inset-0 -mt-36">
+          <LaserFlow
+            className="w-full h-full"
+            color="#ffffff"
+            wispDensity={1.5}
+            flowSpeed={0.5}
+            wispSpeed={25}
+            wispIntensity={3}
+            fogIntensity={0.45}
+            mouseTiltStrength={0.6}
+            verticalSizing={2}
+            horizontalSizing={0.6}
+            decay={1.1}
+            falloffStart={0.38}
+            verticalBeamOffset={-0.2}
+            horizontalBeamOffset={0}
+            fogScale={1.2}
+            flowStrength={1.5}
+          />
         </div>
 
-        <div className="flex flex-col justify-center items-center gap-9 w-full max-w-6xl mx-auto px-6 relative z-10">
-          <h1 className="font-bold text-4xl md:text-6xl text-center text-white leading-tight">
-            AI-Driven Solutions for Modern <br />
-            <span className="text-gray-400">Businesses</span>
-          </h1>
-
-          <p className="text-gray-300 text-center text-lg max-w-3xl">
-            "Innovate. Automate. Thrive." Our AI-driven solutions empowers
-            modern businesses to streamline processes, personalize experiences,
-            and stay ahead in the digital age.
-          </p>
-
-          <Magnet magnetStrength={2} padding={100}>
-            <button 
-              onClick={() => router.push('/contact')}
-              className="bg-white text-black no-underline group cursor-pointer relative shadow-2xl shadow-white/20 rounded-full px-8 py-3 text-sm font-semibold leading-6 inline-block transition-all duration-300 hover:scale-105 hover:shadow-white/40"
-            >
-              <span className="absolute inset-0 overflow-hidden rounded-full">
-                <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
-              </span>
-              <div className="relative flex space-x-2 items-center z-10 rounded-full">
-                <span className="text-black font-medium">Book a demo</span>
+        {/* Content Container - Positioned at bottom like preview */}
+        <div className="flex flex-col justify-end items-center w-full max-w-6xl mx-auto px-6 relative z-20 min-h-screen pb-32">
+          
+          {/* Title and Description - Positioned above container */}
+          <div className="text-center mb-16">
+            <h1 className="font-bold text-4xl md:text-6xl text-center text-white leading-tight drop-shadow-2xl mb-6">
+              AI-Driven Solutions for Modern <br />
+              <div className="flex justify-center">
+                <PointerHighlight
+                  pointerClassName="text-cyan-400"
+                  rectangleClassName="border-cyan-400/50"
+                >
+                  <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                    Businesses
+                  </span>
+                </PointerHighlight>
               </div>
-              <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-black/0 via-black/30 to-black/0 transition-opacity duration-500 group-hover:opacity-40"></span>
-            </button>
-          </Magnet>
+            </h1>
 
-          <div className="mt-10 flex flex-col justify-center items-center gap-6">
-            <div className="bg-slate-800 no-underline group cursor-pointer relative shadow-2xl shadow-zinc-900 rounded-xl p-px text-xs font-semibold leading-6 text-white inline-block">
-              <span className="absolute inset-0 overflow-hidden rounded-xl">
-                <span className="absolute inset-0 rounded-xl bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(148,163,184,0.6)_0%,rgba(148,163,184,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
-              </span>
-              <div className="relative flex space-x-2 items-center justify-center z-10 rounded-xl bg-slate-950 px-6 py-2 ring-1 ring-white/10">
-                <span className="text-white text-sm text-center">
-                  30k+ Happy Customers
+            <p className="text-gray-200 text-center text-lg max-w-3xl drop-shadow-lg mb-8">
+              "Innovate. Automate. Thrive." Our AI-driven solutions empowers
+              modern businesses to streamline processes, personalize experiences,
+              and stay ahead in the digital age.
+            </p>
+
+            <Magnet magnetStrength={2} padding={100}>
+              <button 
+                onClick={() => router.push('/contact')}
+                className="bg-white text-black no-underline group cursor-pointer relative shadow-2xl shadow-white/20 rounded-full px-8 py-3 text-sm font-semibold leading-6 inline-block transition-all duration-300 hover:scale-105 hover:shadow-white/40"
+              >
+                <span className="absolute inset-0 overflow-hidden rounded-full">
+                  <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
                 </span>
-              </div>
-              <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-slate-400/0 via-slate-400/90 to-slate-400/0 transition-opacity duration-500 group-hover:opacity-40"></span>
-            </div>
+                <div className="relative flex space-x-2 items-center z-10 rounded-full">
+                  <span className="text-black font-medium">Book a demo</span>
+                </div>
+                <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-black/0 via-black/30 to-black/0 transition-opacity duration-500 group-hover:opacity-40"></span>
+              </button>
+            </Magnet>
+          </div>
 
-            <div className="bg-slate-800 no-underline group cursor-pointer relative shadow-2xl shadow-zinc-900 rounded-xl p-px text-xs font-semibold leading-6 text-white inline-block">
-              <span className="absolute inset-0 overflow-hidden rounded-xl">
-                <span className="absolute inset-0 rounded-xl bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(148,163,184,0.6)_0%,rgba(148,163,184,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
-              </span>
-              <div className="relative flex gap-4 p-6 rounded-xl bg-zinc-950 ring-1 ring-white/10 z-10">
-                <div className="btn-shimmer relative flex flex-col w-52 h-24 items-center justify-center space-x-3 p-4 bg-black/30 text-white border border-gray-700 rounded-xl hover:bg-black/40 transition duration-300 overflow-hidden">
-                  <p className="font-bold text-3xl relative z-10">380+</p>
-                  <p className="font-normal text-sm relative z-10">Active Users</p>
+          {/* Container exactly like preview - where laser lands */}
+          <div className="w-full max-w-5xl">
+            {/* Outer container with rounded border - like preview */}
+            <div className="p-4 rounded-3xl border-2 border-white/20 bg-gradient-to-b from-white/10 to-transparent backdrop-blur-sm">
+              {/* Inner dark container */}
+              <div className="bg-black/80 backdrop-blur-xl rounded-2xl p-8">
+                
+                {/* Happy Customers Badge - centered */}
+                <div className="mb-8 flex justify-center">
+                  <div className="bg-black/60 backdrop-blur-xl border border-white/30 rounded-full px-6 py-2">
+                    <span className="text-white text-sm font-medium">
+                      30k+ Happy Customers
+                    </span>
+                  </div>
                 </div>
-                <div className="btn-shimmer relative flex flex-col w-52 h-24 items-center justify-center space-x-3 p-4 bg-black/30 text-white border border-gray-700 rounded-xl hover:bg-black/40 transition duration-300 overflow-hidden">
-                  <p className="font-bold text-3xl relative z-10">230+</p>
-                  <p className="font-normal text-sm relative z-10">Trusted by Company</p>
-                </div>
-                <div className="btn-shimmer relative flex flex-col w-52 h-24 items-center justify-center space-x-3 p-4 bg-black/30 text-white border border-gray-700 rounded-xl hover:bg-black/40 transition duration-300 overflow-hidden">
-                  <p className="font-bold text-3xl relative z-10">$230M+</p>
-                  <p className="font-normal text-sm relative z-10">Transaction</p>
-                </div>
-                <div className="btn-shimmer relative flex flex-col w-52 h-24 items-center justify-center space-x-3 p-4 bg-black/30 text-white border border-gray-700 rounded-xl hover:bg-black/40 transition duration-300 overflow-hidden">
-                  <p className="font-bold text-3xl relative z-10">10+</p>
-                  <p className="font-normal text-sm relative z-10">Years of Experience</p>
+                
+                {/* Statistics Grid - 4 columns like preview */}
+                <div className="grid grid-cols-4 gap-6">
+                  <div className="bg-black/60 backdrop-blur-xl border border-white/20 rounded-xl p-6 text-center">
+                    <div className="text-3xl font-bold text-white mb-2">380+</div>
+                    <div className="text-sm text-gray-300">Active Users</div>
+                  </div>
+                  <div className="bg-black/60 backdrop-blur-xl border border-white/20 rounded-xl p-6 text-center">
+                    <div className="text-3xl font-bold text-white mb-2">230+</div>
+                    <div className="text-sm text-gray-300">Trusted by Company</div>
+                  </div>
+                  <div className="bg-black/60 backdrop-blur-xl border border-white/20 rounded-xl p-6 text-center">
+                    <div className="text-3xl font-bold text-white mb-2">$230M+</div>
+                    <div className="text-sm text-gray-300">Transaction</div>
+                  </div>
+                  <div className="bg-black/60 backdrop-blur-xl border border-white/20 rounded-xl p-6 text-center">
+                    <div className="text-3xl font-bold text-white mb-2">10+</div>
+                    <div className="text-sm text-gray-300">Years of Experience</div>
+                  </div>
                 </div>
               </div>
-              <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-slate-400/0 via-slate-400/90 to-slate-400/0 transition-opacity duration-500 group-hover:opacity-40"></span>
             </div>
           </div>
+
+
         </div>
       </section>
 
       {/* Container Scroll Animation Section */}
-      <section className="bg-black relative">
+      <section className="bg-black relative mt-24">
         <ContainerScroll
           titleComponent={
             <div className="text-center">
               <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
                 Experience AI Solutions <br />
-                <span className="text-gray-400">Like Never Before</span>
+                <div className="flex justify-center">
+                  <PointerHighlight
+                    pointerClassName="text-cyan-400"
+                    rectangleClassName="border-cyan-400/50"
+                  >
+                    <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                      Like Never Before
+                    </span>
+                  </PointerHighlight>
+                </div>
               </h1>
-              <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+              <p className="text-gray-200 text-lg max-w-2xl mx-auto">
                 Discover the power of our AI-driven platform with an interactive preview
               </p>
             </div>
@@ -671,7 +713,16 @@ export default function AILandingPage() {
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-6xl font-bold mb-4 text-white">
               Drive Business Growth with <br />
-              <p className="text-gray-400">"Actionable Insights"</p>
+              <div className="flex justify-center">
+                <PointerHighlight
+                  pointerClassName="text-cyan-400"
+                  rectangleClassName="border-cyan-400/50"
+                >
+                  <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                    "Actionable Insights"
+                  </span>
+                </PointerHighlight>
+              </div>
             </h2>
           </div>
 
@@ -751,15 +802,140 @@ export default function AILandingPage() {
       </section>
 
 
+      {/* Trusted Companies Logo Loop */}
+      <section className="bg-black py-16 relative">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <p className="text-gray-400 text-sm font-medium">
+              Trusted by leading companies worldwide
+            </p>
+          </div>
+          <LogoLoop
+            logos={[
+              {
+                node: (
+                  <svg className="h-8 w-auto" viewBox="0 0 108 24" fill="currentColor">
+                    <path d="M44.836 0v24h-7.728V0h7.728zm13.284 10.872c1.224 0 2.22.36 2.988 1.08.768.72 1.152 1.656 1.152 2.808v9.24h-7.416V15.624c0-.528-.132-.936-.396-1.224-.264-.288-.636-.432-1.116-.432-.48 0-.852.144-1.116.432-.264.288-.396.696-.396 1.224V24h-7.416v-9.24c0-1.152.384-2.088 1.152-2.808.768-.72 1.764-1.08 2.988-1.08h9.564zm25.668 0c1.224 0 2.22.36 2.988 1.08.768.72 1.152 1.656 1.152 2.808v9.24h-7.416V15.624c0-.528-.132-.936-.396-1.224-.264-.288-.636-.432-1.116-.432-.48 0-.852.144-1.116.432-.264.288-.396.696-.396 1.224V24h-7.416v-9.24c0-1.152.384-2.088 1.152-2.808.768-.72 1.764-1.08 2.988-1.08h9.564zM13.44 0c7.416 0 13.44 6.024 13.44 13.44S20.856 26.88 13.44 26.88 0 20.856 0 13.44 6.024 0 13.44 0zm0 6.72c-3.696 0-6.72 3.024-6.72 6.72s3.024 6.72 6.72 6.72 6.72-3.024 6.72-6.72-3.024-6.72-6.72-6.72z" className="fill-gray-200"/>
+                  </svg>
+                ),
+                title: "Microsoft"
+              },
+              {
+                node: (
+                  <svg className="h-8 w-auto" viewBox="0 0 272 92" fill="currentColor">
+                    <path d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" className="fill-gray-200"/>
+                    <path d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" className="fill-gray-200"/>
+                    <path d="M209.75 26.34v39.82c0 16.38-9.99 23.78-21.89 23.78-11.14 0-17.86-7.5-20.39-13.61l8.48-3.53c1.51 3.61 5.21 7.87 11.91 7.87 7.87 0 12.73-4.87 12.73-14.02v-3.19h-.37c-2.36 2.925-6.835 5.44-12.525 5.44-11.91 0-22.78-10.34-22.78-23.78s10.87-23.78 22.78-23.78c5.69 0 10.165 2.515 12.525 5.44h.37V26.34h8.81zm-8.22 20.84c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" className="fill-gray-200"/>
+                    <path d="M225 3v65h-9.5V3h9.5z" className="fill-gray-200"/>
+                    <path d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z" className="fill-gray-200"/>
+                    <path d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z" className="fill-gray-200"/>
+                  </svg>
+                ),
+                title: "Google"
+              },
+              {
+                node: (
+                  <svg className="h-8 w-auto" viewBox="0 0 200 60" fill="currentColor">
+                    <path d="M139.5 19.3c-8.6 0-14.5 6.4-14.5 15.3s5.9 15.3 14.5 15.3c8.7 0 14.6-6.4 14.6-15.3s-5.9-15.3-14.6-15.3zm0 24.6c-4.7 0-8.7-3.9-8.7-9.3s4-9.3 8.7-9.3 8.8 3.9 8.8 9.3-4.1 9.3-8.8 9.3z" className="fill-gray-200"/>
+                    <path d="M120.8 19.3c-8.6 0-14.5 6.4-14.5 15.3s5.9 15.3 14.5 15.3c8.7 0 14.6-6.4 14.6-15.3s-5.9-15.3-14.6-15.3zm0 24.6c-4.7 0-8.7-3.9-8.7-9.3s4-9.3 8.7-9.3 8.8 3.9 8.8 9.3-4.1 9.3-8.8 9.3z" className="fill-gray-200"/>
+                    <path d="M99.3 22.3v5.6h13.4c-.4 3-1.5 5.2-3.2 6.9-2.1 2.1-5.3 4.4-10.2 4.4-8.1 0-14.5-6.6-14.5-14.7S91.2 10 99.3 10c4.4 0 7.6 1.7 9.9 3.9l4-4c-3.4-3.3-8-5.9-13.9-5.9-11.2 0-20.6 9.1-20.6 20.6s9.4 20.6 20.6 20.6c6 0 10.6-2 14.1-5.7 3.6-3.6 4.8-8.7 4.8-12.8 0-1.3-.1-2.5-.4-3.5H99.3z" className="fill-gray-200"/>
+                    <path d="M181.4 27.5c-1.7-4.6-6.9-8.2-13.9-8.2-8.4 0-15.4 6.6-15.4 15.3 0 8.6 6.9 15.3 16.2 15.3 7.5 0 11.8-4.6 13.6-7.3l-5.6-3.7c-1.9 2.7-4.4 4.5-8 4.5-3.6 0-6.2-1.6-7.9-4.8l21.7-9c-1.1-2.6-2.4-5.5-4.7-7.1zm-22.1 5.4c-.3-5.9 4.6-8.9 8-8.9 2.7 0 5 1.4 5.8 3.4l-13.8 5.5z" className="fill-gray-200"/>
+                    <path d="M63.7 29.3v-5.8h19.6c.2 1 .3 2.2.3 3.5 0 4.4-1.2 9.8-5.1 13.7-3.8 4-8.7 6.1-14.8 6.1-11.7 0-21.5-9.6-21.5-21.4S51 3.9 62.7 3.9c6.3 0 10.8 2.5 14.2 5.7l-4 4c-2.4-2.3-5.7-4.1-10.2-4.1-8.3 0-14.8 6.7-14.8 15.0s6.5 15.0 14.8 15.0c5.4 0 8.5-2.2 10.5-4.2 1.6-1.6 2.7-3.9 3.1-7.1H63.7v.1z" className="fill-gray-200"/>
+                  </svg>
+                ),
+                title: "Google"
+              },
+              {
+                node: (
+                  <svg className="h-8 w-auto" viewBox="0 0 200 70" fill="currentColor">
+                    <path d="M78.6 35.4c-4.8-2.8-5.7-4.2-5.7-6.8 0-3.1 2.8-5.1 7.2-5.1 4.1 0 7.9 1.6 11.2 4.7l8.2-9.5c-4.9-4.7-11.7-7.3-19-7.3-11.9 0-20.7 7.1-20.7 16.7 0 8.5 4.9 13.2 14.9 17.7 7.9 3.6 9.2 5.3 9.2 8.4 0 3.9-3.5 6.3-9.1 6.3-6.2 0-11.2-2.5-15.4-7.7l-9.2 9c5.9 6.8 14.2 10.4 23.9 10.4 13.8 0 23-6.9 23-17.3-.1-9.8-6.2-14.3-18.5-19.5z" className="fill-gray-200"/>
+                    <path d="M120.3 35.9c0 12.3 9.5 21.1 22.6 21.1s22.6-8.8 22.6-21.1-9.5-21.1-22.6-21.1-22.6 8.8-22.6 21.1zm30.7 0c0 4.8-3.6 8.4-8.1 8.4s-8.1-3.6-8.1-8.4 3.6-8.4 8.1-8.4 8.1 3.6 8.1 8.4z" className="fill-gray-200"/>
+                    <path d="M182.8 56.4h13.5v-40h-13.5v40zm6.7-45.4c4.5 0 8.1-3.6 8.1-8.1s-3.6-8.1-8.1-8.1-8.1 3.6-8.1 8.1 3.6 8.1 8.1 8.1z" className="fill-gray-200"/>
+                    <path d="M33.6 35.9c0 12.3 9.5 21.1 22.6 21.1s22.6-8.8 22.6-21.1-9.5-21.1-22.6-21.1-22.6 8.8-22.6 21.1zm30.7 0c0 4.8-3.6 8.4-8.1 8.4s-8.1-3.6-8.1-8.4 3.6-8.4 8.1-8.4 8.1 3.6 8.1 8.4z" className="fill-gray-200"/>
+                  </svg>
+                ),
+                title: "Amazon"
+              },
+              {
+                node: (
+                  <svg className="h-8 w-auto" viewBox="0 0 200 60" fill="currentColor">
+                    <path d="M65.1 26.8c3.1-3.6 7.8-5.9 13.3-5.9 10.2 0 17.3 7.8 17.3 18.9v16.7H82.2V42.6c0-5.2-2.6-8.4-7.1-8.4-4.6 0-7.8 3.5-7.8 8.9v13.4H53.8V22.1h13.3v4.7z" className="fill-gray-200"/>
+                    <path d="M118.4 35.9c0-4.8-3.1-8.4-7.8-8.4s-7.8 3.6-7.8 8.4 3.1 8.4 7.8 8.4 7.8-3.6 7.8-8.4zm13.5 0c0 11.7-8.4 20.2-20.8 20.2-5.9 0-10.7-2.3-13.8-6.2v21.8H83.8V22.1h13.5v5.2c3.1-3.9 7.9-6.2 13.8-6.2 12.4 0 20.8 8.5 20.8 20.8z" className="fill-gray-200"/>
+                    <path d="M158.2 35.9c0-4.8-3.1-8.4-7.8-8.4s-7.8 3.6-7.8 8.4 3.1 8.4 7.8 8.4 7.8-3.6 7.8-8.4zm13.5 0c0 11.7-8.4 20.2-20.8 20.2-5.9 0-10.7-2.3-13.8-6.2v21.8h-13.5V22.1h13.5v5.2c3.1-3.9 7.9-6.2 13.8-6.2 12.4 0 20.8 8.5 20.8 20.8z" className="fill-gray-200"/>
+                    <path d="M43.7 35.9c0-4.8-3.1-8.4-7.8-8.4s-7.8 3.6-7.8 8.4 3.1 8.4 7.8 8.4 7.8-3.6 7.8-8.4zm13.5 0c0 11.7-8.4 20.2-20.8 20.2-5.9 0-10.7-2.3-13.8-6.2v21.8H8.1V22.1h13.5v5.2c3.1-3.9 7.9-6.2 13.8-6.2 12.4 0 20.8 8.5 20.8 20.8z" className="fill-gray-200"/>
+                  </svg>
+                ),
+                title: "Shopify"
+              },
+              {
+                node: (
+                  <svg className="h-8 w-auto" viewBox="0 0 200 60" fill="currentColor">
+                    <path d="M50.7 30c0-11 8.9-20 19.9-20s19.9 9 19.9 20-8.9 20-19.9 20-19.9-9-19.9-20zm30.6 0c0-5.9-4.8-10.7-10.7-10.7S59.9 24.1 59.9 30s4.8 10.7 10.7 10.7S81.3 35.9 81.3 30z" className="fill-gray-200"/>
+                    <path d="M110.8 11.3v6.4c-2.2-4.8-7.4-7.9-13.6-7.9-11 0-19.9 9-19.9 20s8.9 20 19.9 20c6.2 0 11.4-3.1 13.6-7.9v6.4h9.3V11.3h-9.3zm-11.9 28.4c-5.9 0-10.7-4.8-10.7-10.7s4.8-10.7 10.7-10.7S109.6 24.1 109.6 30s-4.8 9.7-10.7 9.7z" className="fill-gray-200"/>
+                    <path d="M146.7 9.8c-11 0-19.9 9-19.9 20s8.9 20 19.9 20c6.8 0 12.8-3.4 16.4-8.6l-7.4-4.3c-2.2 3.1-5.8 5.2-9.9 5.2-5.9 0-10.7-4.8-10.7-10.7s4.8-10.7 10.7-10.7c4.1 0 7.7 2.1 9.9 5.2l7.4-4.3c-3.6-5.2-9.6-8.6-16.4-8.6z" className="fill-gray-200"/>
+                    <path d="M25.6 30c0-11 8.9-20 19.9-20V0C20.4 0 0 20.4 0 45.5S20.4 91 45.5 91V81c-11 0-19.9-9-19.9-20z" className="fill-gray-200"/>
+                  </svg>
+                ),
+                title: "Adobe"
+              },
+              {
+                node: (
+                  <svg className="h-8 w-auto" viewBox="0 0 200 60" fill="currentColor">
+                    <path d="M78.4 30c0-8.3-6.7-15-15-15s-15 6.7-15 15 6.7 15 15 15 15-6.7 15-15zm-22.5 0c0-4.1 3.4-7.5 7.5-7.5s7.5 3.4 7.5 7.5-3.4 7.5-7.5 7.5-7.5-3.4-7.5-7.5z" className="fill-gray-200"/>
+                    <path d="M120.1 30c0-8.3-6.7-15-15-15s-15 6.7-15 15 6.7 15 15 15 15-6.7 15-15zm-22.5 0c0-4.1 3.4-7.5 7.5-7.5s7.5 3.4 7.5 7.5-3.4 7.5-7.5 7.5-7.5-3.4-7.5-7.5z" className="fill-gray-200"/>
+                    <path d="M161.8 30c0-8.3-6.7-15-15-15s-15 6.7-15 15 6.7 15 15 15 15-6.7 15-15zm-22.5 0c0-4.1 3.4-7.5 7.5-7.5s7.5 3.4 7.5 7.5-3.4 7.5-7.5 7.5-7.5-3.4-7.5-7.5z" className="fill-gray-200"/>
+                  </svg>
+                ),
+                title: "Tesla"
+              },
+              {
+                node: (
+                  <svg className="h-8 w-auto" viewBox="0 0 200 60" fill="currentColor">
+                    <path d="M100 0L0 30l100 30 100-30L100 0zM45 30l55-16.5L155 30 100 46.5 45 30z" className="fill-gray-200"/>
+                  </svg>
+                ),
+                title: "Netflix"
+              },
+              {
+                node: (
+                  <svg className="h-8 w-auto" viewBox="0 0 200 60" fill="currentColor">
+                    <circle cx="100" cy="30" r="30" className="fill-gray-200"/>
+                    <path d="M100 20c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10z" className="fill-black"/>
+                  </svg>
+                ),
+                title: "Spotify"
+              }
+            ]}
+            speed={80}
+            direction="left"
+            logoHeight={32}
+            gap={48}
+            pauseOnHover={true}
+            fadeOut={true}
+            fadeOutColor="rgba(0, 0, 0, 1)"
+            className="text-gray-200 opacity-80"
+          />
+        </div>
+      </section>
+
       {/* Testimonials Section */}
       <section className="py-20 mt-14 bg-black relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-6xl font-bold mb-4 text-white">
               Discover what our customers say <br />
-              <p className="text-gray-400 text-4xl md:text-6xl">about us</p>
+              <div className="flex justify-center">
+                <PointerHighlight
+                  pointerClassName="text-cyan-400"
+                  rectangleClassName="border-cyan-400/50"
+                >
+                  <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent text-4xl md:text-6xl">
+                    about us
+                  </span>
+                </PointerHighlight>
+              </div>
             </h2>
-            <p className="text-gray-300 max-w-2xl mx-auto">
+            <p className="text-gray-200 max-w-2xl mx-auto">
               Join thousands of satisfied customers who have transformed their
               business operations with our comprehensive AI solutions
             </p>
@@ -795,10 +971,19 @@ export default function AILandingPage() {
             <h2 className="text-4xl md:text-6xl font-bold mb-6 text-white leading-tight">
               Ready to Transform Your
               <br />
-              <span className="text-gray-400">Business with AI?</span>
+              <div className="flex justify-center">
+                <PointerHighlight
+                  pointerClassName="text-cyan-400"
+                  rectangleClassName="border-cyan-400/50"
+                >
+                  <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                    Business with AI?
+                  </span>
+                </PointerHighlight>
+              </div>
             </h2>
             
-            <p className="text-slate-400 text-xl max-w-3xl mx-auto leading-relaxed mb-12">
+            <p className="text-gray-200 text-xl max-w-3xl mx-auto leading-relaxed mb-12">
               Join thousands of businesses already using our AI solutions to automate workflows, 
               gain insights, and accelerate growth. Start your free trial today—no credit card required.
             </p>

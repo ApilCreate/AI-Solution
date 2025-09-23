@@ -1,12 +1,13 @@
 ﻿"use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Users, Award, Quote, TrendingUp } from "lucide-react";
+import { ArrowRight, Award, Quote, TrendingUp, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
-import Magnet from "../../components/Magnet";
-import Beams from "../../components/Beams";
-import { InfiniteMovingCardsVertical } from "../../components/ui/infinite-moving-cards-vertical";
 import { GlobeDemo } from "../../components/GlobeDemo";
+import Magnet from "../../components/Magnet";
+import { InfiniteMovingCardsVertical } from "../../components/ui/infinite-moving-cards-vertical";
+import { PointerHighlight } from "../../components/ui/pointer-highlight";
+import { SparklesCore } from "../../components/ui/sparkles";
 
 const testimonials = [
   {
@@ -146,7 +147,19 @@ export default function TestimonialsPage() {
       <section className="relative min-h-screen flex items-center justify-center px-6 py-24">
         {/* Background */}
         <div className="absolute inset-0">
-          <Beams />
+          <div className="min-h-screen relative w-full bg-black flex flex-col items-center justify-center overflow-hidden">
+            <div className="w-full absolute inset-0 min-h-screen">
+              <SparklesCore
+                id="tsparticlesfullpage"
+                background="transparent"
+                minSize={0.6}
+                maxSize={1.4}
+                particleDensity={100}
+                className="w-full h-full min-h-screen"
+                particleColor="#FFFFFF"
+              />
+            </div>
+          </div>
           <div className="absolute inset-0 bg-black/40"></div>
         </div>
         
@@ -173,14 +186,17 @@ export default function TestimonialsPage() {
             
             {/* Main Title */}
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-              Testimonials &
-              <span className="block bg-gradient-to-r from-white via-slate-300 to-white bg-clip-text text-transparent">
-                Success Stories
-              </span>
+              <div className="flex justify-center">
+                <PointerHighlight>
+                  <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                    Testimonials
+                  </span>
+                </PointerHighlight>
+              </div>
             </h1>
             
             {/* Description */}
-            <p className="text-xl md:text-2xl text-slate-400 max-w-4xl mx-auto mb-12 leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-200 max-w-4xl mx-auto mb-12 leading-relaxed">
               Discover how our AI solutions have transformed businesses across industries. 
               Read real stories from clients who achieved remarkable results with our cutting-edge 
               artificial intelligence technologies.
@@ -252,11 +268,19 @@ export default function TestimonialsPage() {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            <p className="text-gray-400 text-lg mb-4">References</p>
-            <h2 className="text-3xl md:text-4xl font-normal leading-tight text-white">
-              Read what my clients and colleagues<br />
+            <p className="text-gray-200 text-lg mb-4">References</p>
+            <h1 className="text-4xl md:text-6xl font-bold leading-tight text-white">
+              Read what my 
+              <div className="inline-flex">
+                <PointerHighlight>
+                  <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                    clients and colleagues
+                  </span>
+                </PointerHighlight>
+              </div>
+              <br />
               have to say about my work.
-            </h2>
+            </h1>
           </motion.div>
         </div>
       </section>
