@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
-import { db, adminUsers } from '@/db';
+import { db, adminUsers, activityLogs } from '@/db';
 import { eq } from 'drizzle-orm';
+import { logActivity, ACTIVITY_TYPES } from '@/app/lib/activity-logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,6 +28,20 @@ export async function POST(request: NextRequest) {
     if (!isValid) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
+
+    // Log the login activity
+    await logActivity({
+      action: ACTIVITY_TYPES.LOGIN,
+      description: `Admin ${user.email} logged in successfully`,
+      targetType: 'admin_account',
+      targetId: user.id,
+      metadata: {
+        email: user.email,
+        loginTime: new Date().toISOString()
+      },
+      request,
+      adminEmail: user.email
+    });
 
     // Create session data
     const sessionData = {

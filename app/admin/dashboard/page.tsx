@@ -336,6 +336,79 @@ export default function AdminDashboard() {
           />
         </div>
 
+        {/* Quick Actions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Quick Actions</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Link
+              href="/admin/settings"
+              className="flex items-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors group"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors">
+                  <Activity className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">Admin Settings</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Change password & view activity</p>
+                </div>
+              </div>
+            </Link>
+            
+            <Link
+              href="/admin/inquiries"
+              className="flex items-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors group"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg group-hover:bg-green-200 dark:group-hover:bg-green-800 transition-colors">
+                  <MessageSquare className="w-5 h-5 text-green-600 dark:text-green-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">View Inquiries</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Manage customer inquiries</p>
+                </div>
+              </div>
+            </Link>
+
+            <Link
+              href="/admin/events"
+              className="flex items-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors group"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg group-hover:bg-purple-200 dark:group-hover:bg-purple-800 transition-colors">
+                  <Calendar className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">Manage Events</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Create and edit events</p>
+                </div>
+              </div>
+            </Link>
+
+            <Link
+              href="/admin/analytics"
+              className="flex items-center p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors group"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-orange-100 dark:bg-orange-900 rounded-lg group-hover:bg-orange-200 dark:group-hover:bg-orange-800 transition-colors">
+                  <TrendingUp className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">View Analytics</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Detailed insights & reports</p>
+                </div>
+              </div>
+            </Link>
+          </div>
+        </motion.div>
+
         {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Monthly Inquiry Trend */}

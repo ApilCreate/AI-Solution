@@ -83,6 +83,20 @@ export const blogs = pgTable('blogs', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
+// Activity Log table for tracking admin actions
+export const activityLogs = pgTable('activity_logs', {
+  id: uuid('id').primaryKey().$defaultFn(() => randomUUID()),
+  adminId: uuid('admin_id').references(() => adminUsers.id, { onDelete: 'cascade' }).notNull(),
+  action: varchar('action', { length: 255 }).notNull(), // e.g., 'password_changed', 'logged_in', 'inquiry_responded', etc.
+  description: text('description').notNull(), // Detailed description of the action
+  targetType: varchar('target_type', { length: 100 }), // e.g., 'inquiry', 'event', 'blog', 'admin_account'
+  targetId: uuid('target_id'), // ID of the affected resource
+  metadata: jsonb('metadata').$type<Record<string, any>>().default({}), // Additional data about the action
+  ipAddress: varchar('ip_address', { length: 45 }), // User's IP address
+  userAgent: text('user_agent'), // User's browser/device info
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
 // Type exports for TypeScript
 export type Inquiry = typeof inquiries.$inferSelect;
 export type NewInquiry = typeof inquiries.$inferInsert;
@@ -98,3 +112,6 @@ export type NewEventRsvp = typeof eventRsvps.$inferInsert;
 
 export type Blog = typeof blogs.$inferSelect;
 export type NewBlog = typeof blogs.$inferInsert;
+
+export type ActivityLog = typeof activityLogs.$inferSelect;
+export type NewActivityLog = typeof activityLogs.$inferInsert;

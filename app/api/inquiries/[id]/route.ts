@@ -4,6 +4,7 @@ import { eq } from 'drizzle-orm';
 import { requireAdminSimple } from '@/app/lib/simple-auth';
 import { logInfo, logError } from '@/app/lib/logger';
 import { sendAdminResponseEmail } from '@/app/lib/mail';
+import { logActivity, ACTIVITY_TYPES } from '@/app/lib/activity-logger';
 
 export async function PUT(
   request: NextRequest,
@@ -59,6 +60,51 @@ export async function PUT(
       inquiryId: id,
       updatedFields: Object.keys(updateData)
     });
+
+    // Log activity for the update
+    const statusChanged = body.status && body.status !== updatedInquiry.status;
+    const hasResponse = body.adminResponse && typeof body.adminResponse === 'string' && body.adminResponse.trim();
+    
+    if (hasResponse) {
+      await logActivity({
+        action: ACTIVITY_TYPES.INQUIRY_RESPONDED,
+        description: `Responded to inquiry from ${updatedInquiry.name} (${updatedInquiry.email})`,
+        targetType: 'inquiry',
+        targetId: id,
+        metadata: {
+          inquiryTitle: updatedInquiry.messageTitle,
+          responseLength: body.adminResponse.length,
+          updatedFields: Object.keys(updateData)
+        },
+        request
+      });
+    } else if (statusChanged) {
+      await logActivity({
+        action: ACTIVITY_TYPES.INQUIRY_STATUS_CHANGED,
+        description: `Changed inquiry status from ${updatedInquiry.status} to ${body.status} for ${updatedInquiry.name}`,
+        targetType: 'inquiry',
+        targetId: id,
+        metadata: {
+          oldStatus: updatedInquiry.status,
+          newStatus: body.status,
+          inquiryTitle: updatedInquiry.messageTitle,
+          updatedFields: Object.keys(updateData)
+        },
+        request
+      });
+    } else {
+      await logActivity({
+        action: ACTIVITY_TYPES.INQUIRY_UPDATED,
+        description: `Updated inquiry from ${updatedInquiry.name} (${updatedInquiry.email})`,
+        targetType: 'inquiry',
+        targetId: id,
+        metadata: {
+          inquiryTitle: updatedInquiry.messageTitle,
+          updatedFields: Object.keys(updateData)
+        },
+        request
+      });
+    }
 
     // Send email response if adminResponse was provided
     if (body.adminResponse && typeof body.adminResponse === 'string' && body.adminResponse.trim()) {
