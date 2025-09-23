@@ -12,13 +12,11 @@ const nextConfig: NextConfig = {
   
   // Performance optimizations
   experimental: {
-    // optimizeCss: true, // Disabled due to build issues
     optimizePackageImports: [
       'framer-motion',
       'lucide-react',
-      'react-icons'
+      'recharts'
     ],
-    // webpackBuildWorker: true, // Disabled due to build issues
   },
   
   // Image optimization
@@ -32,19 +30,6 @@ const nextConfig: NextConfig = {
   // Compression and caching
   compress: true,
   poweredByHeader: false,
-  
-  // Bundle analyzer for production builds
-  webpack: (config, { isServer }) => {
-    // Optimize bundle splitting
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-      };
-    }
-    
-    return config;
-  },
   
   // Headers for better caching
   async headers() {

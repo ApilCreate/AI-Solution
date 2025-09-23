@@ -1,12 +1,12 @@
 ﻿"use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Users, Award, Star, Sparkles, Quote, TrendingUp } from "lucide-react";
+import { ArrowRight, Users, Award, Quote, TrendingUp } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Magnet from "../../components/Magnet";
 import Beams from "../../components/Beams";
 import { InfiniteMovingCardsVertical } from "../../components/ui/infinite-moving-cards-vertical";
-import { GlobeDemo } from "../components/GlobeDemo";
+import { GlobeDemo } from "../../components/GlobeDemo";
 
 const testimonials = [
   {

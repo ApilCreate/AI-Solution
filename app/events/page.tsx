@@ -1,30 +1,24 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
-import dynamic from "next/dynamic";
-import { 
-  Bot, 
-  Calendar, 
-  Clock, 
-  MapPin, 
-  ArrowRight, 
-  Plus,
+import {
+  ArrowRight,
+  Bot,
+  Calendar,
+  Clock,
   Mail,
-  MessageCircle,
-  Users,
-  ChevronDown
+  MapPin
 } from "lucide-react";
-import { GradientButton, SectionHeader, Badge, FAQItem } from "../components/ui";
-import FAQSection from "../components/FAQSection";
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { GradientButton } from "../../components/ui";
 
 // Dynamically import Spline to improve loading performance
-const Spline = dynamic(() => import("@splinetool/react-spline"), { 
+const Spline = dynamic(() => import("@splinetool/react-spline").then(mod => ({ default: mod.default })), { 
   ssr: false,
   loading: () => (
-    <div className="w-full h-full bg-gradient-to-br from-purple-500/20 via-fuchsia-500/30 to-indigo-500/20 animate-pulse" />
+    <div className="w-full h-full bg-gradient-to-br from-gray-800/20 via-gray-700/30 to-gray-900/20 animate-pulse" />
   )
 });
 
@@ -118,10 +112,10 @@ export default function EventsPage() {
                 Join our exclusive AI workshops, solution demonstrations, and industry insights sessions designed to showcase the future of intelligent automation.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
-                <button className="px-8 py-4 bg-white text-black font-semibold rounded-xl hover:bg-slate-100 transition-colors text-lg">
+                <button className="px-8 py-4 bg-white text-black font-semibold rounded-xl hover:bg-gray-100 transition-colors text-lg">
                   View AI Events
                 </button>
-                <button className="px-8 py-4 bg-transparent text-white font-semibold rounded-xl border border-white/20 hover:border-white/40 transition-colors text-lg">
+                <button className="px-8 py-4 bg-transparent text-white font-semibold rounded-xl border border-white/20 hover:border-white/40 hover:bg-white/5 transition-all text-lg">
                   Request AI Demo
                 </button>
               </div>
@@ -226,7 +220,7 @@ export default function EventsPage() {
                       <GradientButton 
                         variant="secondary"
                         size="sm"
-                        className="w-full group-hover:bg-purple-600 transition-colors"
+                        className="w-full group-hover:bg-white/10 transition-colors"
                       >
                         Learn More
                         <ArrowRight className="w-4 h-4 ml-2" />
@@ -257,7 +251,7 @@ export default function EventsPage() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-purple-300 to-white bg-clip-text text-transparent">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
               AI Solution Gallery
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto text-lg">
@@ -274,7 +268,7 @@ export default function EventsPage() {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.4, delay: index * 0.05, ease: "easeOut" }}
                 whileHover={{ scale: 1.02, y: -2 }}
-                className="group relative overflow-hidden rounded-2xl border border-white/10 hover:border-purple-500/30 transition-all duration-300"
+                className="group relative overflow-hidden rounded-2xl border border-white/10 hover:border-white/30 transition-all duration-300"
               >
                 <img 
                   src={src} 
@@ -284,7 +278,7 @@ export default function EventsPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-sm text-white text-sm font-medium border border-purple-500/30">
+                  <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-sm text-white text-sm font-medium border border-white/30">
                     AI Showcase
                   </span>
                 </div>
@@ -294,11 +288,6 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <FAQSection 
-        title="AI Solutions FAQ"
-        subtitle="Common questions about our AI solutions and services"
-      />
 
       {/* Call to Action */}
       <section className="relative z-10 py-20">

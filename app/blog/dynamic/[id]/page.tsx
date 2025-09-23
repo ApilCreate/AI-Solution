@@ -1,9 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import { ArrowLeft, Calendar, Clock, User, BookOpen, Tag, Share2 } from "lucide-react";
-import { ArticleCard, GlassCard, Badge } from "@/app/components/ui";
+import { ArticleCard, GlassCard, Badge } from "@/components/ui";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 

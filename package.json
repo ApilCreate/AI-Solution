@@ -15,7 +15,6 @@
     "db:view": "tsx scripts/view-database.ts",
     "db:query": "tsx scripts/query-database.ts",
     "db:seed": "tsx scripts/seed-database.ts",
-    "db:test": "tsx scripts/test-connection.ts",
     "db:check": "tsx scripts/check-setup.ts"
   },
   "dependencies": {
@@ -30,7 +29,6 @@
     "@tsparticles/engine": "^3.9.1",
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.9.1",
-    "@types/next-auth": "^3.13.0",
     "@types/nodemailer": "^7.0.1",
     "@types/pg": "^8.15.5",
     "bcrypt": "^6.0.0",
@@ -46,7 +44,6 @@
     "mathjs": "^14.7.0",
     "motion": "^12.23.18",
     "next": "15.4.4",
-    "next-auth": "^4.24.11",
     "nodemailer": "^6.10.1",
     "ogl": "^1.0.11",
     "pg": "^8.16.3",

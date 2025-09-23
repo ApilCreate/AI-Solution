@@ -1,9 +1,9 @@
-import blogs from "@/app/data/blogs";
+import blogs from "@/data/blogs";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Clock, User, BookOpen, Tag } from "lucide-react";
-import { ArticleCard, GlassCard, Badge } from "@/app/components/ui";
+import { ArticleCard, GlassCard, Badge } from "@/components/ui";
 
 interface BlogPostPageProps {
   params: Promise<{ id: string }>;

@@ -20,8 +20,8 @@ import {
   RefreshCw,
   Loader2
 } from "lucide-react";
-import DashboardLayout from "../../components/DashboardLayout";
-import AdminGuard from "../../components/AdminGuard";
+import DashboardLayout from "../../../components/DashboardLayout";
+import AdminGuard from "../../../components/AdminGuard";
 
 interface Inquiry {
   id: string;

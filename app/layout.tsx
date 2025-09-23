@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import ConditionalLayout from "./components/ConditionalLayout";
-import Providers from "./components/Providers";
+import ConditionalLayout from "../components/ConditionalLayout";
+import Providers from "../components/Providers";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 export const metadata: Metadata = {

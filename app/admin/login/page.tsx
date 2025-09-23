@@ -14,7 +14,7 @@ import {
 import dynamic from "next/dynamic";
 
 // Dynamic import for Spline
-const Spline = dynamic(() => import("@splinetool/react-spline"), {
+const Spline = dynamic(() => import("@splinetool/react-spline").then(mod => ({ default: mod.default })), {
   ssr: false
 });
 

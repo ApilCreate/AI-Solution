@@ -605,6 +605,66 @@ export default function SolutionsPage() {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section className="relative px-6 py-24 bg-slate-900">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <div className="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <FileText size={32} className="text-blue-400" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-slate-300 text-lg max-w-2xl mx-auto leading-relaxed">
+              Get answers to common questions about our AI solutions and implementation process
+            </p>
+          </motion.div>
+          
+          <div className="grid gap-6 max-w-4xl mx-auto">
+            {[
+              {
+                question: "What AI solutions does your company specialize in?",
+                answer: "We specialize in developing custom AI solutions including intelligent chatbots, automated document processing, computer vision systems, predictive analytics, business process automation, and voice AI technologies. Our solutions are tailored to meet the specific needs of various industries."
+              },
+              {
+                question: "How can AI solutions benefit my business?",
+                answer: "Our AI solutions deliver measurable business value by automating repetitive tasks, enhancing decision-making through predictive analytics, reducing operational costs by up to 40%, improving customer satisfaction with 24/7 support, and providing actionable insights from your data."
+              },
+              {
+                question: "What is the typical timeline for implementing an AI solution?",
+                answer: "Implementation timelines vary based on complexity. Simple chatbot integrations take 2-4 weeks, mid-complexity automation solutions require 6-12 weeks, while comprehensive enterprise AI systems may need 3-6 months. We provide detailed project roadmaps during consultation."
+              },
+              {
+                question: "How do you ensure data security and privacy?",
+                answer: "We implement enterprise-grade security protocols including end-to-end encryption, secure APIs, and compliance with GDPR, HIPAA, and SOC 2. We offer flexible deployment options including on-premise, cloud, and hybrid solutions to meet your security requirements."
+              },
+              {
+                question: "Can AI solutions integrate with existing business systems?",
+                answer: "Absolutely. Our AI solutions are designed for seamless integration with your existing technology stack including CRM systems, ERP platforms, databases, and third-party applications using industry-standard APIs and protocols."
+              }
+            ].map((faq, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="bg-slate-800/50 backdrop-blur-lg border border-slate-700/50 rounded-2xl p-6 hover:border-slate-600/50 transition-all duration-300"
+              >
+                <h3 className="text-xl font-semibold text-white mb-4">{faq.question}</h3>
+                <p className="text-slate-300 leading-relaxed">{faq.answer}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="relative px-6 py-24 bg-slate-950">
         <div className="max-w-4xl mx-auto text-center">

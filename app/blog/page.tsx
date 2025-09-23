@@ -1,9 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import staticBlogs from "@/app/data/blogs";
+import staticBlogs from "@/data/blogs";
 import Link from "next/link";
 import { Clock, Calendar, ArrowRight, Loader2 } from "lucide-react";
+import Galaxy from "../../components/Galaxy";
 
 interface Blog {
   id: string;
@@ -114,14 +115,19 @@ export default function BlogPage() {
     <main className="relative min-h-screen bg-black text-white overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-gray-900 to-black" />
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-slate-500/10 rounded-full blur-3xl" />
+        <div className="absolute inset-0" />
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl" />
       </div>
 
       {/* Hero Section */}
-      <section className="relative z-10 min-h-screen flex items-center justify-center pt-32 pb-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <section className="relative z-10 min-h-screen flex items-center justify-center pt-32 pb-20 overflow-hidden">
+        {/* Galaxy Background */}
+        <div className="absolute inset-0 z-0">
+          <Galaxy />
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
           <div className="text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}

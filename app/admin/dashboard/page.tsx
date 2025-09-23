@@ -29,8 +29,8 @@ import {
   BarChart,
   Bar
 } from 'recharts';
-import DashboardLayout from '../../components/DashboardLayout';
-import AdminGuard from '../../components/AdminGuard';
+import DashboardLayout from '../../../components/DashboardLayout';
+import AdminGuard from '../../../components/AdminGuard';
 
 // Types
 interface DashboardStats {

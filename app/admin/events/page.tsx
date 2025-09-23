@@ -10,14 +10,13 @@ import {
   Clock,
   Edit,
   Trash2,
-  Eye,
   Save,
   X,
   FileText,
   Globe
 } from "lucide-react";
-import DashboardLayout from "../../components/DashboardLayout";
-import AdminGuard from "../../components/AdminGuard";
+import DashboardLayout from "../../../components/DashboardLayout";
+import AdminGuard from "../../../components/AdminGuard";
 
 interface Event {
   id: string;

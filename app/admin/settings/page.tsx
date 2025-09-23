@@ -3,10 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import DashboardLayout from '@/app/components/DashboardLayout';
-import AdminGuard from '@/app/components/AdminGuard';
-import ChangePassword from '@/app/components/ChangePassword';
-import ActivityLog from '@/app/components/ActivityLog';
+import DashboardLayout from '@/components/DashboardLayout';
+import AdminGuard from '@/components/AdminGuard';
+import ChangePassword from '@/components/ChangePassword';
+import ActivityLog from '@/components/ActivityLog';
 import { 
   Settings, 
   Shield, 

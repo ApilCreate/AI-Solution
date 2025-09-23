@@ -16,10 +16,9 @@ import {
   Loader2,
   ChevronDown,
 } from "lucide-react";
-import FAQSection from "../components/FAQSection";
 
 // Lazy load Spline with proper Next.js import
-const Spline = dynamic(() => import("@splinetool/react-spline"), {
+const Spline = dynamic(() => import("@splinetool/react-spline").then(mod => ({ default: mod.default })), {
   ssr: false,
   loading: () => (
     <div className="w-full h-full bg-gradient-to-br from-gray-500/10 via-slate-900/80 to-gray-500/10" />
