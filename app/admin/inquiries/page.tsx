@@ -21,6 +21,7 @@ import {
   Loader2
 } from "lucide-react";
 import DashboardLayout from "../../components/DashboardLayout";
+import AdminGuard from "../../components/AdminGuard";
 
 interface Inquiry {
   id: string;
@@ -405,6 +406,7 @@ export default function InquiriesPage() {
 
   return (
     <DashboardLayout>
+      <AdminGuard>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -1118,6 +1120,7 @@ export default function InquiriesPage() {
         </div>
         )}
       </div>
+      </AdminGuard>
     </DashboardLayout>
   );
 }

@@ -17,6 +17,7 @@ import {
   Globe
 } from "lucide-react";
 import DashboardLayout from "../../components/DashboardLayout";
+import AdminGuard from "../../components/AdminGuard";
 
 interface Event {
   id: string;
@@ -211,6 +212,7 @@ export default function AdminEventsPage() {
 
   return (
     <DashboardLayout>
+      <AdminGuard>
       <div className="space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -484,6 +486,7 @@ export default function AdminEventsPage() {
           </div>
         </div>
       )}
+      </AdminGuard>
     </DashboardLayout>
   );
 }

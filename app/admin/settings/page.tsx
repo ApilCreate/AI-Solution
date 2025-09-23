@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/app/components/DashboardLayout';
+import AdminGuard from '@/app/components/AdminGuard';
 import ChangePassword from '@/app/components/ChangePassword';
 import ActivityLog from '@/app/components/ActivityLog';
 import { 
@@ -58,14 +59,17 @@ export default function AdminSettings() {
 
   if (!adminUser) {
     return (
-      <div className="min-h-screen bg-[#05010D] flex items-center justify-center">
-        <div className="text-white">Loading...</div>
-      </div>
+      <AdminGuard>
+        <div className="min-h-screen bg-[#05010D] flex items-center justify-center">
+          <div className="text-white">Loading...</div>
+        </div>
+      </AdminGuard>
     );
   }
 
   return (
     <DashboardLayout>
+      <AdminGuard>
       <div className="space-y-6">
         {/* Header */}
         <motion.div
@@ -166,6 +170,7 @@ export default function AdminSettings() {
           </div>
         </motion.div>
       </div>
+      </AdminGuard>
     </DashboardLayout>
   );
 }

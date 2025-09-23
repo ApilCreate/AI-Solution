@@ -20,6 +20,7 @@ import {
   Loader2
 } from "lucide-react";
 import DashboardLayout from "../../components/DashboardLayout";
+import AdminGuard from "../../components/AdminGuard";
 import { ToastProvider, useToast } from "../../components/ui";
 
 interface Blog {
@@ -309,6 +310,7 @@ function BlogManagementPageContent() {
 
   return (
     <DashboardLayout>
+      <AdminGuard>
       <div className="space-y-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -813,6 +815,7 @@ function BlogManagementPageContent() {
           </motion.div>
         </div>
       )}
+      </AdminGuard>
     </DashboardLayout>
   );
 }

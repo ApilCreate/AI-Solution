@@ -18,6 +18,7 @@ import {
   AlertCircle
 } from "lucide-react";
 import DashboardLayout from "../../components/DashboardLayout";
+import AdminGuard from "../../components/AdminGuard";
 
 interface AnalyticsData {
   overview: {
@@ -311,6 +312,7 @@ export default function AnalyticsPage() {
 
   return (
     <DashboardLayout>
+      <AdminGuard>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -1102,6 +1104,7 @@ export default function AnalyticsPage() {
           </>
         )}
       </div>
+      </AdminGuard>
     </DashboardLayout>
   );
 }

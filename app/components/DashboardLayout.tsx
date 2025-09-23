@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from 'react';
-import { signOut } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
   IconHome,
@@ -85,7 +84,22 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname();
 
   const handleLogout = async () => {
-    await signOut({ redirect: false });
+    try {
+      // Clear server-side session
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+    
+    // Clear client-side storage
+    localStorage.removeItem('adminUser');
+    localStorage.removeItem('adminAuthenticated');
+    localStorage.removeItem('adminLoginTime');
+    
+    // Redirect to login
     router.push('/admin/login');
   };
 
@@ -102,9 +116,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   return (
-    <div className="h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200 flex">
+    <div className="h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 flex">
       <Sidebar open={open} setOpen={setOpen}>
-        <SidebarBody className="justify-between bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 px-2 h-screen">
+        <SidebarBody className="justify-between bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 px-2 h-screen transition-colors duration-300">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden py-4">
             {/* Logo */}
             <div className="flex items-center gap-3 py-2 px-2 mb-8">
@@ -139,9 +153,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </Sidebar>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
         {/* Header */}
-        <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
+        <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30 transition-colors duration-300">
           <div className="flex items-center justify-between h-16 px-6">
             {/* Left side - Breadcrumbs */}
             <div className="flex items-center gap-4">
@@ -157,8 +171,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             {/* Right side */}
             <div className="flex items-center gap-3">
               {/* Search */}
-              <div className="hidden md:flex items-center gap-2 px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                <IconSearch className="w-4 h-4 text-gray-500" />
+              <div className="hidden md:flex items-center gap-2 px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg transition-colors duration-300">
+                <IconSearch className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search..."
@@ -173,7 +187,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 p-6 overflow-auto">
+        <main className="flex-1 p-6 overflow-auto bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
           {children}
         </main>
       </div>

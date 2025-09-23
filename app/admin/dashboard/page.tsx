@@ -30,6 +30,7 @@ import {
   Bar
 } from 'recharts';
 import DashboardLayout from '../../components/DashboardLayout';
+import AdminGuard from '../../components/AdminGuard';
 
 // Types
 interface DashboardStats {
@@ -283,17 +284,20 @@ export default function AdminDashboard() {
 
   if (isLoading) {
     return (
-      <DashboardLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-        </div>
-      </DashboardLayout>
+      <AdminGuard>
+        <DashboardLayout>
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        </DashboardLayout>
+      </AdminGuard>
     );
   }
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <AdminGuard>
+        <div className="space-y-6">
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
@@ -620,8 +624,9 @@ export default function AdminDashboard() {
               </Link>
             </div>
           </motion.div>
+          </div>
         </div>
-      </div>
+      </AdminGuard>
     </DashboardLayout>
   );
 }

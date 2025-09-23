@@ -29,19 +29,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    // Log the login activity
-    await logActivity({
-      action: ACTIVITY_TYPES.LOGIN,
-      description: `Admin ${user.email} logged in successfully`,
-      targetType: 'admin_account',
-      targetId: user.id,
-      metadata: {
-        email: user.email,
-        loginTime: new Date().toISOString()
-      },
-      request,
-      adminEmail: user.email
-    });
+    // Log the login activity (temporarily disabled for debugging)
+    try {
+      await logActivity({
+        action: ACTIVITY_TYPES.LOGIN,
+        description: `Admin ${user.email} logged in successfully`,
+        targetType: 'admin_account',
+        targetId: user.id,
+        metadata: {
+          email: user.email,
+          loginTime: new Date().toISOString()
+        },
+        request,
+        adminEmail: user.email
+      });
+    } catch (logError) {
+      console.warn('Activity logging failed:', logError);
+      // Continue with login even if logging fails
+    }
 
     // Create session data
     const sessionData = {
@@ -52,11 +57,28 @@ export async function POST(request: NextRequest) {
       }
     };
 
-    // Return success with user data
-    return NextResponse.json({ 
+    // Create response with session cookie
+    const response = NextResponse.json({ 
       success: true, 
       user: sessionData.user 
     });
+
+    // Set secure session cookie for fast authentication
+    const sessionExpires = Date.now() + (24 * 60 * 60 * 1000); // 24 hours from now
+    response.cookies.set('admin-session', JSON.stringify({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      loginTime: Date.now(),
+      expires: sessionExpires
+    }), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    });
+
+    return response;
 
   } catch (error) {
     console.error('Login error:', error);

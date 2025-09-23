@@ -42,6 +42,7 @@ body {
   --shadow-color: rgba(0, 0, 0, 0.1);
 }
 
+/* Dark mode theme */
 .dark {
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
@@ -52,9 +53,75 @@ body {
   --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
-.dark body {
-  background: linear-gradient(to right, #0f172a, #1e293b) !important;
+/* Global dark mode styles */
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  background-color: #0f172a;
+  color: #f8fafc;
+}
+
+/* Enhanced theme transitions */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Ensure admin area responds to theme changes */
+.admin-container {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* Force dark mode styles for admin area */
+html.dark,
+html.dark body,
+.dark {
+  background-color: #0f172a !important;
   color: #f8fafc !important;
+}
+
+/* Dark mode for common admin components */
+html.dark .bg-white,
+.dark .bg-white {
+  background-color: #1e293b !important;
+}
+
+html.dark .bg-gray-50,
+.dark .bg-gray-50 {
+  background-color: #0f172a !important;
+}
+
+html.dark .bg-gray-100,
+.dark .bg-gray-100 {
+  background-color: #1e293b !important;
+}
+
+html.dark .text-gray-900,
+.dark .text-gray-900 {
+  color: #f8fafc !important;
+}
+
+html.dark .text-gray-600,
+.dark .text-gray-600 {
+  color: #cbd5e1 !important;
+}
+
+html.dark .border-gray-200,
+.dark .border-gray-200 {
+  border-color: #374151 !important;
+}
+
+/* Dark mode for cards and panels */
+html.dark [class*="bg-white"],
+.dark [class*="bg-white"] {
+  background-color: #1e293b !important;
+}
+
+html.dark [class*="shadow"],
+.dark [class*="shadow"] {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2) !important;
 }
 
 /* Custom animations */
