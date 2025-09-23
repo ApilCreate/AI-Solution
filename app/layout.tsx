@@ -69,13 +69,11 @@ export default function RootLayout({
         `}</style>
       </head>
       <body className="font-manrope transition-colors duration-300">
-        <ThemeProvider>
-          <Providers>
-            <ConditionalLayout>
-              {children}
-            </ConditionalLayout>
-          </Providers>
-        </ThemeProvider>
+        <Providers>
+          <ConditionalLayout>
+            {children}
+          </ConditionalLayout>
+        </Providers>
       </body>
     </html>
   );

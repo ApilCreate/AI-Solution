@@ -49,18 +49,31 @@ export default function EventsPage() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
+        console.log('🔄 Fetching events...');
         const response = await fetch('/api/events/list');
+        
         if (response.ok) {
-          const allEvents = await response.json();
-          // Filter only published events and sort by date
-          const publishedEvents = allEvents
-            .filter((event: Event) => event.status === 'published')
-            .sort((a: Event, b: Event) => new Date(a.date).getTime() - new Date(b.date).getTime());
-          
-          setUpcomingEvents(publishedEvents);
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const allEvents = await response.json();
+            console.log('✅ Fetched events:', allEvents);
+            
+            // Filter only published events and sort by date
+            const publishedEvents = allEvents
+              .filter((event: Event) => event.status === 'published')
+              .sort((a: Event, b: Event) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            
+            setUpcomingEvents(publishedEvents);
+          } else {
+            const text = await response.text();
+            console.error('❌ API returned non-JSON response:', text);
+          }
+        } else {
+          const text = await response.text();
+          console.error('❌ API request failed:', response.status, text);
         }
       } catch (error) {
-        console.error('Failed to fetch events:', error);
+        console.error('❌ Failed to fetch events:', error);
       } finally {
         setLoading(false);
       }
