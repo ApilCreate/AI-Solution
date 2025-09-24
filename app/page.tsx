@@ -565,7 +565,7 @@ export default function AILandingPage() {
         }
       `}</style>
       {/* Hero Section */}
-      <section className="min-h-screen flex justify-center items-center relative">
+      <section className="min-h-screen flex justify-center items-center relative pt-20 md:pt-24">
         {/* Simple background first */}
         <div className="absolute inset-0 bg-black"></div>
         
@@ -597,7 +597,7 @@ export default function AILandingPage() {
           {/* Title and Description - Positioned above container */}
           <div className="text-center mb-16">
             <H1Reveal>
-            <h1 className="font-bold text-4xl md:text-6xl text-center text-white leading-tight drop-shadow-2xl mb-6">
+            <h1 className="font-bold text-3xl sm:text-4xl md:text-6xl text-center text-white leading-tight drop-shadow-2xl mb-6">
               AI-Driven Solutions for Modern <br />
               <div className="flex justify-center">
                 <PointerHighlight
@@ -612,8 +612,8 @@ export default function AILandingPage() {
             </h1>
             </H1Reveal>
 
-            <p className="text-gray-200 text-center text-lg max-w-3xl drop-shadow-lg mb-8">
-              "Innovate. Automate. Thrive." Our AI-driven solutions empowers
+            <p className="text-gray-200 text-center text-sm sm:text-lg max-w-3xl drop-shadow-lg mb-8">
+              "Innovate. Automate. Thrive." Our AI-driven solutions empower
               modern businesses to streamline processes, personalize experiences,
               and stay ahead in the digital age.
             </p>
@@ -621,7 +621,7 @@ export default function AILandingPage() {
             <Magnet magnetStrength={2} padding={100}>
               <button 
                 onClick={() => router.push('/contact')}
-                className="bg-white text-black no-underline group cursor-pointer relative shadow-2xl shadow-white/20 rounded-full px-8 py-3 text-sm font-semibold leading-6 inline-block transition-all duration-300 hover:scale-105 hover:shadow-white/40"
+                className="bg-white text-black no-underline group cursor-pointer relative shadow-2xl shadow-white/20 rounded-full px-6 sm:px-8 py-2 sm:py-3 text-xs sm:text-sm font-semibold leading-6 inline-block transition-all duration-300 hover:scale-105 hover:shadow-white/40"
               >
                 <span className="absolute inset-0 overflow-hidden rounded-full">
                   <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
@@ -650,23 +650,23 @@ export default function AILandingPage() {
                   </div>
                 </div>
                 
-                {/* Statistics Grid - 4 columns like preview */}
-                <div className="grid grid-cols-4 gap-6">
+                {/* Statistics Grid - Responsive */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                   <div className="bg-black/60 backdrop-blur-xl border border-white/20 rounded-xl p-6 text-center">
-                    <div className="text-3xl font-bold text-white mb-2">380+</div>
-                    <div className="text-sm text-gray-300">Active Users</div>
+                    <div className="text-2xl sm:text-3xl font-bold text-white mb-2">380+</div>
+                    <div className="text-xs sm:text-sm text-gray-300">Active Users</div>
                   </div>
                   <div className="bg-black/60 backdrop-blur-xl border border-white/20 rounded-xl p-6 text-center">
-                    <div className="text-3xl font-bold text-white mb-2">230+</div>
-                    <div className="text-sm text-gray-300">Trusted by Company</div>
+                    <div className="text-2xl sm:text-3xl font-bold text-white mb-2">230+</div>
+                    <div className="text-xs sm:text-sm text-gray-300">Trusted by Company</div>
                   </div>
                   <div className="bg-black/60 backdrop-blur-xl border border-white/20 rounded-xl p-6 text-center">
-                    <div className="text-3xl font-bold text-white mb-2">$230M+</div>
-                    <div className="text-sm text-gray-300">Transaction</div>
+                    <div className="text-2xl sm:text-3xl font-bold text-white mb-2">$230M+</div>
+                    <div className="text-xs sm:text-sm text-gray-300">Transaction</div>
                   </div>
                   <div className="bg-black/60 backdrop-blur-xl border border-white/20 rounded-xl p-6 text-center">
-                    <div className="text-3xl font-bold text-white mb-2">10+</div>
-                    <div className="text-sm text-gray-300">Years of Experience</div>
+                    <div className="text-2xl sm:text-3xl font-bold text-white mb-2">10+</div>
+                    <div className="text-xs sm:text-sm text-gray-300">Years of Experience</div>
                   </div>
                 </div>
               </div>
@@ -729,7 +729,7 @@ export default function AILandingPage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             <CometCard className="w-full">
               <div className="bg-gradient-to-b from-slate-900/80 to-slate-950/90 no-underline group cursor-pointer relative shadow-2xl shadow-zinc-900 rounded-2xl p-0.5 text-xs font-semibold leading-6 text-white inline-block w-full border border-slate-700/50 hover:border-slate-500/70 transition-all duration-300">
                 <span className="absolute inset-0 overflow-hidden rounded-2xl">
@@ -850,25 +850,63 @@ export default function AILandingPage() {
               },
               {
                 node: (
-                  <svg className="h-8 w-auto" viewBox="0 0 200 70" fill="currentColor">
-                    <path d="M78.6 35.4c-4.8-2.8-5.7-4.2-5.7-6.8 0-3.1 2.8-5.1 7.2-5.1 4.1 0 7.9 1.6 11.2 4.7l8.2-9.5c-4.9-4.7-11.7-7.3-19-7.3-11.9 0-20.7 7.1-20.7 16.7 0 8.5 4.9 13.2 14.9 17.7 7.9 3.6 9.2 5.3 9.2 8.4 0 3.9-3.5 6.3-9.1 6.3-6.2 0-11.2-2.5-15.4-7.7l-9.2 9c5.9 6.8 14.2 10.4 23.9 10.4 13.8 0 23-6.9 23-17.3-.1-9.8-6.2-14.3-18.5-19.5z" className="fill-gray-200"/>
-                    <path d="M120.3 35.9c0 12.3 9.5 21.1 22.6 21.1s22.6-8.8 22.6-21.1-9.5-21.1-22.6-21.1-22.6 8.8-22.6 21.1zm30.7 0c0 4.8-3.6 8.4-8.1 8.4s-8.1-3.6-8.1-8.4 3.6-8.4 8.1-8.4 8.1 3.6 8.1 8.4z" className="fill-gray-200"/>
-                    <path d="M182.8 56.4h13.5v-40h-13.5v40zm6.7-45.4c4.5 0 8.1-3.6 8.1-8.1s-3.6-8.1-8.1-8.1-8.1 3.6-8.1 8.1 3.6 8.1 8.1 8.1z" className="fill-gray-200"/>
-                    <path d="M33.6 35.9c0 12.3 9.5 21.1 22.6 21.1s22.6-8.8 22.6-21.1-9.5-21.1-22.6-21.1-22.6 8.8-22.6 21.1zm30.7 0c0 4.8-3.6 8.4-8.1 8.4s-8.1-3.6-8.1-8.4 3.6-8.4 8.1-8.4 8.1 3.6 8.1 8.4z" className="fill-gray-200"/>
+                  <svg className="h-8 w-auto" viewBox="0 0 200 60" fill="currentColor">
+                    <path d="M139.5 19.3c-8.6 0-14.5 6.4-14.5 15.3s5.9 15.3 14.5 15.3c8.7 0 14.6-6.4 14.6-15.3s-5.9-15.3-14.6-15.3zm0 24.6c-4.7 0-8.7-3.9-8.7-9.3s4-9.3 8.7-9.3 8.8 3.9 8.8 9.3-4.1 9.3-8.8 9.3z" className="fill-gray-200"/>
+                    <path d="M120.8 19.3c-8.6 0-14.5 6.4-14.5 15.3s5.9 15.3 14.5 15.3c8.7 0 14.6-6.4 14.6-15.3s-5.9-15.3-14.6-15.3zm0 24.6c-4.7 0-8.7-3.9-8.7-9.3s4-9.3 8.7-9.3 8.8 3.9 8.8 9.3-4.1 9.3-8.8 9.3z" className="fill-gray-200"/>
+                    <path d="M99.3 22.3v5.6h13.4c-.4 3-1.5 5.2-3.2 6.9-2.1 2.1-5.3 4.4-10.2 4.4-8.1 0-14.5-6.6-14.5-14.7S91.2 10 99.3 10c4.4 0 7.6 1.7 9.9 3.9l4-4c-3.4-3.3-8-5.9-13.9-5.9-11.2 0-20.6 9.1-20.6 20.6s9.4 20.6 20.6 20.6c6 0 10.6-2 14.1-5.7 3.6-3.6 4.8-8.7 4.8-12.8 0-1.3-.1-2.5-.4-3.5H99.3z" className="fill-gray-200"/>
+                    <path d="M181.4 27.5c-1.7-4.6-6.9-8.2-13.9-8.2-8.4 0-15.4 6.6-15.4 15.3 0 8.6 6.9 15.3 16.2 15.3 7.5 0 11.8-4.6 13.6-7.3l-5.6-3.7c-1.9 2.7-4.4 4.5-8 4.5-3.6 0-6.2-1.6-7.9-4.8l21.7-9c-1.1-2.6-2.4-5.5-4.7-7.1zm-22.1 5.4c-.3-5.9 4.6-8.9 8-8.9 2.7 0 5 1.4 5.8 3.4l-13.8 5.5z" className="fill-gray-200"/>
+                    <path d="M63.7 29.3v-5.8h19.6c.2 1 .3 2.2.3 3.5 0 4.4-1.2 9.8-5.1 13.7-3.8 4-8.7 6.1-14.8 6.1-11.7 0-21.5-9.6-21.5-21.4S51 3.9 62.7 3.9c6.3 0 10.8 2.5 14.2 5.7l-4 4c-2.4-2.3-5.7-4.1-10.2-4.1-8.3 0-14.8 6.7-14.8 15.0s6.5 15.0 14.8 15.0c5.4 0 8.5-2.2 10.5-4.2 1.6-1.6 2.7-3.9 3.1-7.1H63.7v.1z" className="fill-gray-200"/>
                   </svg>
                 ),
-                title: "Amazon"
+                title: "Google"
               },
               {
                 node: (
                   <svg className="h-8 w-auto" viewBox="0 0 200 60" fill="currentColor">
-                    <path d="M65.1 26.8c3.1-3.6 7.8-5.9 13.3-5.9 10.2 0 17.3 7.8 17.3 18.9v16.7H82.2V42.6c0-5.2-2.6-8.4-7.1-8.4-4.6 0-7.8 3.5-7.8 8.9v13.4H53.8V22.1h13.3v4.7z" className="fill-gray-200"/>
-                    <path d="M118.4 35.9c0-4.8-3.1-8.4-7.8-8.4s-7.8 3.6-7.8 8.4 3.1 8.4 7.8 8.4 7.8-3.6 7.8-8.4zm13.5 0c0 11.7-8.4 20.2-20.8 20.2-5.9 0-10.7-2.3-13.8-6.2v21.8H83.8V22.1h13.5v5.2c3.1-3.9 7.9-6.2 13.8-6.2 12.4 0 20.8 8.5 20.8 20.8z" className="fill-gray-200"/>
-                    <path d="M158.2 35.9c0-4.8-3.1-8.4-7.8-8.4s-7.8 3.6-7.8 8.4 3.1 8.4 7.8 8.4 7.8-3.6 7.8-8.4zm13.5 0c0 11.7-8.4 20.2-20.8 20.2-5.9 0-10.7-2.3-13.8-6.2v21.8h-13.5V22.1h13.5v5.2c3.1-3.9 7.9-6.2 13.8-6.2 12.4 0 20.8 8.5 20.8 20.8z" className="fill-gray-200"/>
-                    <path d="M43.7 35.9c0-4.8-3.1-8.4-7.8-8.4s-7.8 3.6-7.8 8.4 3.1 8.4 7.8 8.4 7.8-3.6 7.8-8.4zm13.5 0c0 11.7-8.4 20.2-20.8 20.2-5.9 0-10.7-2.3-13.8-6.2v21.8H8.1V22.1h13.5v5.2c3.1-3.9 7.9-6.2 13.8-6.2 12.4 0 20.8 8.5 20.8 20.8z" className="fill-gray-200"/>
+                    <path d="M139.5 19.3c-8.6 0-14.5 6.4-14.5 15.3s5.9 15.3 14.5 15.3c8.7 0 14.6-6.4 14.6-15.3s-5.9-15.3-14.6-15.3zm0 24.6c-4.7 0-8.7-3.9-8.7-9.3s4-9.3 8.7-9.3 8.8 3.9 8.8 9.3-4.1 9.3-8.8 9.3z" className="fill-gray-200"/>
+                    <path d="M120.8 19.3c-8.6 0-14.5 6.4-14.5 15.3s5.9 15.3 14.5 15.3c8.7 0 14.6-6.4 14.6-15.3s-5.9-15.3-14.6-15.3zm0 24.6c-4.7 0-8.7-3.9-8.7-9.3s4-9.3 8.7-9.3 8.8 3.9 8.8 9.3-4.1 9.3-8.8 9.3z" className="fill-gray-200"/>
+                    <path d="M99.3 22.3v5.6h13.4c-.4 3-1.5 5.2-3.2 6.9-2.1 2.1-5.3 4.4-10.2 4.4-8.1 0-14.5-6.6-14.5-14.7S91.2 10 99.3 10c4.4 0 7.6 1.7 9.9 3.9l4-4c-3.4-3.3-8-5.9-13.9-5.9-11.2 0-20.6 9.1-20.6 20.6s9.4 20.6 20.6 20.6c6 0 10.6-2 14.1-5.7 3.6-3.6 4.8-8.7 4.8-12.8 0-1.3-.1-2.5-.4-3.5H99.3z" className="fill-gray-200"/>
+                    <path d="M181.4 27.5c-1.7-4.6-6.9-8.2-13.9-8.2-8.4 0-15.4 6.6-15.4 15.3 0 8.6 6.9 15.3 16.2 15.3 7.5 0 11.8-4.6 13.6-7.3l-5.6-3.7c-1.9 2.7-4.4 4.5-8 4.5-3.6 0-6.2-1.6-7.9-4.8l21.7-9c-1.1-2.6-2.4-5.5-4.7-7.1zm-22.1 5.4c-.3-5.9 4.6-8.9 8-8.9 2.7 0 5 1.4 5.8 3.4l-13.8 5.5z" className="fill-gray-200"/>
+                    <path d="M63.7 29.3v-5.8h19.6c.2 1 .3 2.2.3 3.5 0 4.4-1.2 9.8-5.1 13.7-3.8 4-8.7 6.1-14.8 6.1-11.7 0-21.5-9.6-21.5-21.4S51 3.9 62.7 3.9c6.3 0 10.8 2.5 14.2 5.7l-4 4c-2.4-2.3-5.7-4.1-10.2-4.1-8.3 0-14.8 6.7-14.8 15.0s6.5 15.0 14.8 15.0c5.4 0 8.5-2.2 10.5-4.2 1.6-1.6 2.7-3.9 3.1-7.1H63.7v.1z" className="fill-gray-200"/>
                   </svg>
                 ),
-                title: "Shopify"
+                title: "Google"
+              },
+              {
+                node: (
+                  <svg className="h-8 w-auto" viewBox="0 0 200 60" fill="currentColor">
+                    <path d="M139.5 19.3c-8.6 0-14.5 6.4-14.5 15.3s5.9 15.3 14.5 15.3c8.7 0 14.6-6.4 14.6-15.3s-5.9-15.3-14.6-15.3zm0 24.6c-4.7 0-8.7-3.9-8.7-9.3s4-9.3 8.7-9.3 8.8 3.9 8.8 9.3-4.1 9.3-8.8 9.3z" className="fill-gray-200"/>
+                    <path d="M120.8 19.3c-8.6 0-14.5 6.4-14.5 15.3s5.9 15.3 14.5 15.3c8.7 0 14.6-6.4 14.6-15.3s-5.9-15.3-14.6-15.3zm0 24.6c-4.7 0-8.7-3.9-8.7-9.3s4-9.3 8.7-9.3 8.8 3.9 8.8 9.3-4.1 9.3-8.8 9.3z" className="fill-gray-200"/>
+                    <path d="M99.3 22.3v5.6h13.4c-.4 3-1.5 5.2-3.2 6.9-2.1 2.1-5.3 4.4-10.2 4.4-8.1 0-14.5-6.6-14.5-14.7S91.2 10 99.3 10c4.4 0 7.6 1.7 9.9 3.9l4-4c-3.4-3.3-8-5.9-13.9-5.9-11.2 0-20.6 9.1-20.6 20.6s9.4 20.6 20.6 20.6c6 0 10.6-2 14.1-5.7 3.6-3.6 4.8-8.7 4.8-12.8 0-1.3-.1-2.5-.4-3.5H99.3z" className="fill-gray-200"/>
+                    <path d="M181.4 27.5c-1.7-4.6-6.9-8.2-13.9-8.2-8.4 0-15.4 6.6-15.4 15.3 0 8.6 6.9 15.3 16.2 15.3 7.5 0 11.8-4.6 13.6-7.3l-5.6-3.7c-1.9 2.7-4.4 4.5-8 4.5-3.6 0-6.2-1.6-7.9-4.8l21.7-9c-1.1-2.6-2.4-5.5-4.7-7.1zm-22.1 5.4c-.3-5.9 4.6-8.9 8-8.9 2.7 0 5 1.4 5.8 3.4l-13.8 5.5z" className="fill-gray-200"/>
+                    <path d="M63.7 29.3v-5.8h19.6c.2 1 .3 2.2.3 3.5 0 4.4-1.2 9.8-5.1 13.7-3.8 4-8.7 6.1-14.8 6.1-11.7 0-21.5-9.6-21.5-21.4S51 3.9 62.7 3.9c6.3 0 10.8 2.5 14.2 5.7l-4 4c-2.4-2.3-5.7-4.1-10.2-4.1-8.3 0-14.8 6.7-14.8 15.0s6.5 15.0 14.8 15.0c5.4 0 8.5-2.2 10.5-4.2 1.6-1.6 2.7-3.9 3.1-7.1H63.7v.1z" className="fill-gray-200"/>
+                  </svg>
+                ),
+                title: "Google"
+              },
+              {
+                node: (
+                  <svg className="h-8 w-auto" viewBox="0 0 200 60" fill="currentColor">
+                    <path d="M139.5 19.3c-8.6 0-14.5 6.4-14.5 15.3s5.9 15.3 14.5 15.3c8.7 0 14.6-6.4 14.6-15.3s-5.9-15.3-14.6-15.3zm0 24.6c-4.7 0-8.7-3.9-8.7-9.3s4-9.3 8.7-9.3 8.8 3.9 8.8 9.3-4.1 9.3-8.8 9.3z" className="fill-gray-200"/>
+                    <path d="M120.8 19.3c-8.6 0-14.5 6.4-14.5 15.3s5.9 15.3 14.5 15.3c8.7 0 14.6-6.4 14.6-15.3s-5.9-15.3-14.6-15.3zm0 24.6c-4.7 0-8.7-3.9-8.7-9.3s4-9.3 8.7-9.3 8.8 3.9 8.8 9.3-4.1 9.3-8.8 9.3z" className="fill-gray-200"/>
+                    <path d="M99.3 22.3v5.6h13.4c-.4 3-1.5 5.2-3.2 6.9-2.1 2.1-5.3 4.4-10.2 4.4-8.1 0-14.5-6.6-14.5-14.7S91.2 10 99.3 10c4.4 0 7.6 1.7 9.9 3.9l4-4c-3.4-3.3-8-5.9-13.9-5.9-11.2 0-20.6 9.1-20.6 20.6s9.4 20.6 20.6 20.6c6 0 10.6-2 14.1-5.7 3.6-3.6 4.8-8.7 4.8-12.8 0-1.3-.1-2.5-.4-3.5H99.3z" className="fill-gray-200"/>
+                    <path d="M181.4 27.5c-1.7-4.6-6.9-8.2-13.9-8.2-8.4 0-15.4 6.6-15.4 15.3 0 8.6 6.9 15.3 16.2 15.3 7.5 0 11.8-4.6 13.6-7.3l-5.6-3.7c-1.9 2.7-4.4 4.5-8 4.5-3.6 0-6.2-1.6-7.9-4.8l21.7-9c-1.1-2.6-2.4-5.5-4.7-7.1zm-22.1 5.4c-.3-5.9 4.6-8.9 8-8.9 2.7 0 5 1.4 5.8 3.4l-13.8 5.5z" className="fill-gray-200"/>
+                    <path d="M63.7 29.3v-5.8h19.6c.2 1 .3 2.2.3 3.5 0 4.4-1.2 9.8-5.1 13.7-3.8 4-8.7 6.1-14.8 6.1-11.7 0-21.5-9.6-21.5-21.4S51 3.9 62.7 3.9c6.3 0 10.8 2.5 14.2 5.7l-4 4c-2.4-2.3-5.7-4.1-10.2-4.1-8.3 0-14.8 6.7-14.8 15.0s6.5 15.0 14.8 15.0c5.4 0 8.5-2.2 10.5-4.2 1.6-1.6 2.7-3.9 3.1-7.1H63.7v.1z" className="fill-gray-200"/>
+                  </svg>
+                ),
+                title: "Google"
+              },
+              {
+                node: (
+                  <svg className="h-8 w-auto" viewBox="0 0 200 60" fill="currentColor">
+                    <path d="M139.5 19.3c-8.6 0-14.5 6.4-14.5 15.3s5.9 15.3 14.5 15.3c8.7 0 14.6-6.4 14.6-15.3s-5.9-15.3-14.6-15.3zm0 24.6c-4.7 0-8.7-3.9-8.7-9.3s4-9.3 8.7-9.3 8.8 3.9 8.8 9.3-4.1 9.3-8.8 9.3z" className="fill-gray-200"/>
+                    <path d="M120.8 19.3c-8.6 0-14.5 6.4-14.5 15.3s5.9 15.3 14.5 15.3c8.7 0 14.6-6.4 14.6-15.3s-5.9-15.3-14.6-15.3zm0 24.6c-4.7 0-8.7-3.9-8.7-9.3s4-9.3 8.7-9.3 8.8 3.9 8.8 9.3-4.1 9.3-8.8 9.3z" className="fill-gray-200"/>
+                    <path d="M99.3 22.3v5.6h13.4c-.4 3-1.5 5.2-3.2 6.9-2.1 2.1-5.3 4.4-10.2 4.4-8.1 0-14.5-6.6-14.5-14.7S91.2 10 99.3 10c4.4 0 7.6 1.7 9.9 3.9l4-4c-3.4-3.3-8-5.9-13.9-5.9-11.2 0-20.6 9.1-20.6 20.6s9.4 20.6 20.6 20.6c6 0 10.6-2 14.1-5.7 3.6-3.6 4.8-8.7 4.8-12.8 0-1.3-.1-2.5-.4-3.5H99.3z" className="fill-gray-200"/>
+                    <path d="M181.4 27.5c-1.7-4.6-6.9-8.2-13.9-8.2-8.4 0-15.4 6.6-15.4 15.3 0 8.6 6.9 15.3 16.2 15.3 7.5 0 11.8-4.6 13.6-7.3l-5.6-3.7c-1.9 2.7-4.4 4.5-8 4.5-3.6 0-6.2-1.6-7.9-4.8l21.7-9c-1.1-2.6-2.4-5.5-4.7-7.1zm-22.1 5.4c-.3-5.9 4.6-8.9 8-8.9 2.7 0 5 1.4 5.8 3.4l-13.8 5.5z" className="fill-gray-200"/>
+                    <path d="M63.7 29.3v-5.8h19.6c.2 1 .3 2.2.3 3.5 0 4.4-1.2 9.8-5.1 13.7-3.8 4-8.7 6.1-14.8 6.1-11.7 0-21.5-9.6-21.5-21.4S51 3.9 62.7 3.9c6.3 0 10.8 2.5 14.2 5.7l-4 4c-2.4-2.3-5.7-4.1-10.2-4.1-8.3 0-14.8 6.7-14.8 15.0s6.5 15.0 14.8 15.0c5.4 0 8.5-2.2 10.5-4.2 1.6-1.6 2.7-3.9 3.1-7.1H63.7v.1z" className="fill-gray-200"/>
+                  </svg>
+                ),
+                title: "Google"
               },
               {
                 node: (
