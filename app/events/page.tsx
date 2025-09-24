@@ -1,30 +1,34 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import dynamic from "next/dynamic";
-import { 
-  Bot, 
-  Calendar, 
-  Clock, 
-  MapPin, 
-  ArrowRight, 
-  Plus,
+import { motion } from "framer-motion";
+import {
+  ArrowRight,
+  Bot,
+  Calendar,
+  Clock,
   Mail,
-  MessageCircle,
-  Users,
-  ChevronDown
+  MapPin
 } from "lucide-react";
-import { GradientButton, SectionHeader, Badge, FAQItem } from "../components/ui";
-import FAQSection from "../components/FAQSection";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import GradientBlinds from "../../components/GradientBlinds";
+import { GradientButton } from "../../components/ui";
+import { PointerHighlight } from "../../components/ui/pointer-highlight";
+import H1Reveal from "../../components/H1Reveal";
 
-// Dynamically import Spline to improve loading performance
-const Spline = dynamic(() => import("@splinetool/react-spline"), { 
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-full bg-gradient-to-br from-purple-500/20 via-fuchsia-500/30 to-indigo-500/20 animate-pulse" />
-  )
-});
+
+
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+  category: string;
+  bannerUrl: string;
+  status: 'draft' | 'published';
+}
 
 // Curated Unsplash images for tech events
 const eventGallery = [
@@ -36,201 +40,230 @@ const eventGallery = [
   "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&h=400&fit=crop&crop=center", // Community event
 ];
 
-const upcomingEvents = [
-  {
-    title: "AI Innovation Workshop",
-    date: "Dec 15, 2024",
-    time: "2:00 PM - 6:00 PM",
-    location: "Tech Hub, Downtown",
-    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=250&fit=crop&crop=center",
-    description: "Hands-on workshop exploring the latest AI technologies including machine learning, neural networks, and their practical business applications.",
-    category: "Workshop"
-  },
-  {
-    title: "AI Solutions Demo Day",
-    date: "Jan 20, 2025",
-    time: "9:00 AM - 5:00 PM",
-    location: "Virtual Event",
-    image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&h=250&fit=crop&crop=center",
-    description: "Showcase of cutting-edge AI solutions featuring live demonstrations of chatbots, computer vision, and automation tools.",
-    category: "Demo"
-  },
-  {
-    title: "AI Business Strategy Summit",
-    date: "Feb 5, 2025",
-    time: "6:00 PM - 8:00 PM",
-    location: "Innovation Center",
-    image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=250&fit=crop&crop=center",
-    description: "Industry experts share insights on implementing AI strategies, ROI optimization, and digital transformation through intelligent automation.",
-    category: "Summit"
-  }
-];
-
 export default function EventsPage() {
   const heroRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"]
-  });
+  const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+  
 
-  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        console.log('🔄 Fetching events...');
+        const response = await fetch('/api/events/list');
+        
+        if (response.ok) {
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const allEvents = await response.json();
+            console.log('✅ Fetched events:', allEvents);
+            
+            // Filter only published events and sort by date
+            const publishedEvents = allEvents
+              .filter((event: Event) => event.status === 'published')
+              .sort((a: Event, b: Event) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            
+            setUpcomingEvents(publishedEvents);
+          } else {
+            const text = await response.text();
+            console.error('❌ API returned non-JSON response:', text);
+          }
+        } else {
+          const text = await response.text();
+          console.error('❌ API request failed:', response.status, text);
+        }
+      } catch (error) {
+        console.error('❌ Failed to fetch events:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   return (
-    <main className="min-h-screen bg-black text-white">
-      {/* Hero Section */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center px-6">
-        {/* Hero Background with Tech Image */}
+    <main className="relative min-h-screen w-full overflow-hidden bg-black text-white">
+      {/* Hero Section with Gradient Blinds Background */}
+      <section ref={heroRef} className="relative z-10 min-h-screen flex items-center pt-32 pb-20">
+        {/* Gradient Blinds Background */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&h=1080&fit=crop&crop=center"
-            alt="Tech Conference"
-            className="w-full h-full object-cover opacity-20"
+          <GradientBlinds
+            className="w-full h-full"
+            gradientColors={['#ffffff', '#808080']}
+            angle={54}
+            noise={0}
+            blindCount={14}
+            blindMinWidth={60}
+            mouseDampening={0.46}
+            spotlightRadius={0.3}
+            distortAmount={0}
+            shineDirection="left"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/90"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-gray-900/80 to-black" />
         </div>
 
-        {/* Simple Background Elements */}
-        <motion.div 
-          style={{ y: heroY }}
-          className="absolute inset-0 opacity-10 z-10"
-        >
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500 rounded-full blur-3xl"></div>
-        </motion.div>
-
-        <motion.div 
-          style={{ opacity: heroOpacity }}
-          className="relative z-20 text-center max-w-4xl mx-auto"
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="mb-6"
-          >
-            <span className="inline-block px-4 py-2 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 text-sm font-medium backdrop-blur-sm">
-              <Bot className="w-4 h-4 inline mr-2" />
-              AI Solutions Events
-            </span>
-          </motion.div>
-
-          <motion.h1 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-purple-300 to-white bg-clip-text text-transparent"
-          >
-            AI Innovation Events
-          </motion.h1>
-
-          <motion.p 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed"
-          >
-            Join our exclusive AI workshops, solution demonstrations, and industry insights sessions 
-            designed to showcase the future of intelligent automation and business transformation.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-          >
-            <GradientButton size="lg" className="rounded-full">
-              View AI Events
-            </GradientButton>
-            
-            <GradientButton variant="outline" size="lg" className="rounded-full">
-              Request AI Demo
-            </GradientButton>
-          </motion.div>
-        </motion.div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
+          <div className="text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="space-y-6"
+            >
+              <div className="flex justify-center">
+                <span className="px-4 py-2 bg-white/15 backdrop-blur-sm rounded-full text-lg text-slate-300 border border-white/20">
+                  <Bot className="w-5 h-5 inline mr-2" />
+                  AI Solutions Events
+                </span>
+              </div>
+              <H1Reveal>
+              <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                <div className="flex justify-center">
+                  <PointerHighlight>
+                    <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                      AI Innovation Events
+                    </span>
+                  </PointerHighlight>
+                </div>
+              </h1>
+              </H1Reveal>
+              <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
+                Join our exclusive AI workshops, solution demonstrations, and industry insights sessions designed to showcase the future of intelligent automation.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
+                <button className="px-8 py-4 bg-white text-black font-semibold rounded-xl hover:bg-gray-100 transition-colors text-lg">
+                  View AI Events
+                </button>
+                <button className="px-8 py-4 bg-transparent text-white font-semibold rounded-xl border border-white/20 hover:border-white/40 hover:bg-white/5 transition-all text-lg">
+                  Request AI Demo
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        </div>
       </section>
 
       {/* Upcoming Events */}
-      <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
+      <section className="relative z-10 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-purple-300 to-white bg-clip-text text-transparent">
-              Upcoming AI Events
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              <div className="flex justify-center">
+                <PointerHighlight>
+                  <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                    Upcoming AI Events
+                  </span>
+                </PointerHighlight>
+              </div>
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+            <p className="text-lg text-gray-200 max-w-2xl mx-auto">
               Don't miss out on our latest AI workshops, demos, and business strategy sessions designed to showcase intelligent solutions.
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {upcomingEvents.map((event, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.4, delay: index * 0.05, ease: "easeOut" }}
-                whileHover={{ y: -4 }}
-                className="group bg-white/5 rounded-2xl overflow-hidden border border-white/10 hover:border-purple-500/30 transition-all duration-300 backdrop-blur-sm"
-              >
-                <div className="relative h-48 overflow-hidden">
-                  <img 
-                    src={event.image}
-                    alt={event.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                  
-                  {/* AI Badge */}
-                  <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 rounded-full bg-purple-500/20 backdrop-blur-sm text-purple-300 text-xs font-medium border border-purple-500/30">
-                      {event.category}
-                    </span>
-                  </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {loading ? (
+              // Loading skeleton
+              Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-2xl p-6 animate-pulse">
+                  <div className="h-48 bg-slate-700/50 rounded-lg mb-4"></div>
+                  <div className="h-6 bg-slate-700/50 rounded mb-2"></div>
+                  <div className="h-4 bg-slate-700/50 rounded w-3/4 mb-2"></div>
+                  <div className="h-4 bg-slate-700/50 rounded w-1/2"></div>
                 </div>
+              ))
+            ) : upcomingEvents.length > 0 ? (
+              upcomingEvents.map((event, index) => (
+                <motion.div
+                  key={event.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="group bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 hover:border-slate-600/70 rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.02]"
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    {event.bannerUrl ? (
+                      <img 
+                        src={event.bannerUrl}
+                        alt={event.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-white/10 to-slate-500/20 flex items-center justify-center">
+                        <Calendar className="w-16 h-16 text-white/40" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    
+                    {/* Category Badge */}
+                    <div className="absolute top-4 left-4">
+                      <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm text-white text-xs font-medium border border-white/20">
+                        {event.category}
+                      </span>
+                    </div>
+                  </div>
 
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-3 text-white group-hover:text-purple-300 transition-colors">
-                    {event.title}
-                  </h3>
-                  
-                  <p className="text-gray-400 text-sm mb-4 leading-relaxed">
-                    {event.description}
-                  </p>
-                  
-                  <div className="space-y-2 mb-6 text-gray-400 text-sm">
-                    <div className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-2 text-purple-400" />
-                      {event.date}
+                  <div className="p-6">
+                    <Link href={`/events/${event.id}`}>
+                      <h3 className="text-xl font-semibold mb-3 text-white group-hover:text-slate-200 transition-colors cursor-pointer">
+                        {event.title}
+                      </h3>
+                    </Link>
+                    
+                    <div className="space-y-2 mb-4">
+                      <div className="flex items-center gap-2 text-slate-400">
+                        <Calendar className="w-4 h-4" />
+                        <span className="text-sm">{new Date(event.date).toLocaleDateString()}</span>
+                      </div>
+                      
+                      {event.time && (
+                        <div className="flex items-center gap-2 text-slate-400">
+                          <Clock className="w-4 h-4" />
+                          <span className="text-sm">{event.time}</span>
+                        </div>
+                      )}
+                      
+                      <div className="flex items-center gap-2 text-slate-400">
+                        <MapPin className="w-4 h-4" />
+                        <span className="text-sm">{event.location}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center">
-                      <Clock className="w-4 h-4 mr-2 text-purple-400" />
-                      {event.time}
-                    </div>
-                    <div className="flex items-center">
-                      <MapPin className="w-4 h-4 mr-2 text-purple-400" />
-                      {event.location}
-                    </div>
+
+                    <p className="text-gray-400 text-sm mb-6 line-clamp-3">
+                      {event.description}
+                    </p>
+
+                    <Link href={`/events/${event.id}`}>
+                      <GradientButton 
+                        variant="secondary"
+                        size="sm"
+                        className="w-full group-hover:bg-white/10 transition-colors"
+                      >
+                        Learn More
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </GradientButton>
+                    </Link>
                   </div>
-                  
-                  <motion.button 
-                    whileHover={{ x: 4 }}
-                    className="text-purple-400 font-medium text-sm hover:text-purple-300 transition-colors flex items-center"
-                  >
-                    Register for Event
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </motion.button>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))
+            ) : (
+              // No events state
+              <div className="col-span-full text-center py-12">
+                <Calendar className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-400 mb-2">No upcoming events</h3>
+                <p className="text-gray-500">Check back soon for new AI events and workshops!</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -245,10 +278,10 @@ export default function EventsPage() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-purple-300 to-white bg-clip-text text-transparent">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
               AI Solution Gallery
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+            <p className="text-gray-200 max-w-2xl mx-auto text-lg">
               Take a look at moments from our AI demonstrations, client presentations, and innovative solution showcases.
             </p>
           </motion.div>
@@ -262,7 +295,7 @@ export default function EventsPage() {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.4, delay: index * 0.05, ease: "easeOut" }}
                 whileHover={{ scale: 1.02, y: -2 }}
-                className="group relative overflow-hidden rounded-2xl border border-white/10 hover:border-purple-500/30 transition-all duration-300"
+                className="group relative overflow-hidden rounded-2xl border border-white/10 hover:border-white/30 transition-all duration-300"
               >
                 <img 
                   src={src} 
@@ -272,7 +305,7 @@ export default function EventsPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-sm text-white text-sm font-medium border border-purple-500/30">
+                  <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-sm text-white text-sm font-medium border border-white/30">
                     AI Showcase
                   </span>
                 </div>
@@ -282,56 +315,41 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <FAQSection 
-        title="AI Solutions FAQ"
-        subtitle="Common questions about our AI solutions and services"
-      />
 
       {/* Call to Action */}
-      <section className="py-20 px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="text-center max-w-4xl mx-auto"
-        >
-          <div className="relative">
-            <img 
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=400&fit=crop&crop=center"
-              alt="Team Collaboration"
-              className="w-full h-64 object-cover rounded-2xl opacity-20 mb-8"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent rounded-2xl"></div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center">
-                <h3 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-purple-300 to-white bg-clip-text text-transparent">
-                  Ready to Transform Your Business with AI?
-                </h3>
-                <p className="text-gray-300 mb-6 max-w-xl mx-auto text-lg">
-                  Whether you want to attend our AI workshops, discuss custom solutions, or explore partnership opportunities, we'd love to connect.
-                </p>
-                
-                <motion.a
-                  href="/contact"
-                  whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(168, 85, 247, 0.4)" }}
-                  whileTap={{ scale: 0.98 }}
-                  className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full font-semibold text-lg hover:from-purple-500 hover:to-pink-500 transition-all duration-300"
-                >
-                  <Mail className="w-5 h-5 mr-2" />
-                  <span>Get In Touch</span>
-                  <motion.div
-                    whileHover={{ x: 2 }}
-                    className="ml-2"
-                  >
-                    <ArrowRight className="w-5 h-5" />
-                  </motion.div>
-                </motion.a>
+      <section className="relative z-10 py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-12"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Ready to Transform Your 
+              <div className="flex justify-center">
+                <PointerHighlight>
+                  <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                    Business with AI?
+                  </span>
+                </PointerHighlight>
               </div>
+            </h2>
+            <p className="text-lg text-gray-200 mb-8 max-w-2xl mx-auto">
+              Whether you want to attend our AI workshops, discuss custom solutions, or explore partnership opportunities, we'd love to connect.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="px-8 py-4 bg-white text-black font-semibold rounded-xl hover:bg-slate-100 transition-colors text-lg flex items-center justify-center gap-2">
+                <Mail className="w-5 h-5" />
+                Get In Touch
+              </button>
+              <button className="px-8 py-4 bg-transparent text-white font-semibold rounded-xl border border-white/20 hover:border-white/40 transition-colors text-lg">
+                Schedule a Demo
+              </button>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </section>
     </main>
   );

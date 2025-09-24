@@ -17,11 +17,42 @@ if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL environment variable is required');
 }
 
-// Create the connection
+// Create the connection with improved settings
 const sql = neon(process.env.DATABASE_URL);
 
 // Create the db instance with schema
 export const db = drizzle(sql, { schema });
+
+// Database retry utility function
+export async function withRetry<T>(
+  operation: () => Promise<T>,
+  maxRetries: number = 3,
+  baseDelay: number = 1000
+): Promise<T> {
+  let lastError: Error;
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      
+      // Log the attempt
+      console.warn(`Database operation attempt ${attempt} failed:`, lastError.message);
+      
+      if (attempt === maxRetries) {
+        console.error(`Database operation failed after ${maxRetries} attempts:`, lastError);
+        throw lastError;
+      }
+      
+      // Exponential backoff with jitter
+      const delay = baseDelay * Math.pow(2, attempt - 1) + Math.random() * 1000;
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  
+  throw lastError!;
+}
 
 // Export the schema for use in other files
 export * from './schema';

@@ -14,7 +14,7 @@ import {
 import dynamic from "next/dynamic";
 
 // Dynamic import for Spline
-const Spline = dynamic(() => import("@splinetool/react-spline"), {
+const Spline = dynamic(() => import("@splinetool/react-spline").then(mod => ({ default: mod.default })), {
   ssr: false
 });
 
@@ -30,11 +30,11 @@ export default function AdminLogin() {
   const [splineLoaded, setSplineLoaded] = useState(false);
   const [showSpline, setShowSpline] = useState(false);
 
-  // Secure admin credentials (in a real app, this would be handled by backend authentication)
-  const ADMIN_CREDENTIALS = {
-    email: "admin@aisolutions.com",
-    password: "admin@123"
-  };
+  // Check if user is already authenticated
+  useEffect(() => {
+    // Skip session check on initial load to avoid URL errors
+    // Session will be checked after first successful login
+  }, [router]);
 
   // Handle Spline loading
   const handleSplineLoad = useCallback(() => {
@@ -73,24 +73,39 @@ export default function AdminLogin() {
     setIsLoading(true);
     setError("");
 
-    // Simulate authentication delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      // Validate input
+      if (!formData.email || !formData.password) {
+        setError("Please enter both email and password.");
+        return;
+      }
 
-    if (
-      formData.email === ADMIN_CREDENTIALS.email &&
-      formData.password === ADMIN_CREDENTIALS.password
-    ) {
-      // Store auth token in localStorage (in production, use secure cookies/JWT)
-      localStorage.setItem("adminAuthenticated", "true");
-      localStorage.setItem("adminLoginTime", Date.now().toString());
-      
-      // Redirect to dashboard
-      router.push("/admin/dashboard");
-    } else {
-      setError("Invalid email or password. Please try again.");
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        // Store user session data that dashboard expects
+        localStorage.setItem('adminUser', JSON.stringify(data.user));
+        localStorage.setItem('adminAuthenticated', 'true');
+        localStorage.setItem('adminLoginTime', Date.now().toString());
+        router.push("/admin/dashboard");
+      } else {
+        setError(data.error || "Invalid credentials");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("An error occurred during login. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
   return (

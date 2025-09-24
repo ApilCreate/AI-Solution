@@ -1,6 +1,11 @@
 "use client";
 
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import {
@@ -16,16 +21,22 @@ import {
   Loader2,
   ChevronDown,
 } from "lucide-react";
-import { GlassCard, GradientButton, SectionHeader, Badge } from "../components/ui";
-import FAQSection from "../components/FAQSection";
+import { PointerHighlight } from "../../components/ui/pointer-highlight";
+import H1Reveal from "../../components/H1Reveal";
 
 // Lazy load Spline with proper Next.js import
-const Spline = dynamic(() => import("@splinetool/react-spline"), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-full bg-gradient-to-br from-purple-500/10 via-slate-900/80 to-indigo-500/10" />
-  ),
-});
+const Spline = dynamic(
+  () =>
+    import("@splinetool/react-spline").then((mod) => ({
+      default: mod.default,
+    })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-full bg-gradient-to-br from-gray-500/10 via-slate-900/80 to-gray-500/10" />
+    ),
+  }
+);
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -43,7 +54,9 @@ export default function ContactPage() {
     // recaptchaToken: "", // set when you wire reCAPTCHA
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "success" | "error"
+  >("idle");
   const [mounted, setMounted] = useState(false);
   const [splineError, setSplineError] = useState(false);
 
@@ -60,7 +73,9 @@ export default function ContactPage() {
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
     setFormData((prev) => ({
@@ -109,7 +124,7 @@ export default function ContactPage() {
 
       const result = await res.json();
       console.log("Inquiry created:", result);
-      
+
       setSubmitStatus("success");
       setFormData({
         name: "",
@@ -133,53 +148,292 @@ export default function ContactPage() {
   };
 
   const contactInfo = [
-    { icon: <Mail className="w-5 h-5" />, title: "Email Us", info: "hello@aisolutions.com", description: "Send us an email anytime" },
-    { icon: <Phone className="w-5 h-5" />, title: "Call Us", info: "+1 (555) 123-4567", description: "Mon-Fri from 8am to 6pm" },
-    { icon: <Clock className="w-5 h-5" />, title: "Response Time", info: "Within 24 hours", description: "We respond quickly" },
-    { icon: <MapPin className="w-5 h-5" />, title: "Office Hours", info: "Monday - Friday", description: "8:00 AM to 6:00 PM EST" },
+    {
+      icon: <Mail className="w-5 h-5" />,
+      title: "Email Us",
+      info: "hello@aisolutions.com",
+      description: "Send us an email anytime",
+    },
+    {
+      icon: <Phone className="w-5 h-5" />,
+      title: "Call Us",
+      info: "+1 (555) 123-4567",
+      description: "Mon-Fri from 8am to 6pm",
+    },
+    {
+      icon: <Clock className="w-5 h-5" />,
+      title: "Response Time",
+      info: "Within 24 hours",
+      description: "We respond quickly",
+    },
+    {
+      icon: <MapPin className="w-5 h-5" />,
+      title: "Office Hours",
+      info: "Monday - Friday",
+      description: "8:00 AM to 6:00 PM EST",
+    },
   ];
 
   const countries = [
-    "Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina",
-    "Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados",
-    "Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana",
-    "Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon",
-    "Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo",
-    "Costa Rica","Croatia","Cuba","Cyprus","Czech Republic","Democratic Republic of the Congo",
-    "Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador",
-    "Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France",
-    "Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea",
-    "Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","India","Indonesia",
-    "Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan",
-    "Kenya","Kiribati","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia",
-    "Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia",
-    "Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico",
-    "Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar",
-    "Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria",
-    "North Korea","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama",
-    "Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania",
-    "Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines",
-    "Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles",
-    "Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa",
-    "South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland",
-    "Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga",
-    "Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine",
-    "United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu",
-    "Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe",
+    "Afghanistan",
+    "Albania",
+    "Algeria",
+    "Andorra",
+    "Angola",
+    "Antigua and Barbuda",
+    "Argentina",
+    "Armenia",
+    "Australia",
+    "Austria",
+    "Azerbaijan",
+    "Bahamas",
+    "Bahrain",
+    "Bangladesh",
+    "Barbados",
+    "Belarus",
+    "Belgium",
+    "Belize",
+    "Benin",
+    "Bhutan",
+    "Bolivia",
+    "Bosnia and Herzegovina",
+    "Botswana",
+    "Brazil",
+    "Brunei",
+    "Bulgaria",
+    "Burkina Faso",
+    "Burundi",
+    "Cabo Verde",
+    "Cambodia",
+    "Cameroon",
+    "Canada",
+    "Central African Republic",
+    "Chad",
+    "Chile",
+    "China",
+    "Colombia",
+    "Comoros",
+    "Congo",
+    "Costa Rica",
+    "Croatia",
+    "Cuba",
+    "Cyprus",
+    "Czech Republic",
+    "Democratic Republic of the Congo",
+    "Denmark",
+    "Djibouti",
+    "Dominica",
+    "Dominican Republic",
+    "Ecuador",
+    "Egypt",
+    "El Salvador",
+    "Equatorial Guinea",
+    "Eritrea",
+    "Estonia",
+    "Eswatini",
+    "Ethiopia",
+    "Fiji",
+    "Finland",
+    "France",
+    "Gabon",
+    "Gambia",
+    "Georgia",
+    "Germany",
+    "Ghana",
+    "Greece",
+    "Grenada",
+    "Guatemala",
+    "Guinea",
+    "Guinea-Bissau",
+    "Guyana",
+    "Haiti",
+    "Honduras",
+    "Hungary",
+    "Iceland",
+    "India",
+    "Indonesia",
+    "Iran",
+    "Iraq",
+    "Ireland",
+    "Israel",
+    "Italy",
+    "Jamaica",
+    "Japan",
+    "Jordan",
+    "Kazakhstan",
+    "Kenya",
+    "Kiribati",
+    "Kuwait",
+    "Kyrgyzstan",
+    "Laos",
+    "Latvia",
+    "Lebanon",
+    "Lesotho",
+    "Liberia",
+    "Libya",
+    "Liechtenstein",
+    "Lithuania",
+    "Luxembourg",
+    "Madagascar",
+    "Malawi",
+    "Malaysia",
+    "Maldives",
+    "Mali",
+    "Malta",
+    "Marshall Islands",
+    "Mauritania",
+    "Mauritius",
+    "Mexico",
+    "Micronesia",
+    "Moldova",
+    "Monaco",
+    "Mongolia",
+    "Montenegro",
+    "Morocco",
+    "Mozambique",
+    "Myanmar",
+    "Namibia",
+    "Nauru",
+    "Nepal",
+    "Netherlands",
+    "New Zealand",
+    "Nicaragua",
+    "Niger",
+    "Nigeria",
+    "North Korea",
+    "North Macedonia",
+    "Norway",
+    "Oman",
+    "Pakistan",
+    "Palau",
+    "Palestine",
+    "Panama",
+    "Papua New Guinea",
+    "Paraguay",
+    "Peru",
+    "Philippines",
+    "Poland",
+    "Portugal",
+    "Qatar",
+    "Romania",
+    "Russia",
+    "Rwanda",
+    "Saint Kitts and Nevis",
+    "Saint Lucia",
+    "Saint Vincent and the Grenadines",
+    "Samoa",
+    "San Marino",
+    "Sao Tome and Principe",
+    "Saudi Arabia",
+    "Senegal",
+    "Serbia",
+    "Seychelles",
+    "Sierra Leone",
+    "Singapore",
+    "Slovakia",
+    "Slovenia",
+    "Solomon Islands",
+    "Somalia",
+    "South Africa",
+    "South Korea",
+    "South Sudan",
+    "Spain",
+    "Sri Lanka",
+    "Sudan",
+    "Suriname",
+    "Sweden",
+    "Switzerland",
+    "Syria",
+    "Taiwan",
+    "Tajikistan",
+    "Tanzania",
+    "Thailand",
+    "Timor-Leste",
+    "Togo",
+    "Tonga",
+    "Trinidad and Tobago",
+    "Tunisia",
+    "Turkey",
+    "Turkmenistan",
+    "Tuvalu",
+    "Uganda",
+    "Ukraine",
+    "United Arab Emirates",
+    "United Kingdom",
+    "United States",
+    "Uruguay",
+    "Uzbekistan",
+    "Vanuatu",
+    "Vatican City",
+    "Venezuela",
+    "Vietnam",
+    "Yemen",
+    "Zambia",
+    "Zimbabwe",
   ];
 
   const occupations = [
-    "Student","Software Developer","Data Scientist","AI/ML Engineer","Business Analyst",
-    "Product Manager","Consultant","CEO/Founder","CTO","Engineering Manager","Marketing Manager",
-    "Sales Manager","HR Manager","Operations Manager","Healthcare Professional","Finance Professional",
-    "Legal Professional","Education Professional","Research Scientist","Designer","Entrepreneur",
-    "Project Manager","Quality Assurance","DevOps Engineer","System Administrator","Database Administrator",
-    "UI/UX Designer","Digital Marketing Specialist","Content Creator","Journalist","Architect",
-    "Civil Engineer","Mechanical Engineer","Electrical Engineer","Chemical Engineer","Biomedical Engineer",
-    "Pharmacist","Nurse","Doctor","Dentist","Therapist","Psychologist","Social Worker",
-    "Teacher","Professor","Librarian","Accountant","Financial Advisor","Banker","Insurance Agent",
-    "Real Estate Agent","Chef","Artist","Musician","Writer","Photographer","Filmmaker",
-    "Retail Manager","Customer Service","Administrative Assistant","Executive Assistant",
+    "Student",
+    "Software Developer",
+    "Data Scientist",
+    "AI/ML Engineer",
+    "Business Analyst",
+    "Product Manager",
+    "Consultant",
+    "CEO/Founder",
+    "CTO",
+    "Engineering Manager",
+    "Marketing Manager",
+    "Sales Manager",
+    "HR Manager",
+    "Operations Manager",
+    "Healthcare Professional",
+    "Finance Professional",
+    "Legal Professional",
+    "Education Professional",
+    "Research Scientist",
+    "Designer",
+    "Entrepreneur",
+    "Project Manager",
+    "Quality Assurance",
+    "DevOps Engineer",
+    "System Administrator",
+    "Database Administrator",
+    "UI/UX Designer",
+    "Digital Marketing Specialist",
+    "Content Creator",
+    "Journalist",
+    "Architect",
+    "Civil Engineer",
+    "Mechanical Engineer",
+    "Electrical Engineer",
+    "Chemical Engineer",
+    "Biomedical Engineer",
+    "Pharmacist",
+    "Nurse",
+    "Doctor",
+    "Dentist",
+    "Therapist",
+    "Psychologist",
+    "Social Worker",
+    "Teacher",
+    "Professor",
+    "Librarian",
+    "Accountant",
+    "Financial Advisor",
+    "Banker",
+    "Insurance Agent",
+    "Real Estate Agent",
+    "Chef",
+    "Artist",
+    "Musician",
+    "Writer",
+    "Photographer",
+    "Filmmaker",
+    "Retail Manager",
+    "Customer Service",
+    "Administrative Assistant",
+    "Executive Assistant",
     "Other",
   ];
 
@@ -192,7 +446,15 @@ export default function ContactPage() {
     "Events Inquiry",
   ];
 
-  const hearOptions = ["Google", "LinkedIn", "Social Media", "Email Marketing", "Referral", "Event", "Other"];
+  const hearOptions = [
+    "Google",
+    "LinkedIn",
+    "Social Media",
+    "Email Marketing",
+    "Referral",
+    "Event",
+    "Other",
+  ];
 
   if (!mounted) {
     return (
@@ -245,7 +507,7 @@ export default function ContactPage() {
               style={{ width: "100%", height: "100%" }}
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-purple-600/20 via-slate-900/90 to-indigo-600/20" />
+            <div className="w-full h-full bg-gradient-to-br from-gray-500/10 via-slate-900/80 to-gray-500/10" />
           )}
           <div className="absolute inset-0 bg-gradient-to-b from-[#05010D]/80 via-[#05010D]/60 to-[#05010D]/95" />
         </motion.div>
@@ -266,10 +528,13 @@ export default function ContactPage() {
                 transition={{ delay: 0.2, duration: 0.6 }}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm"
               >
-                <MessageCircle className="w-4 h-4 text-purple-400" />
-                <span className="text-sm font-medium text-gray-300">Ready to Help You Succeed</span>
+                <MessageCircle className="w-4 h-4 text-slate-400" />
+                <span className="text-sm font-medium text-gray-300">
+                  Ready to Help You Succeed
+                </span>
               </motion.div>
 
+              <H1Reveal>
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -278,10 +543,13 @@ export default function ContactPage() {
               >
                 <span className="text-white">Get in Touch</span>
                 <br />
-                <span className="bg-gradient-to-r from-purple-400 via-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">
-                  With Our Team
-                </span>
+                <PointerHighlight>
+                  <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                    With Our Team
+                  </span>
+                </PointerHighlight>
               </motion.h1>
+              </H1Reveal>
 
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -289,8 +557,9 @@ export default function ContactPage() {
                 transition={{ delay: 0.4, duration: 0.6 }}
                 className="text-xl text-gray-300 leading-relaxed max-w-2xl"
               >
-                Our experienced team is ready to discuss your project requirements and provide tailored AI solutions
-                that drive real business results.
+                Our experienced team is ready to discuss your project
+                requirements and provide tailored AI solutions that drive real
+                business results.
               </motion.p>
 
               {/* Contact Info Cards */}
@@ -306,18 +575,17 @@ export default function ContactPage() {
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    whileHover={{ y: -5, scale: 1.02, transition: { duration: 0.2 } }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.6 + index * 0.1, duration: 0.6 }}
-                    className="p-5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 hover:border-purple-500/30 transition-all duration-300 cursor-default"
+                    className="p-5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm cursor-default"
                   >
                     <div className="flex items-center gap-3 mb-2">
-                      <motion.div className="text-purple-400" whileHover={{ scale: 1.1, rotate: 5 }} transition={{ duration: 0.2 }}>
-                        {item.icon}
-                      </motion.div>
+                      <div className="text-slate-400">{item.icon}</div>
                       <h3 className="font-semibold text-white">{item.title}</h3>
                     </div>
-                    <p className="text-gray-300 font-medium mb-1">{item.info}</p>
+                    <p className="text-gray-300 font-medium mb-1">
+                      {item.info}
+                    </p>
                     <p className="text-sm text-gray-400">{item.description}</p>
                   </motion.div>
                 ))}
@@ -332,7 +600,7 @@ export default function ContactPage() {
               transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
               className="relative"
             >
-              <motion.div className="relative" whileHover={{ scale: 1.01 }} transition={{ duration: 0.3 }}>
+              <div className="relative">
                 <div className="absolute -inset-1" />
                 <div className="relative p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl">
                   <motion.div
@@ -342,12 +610,16 @@ export default function ContactPage() {
                     viewport={{ once: true }}
                     transition={{ delay: 0.4, duration: 0.6 }}
                   >
-                    <motion.div className="p-2 rounded-lg bg-purple-500/20" whileHover={{ scale: 1.1, rotate: 5 }} transition={{ duration: 0.2 }}>
-                      <Users className="w-5 h-5 text-purple-400" />
-                    </motion.div>
+                    <div className="p-2 rounded-lg bg-slate-500/20">
+                      <Users className="w-5 h-5 text-slate-400" />
+                    </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-white">Send Us a Message</h2>
-                      <p className="text-gray-400 text-sm">Fill out the form below and we'll get back to you</p>
+                      <h2 className="text-2xl font-bold text-white">
+                        Send Us a Message
+                      </h2>
+                      <p className="text-gray-400 text-sm">
+                        Fill out the form below and we'll get back to you
+                      </p>
                     </div>
                   </motion.div>
 
@@ -359,7 +631,7 @@ export default function ContactPage() {
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
                       onSubmit={handleSubmit}
-                      className="space-y-6"
+                      className="space-y-6 flex-1"
                     >
                       {/* Name & Email */}
                       <motion.div
@@ -370,7 +642,10 @@ export default function ContactPage() {
                         transition={{ delay: 0.1, duration: 0.6 }}
                       >
                         <div>
-                          <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-3">
+                          <label
+                            htmlFor="name"
+                            className="block text-sm font-medium text-gray-300 mb-3"
+                          >
                             Full Name *
                           </label>
                           <motion.input
@@ -382,12 +657,15 @@ export default function ContactPage() {
                             required
                             whileFocus={{ scale: 1.02 }}
                             transition={{ duration: 0.2 }}
-                            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
+                            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
                             placeholder="John Doe"
                           />
                         </div>
                         <div>
-                          <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-3">
+                          <label
+                            htmlFor="email"
+                            className="block text-sm font-medium text-gray-300 mb-3"
+                          >
                             Email Address *
                           </label>
                           <motion.input
@@ -399,7 +677,7 @@ export default function ContactPage() {
                             required
                             whileFocus={{ scale: 1.02 }}
                             transition={{ duration: 0.2 }}
-                            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
+                            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
                             placeholder="john@company.com"
                             autoComplete="email"
                           />
@@ -415,7 +693,10 @@ export default function ContactPage() {
                         transition={{ delay: 0.18, duration: 0.6 }}
                       >
                         <div>
-                          <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-3">
+                          <label
+                            htmlFor="phone"
+                            className="block text-sm font-medium text-gray-300 mb-3"
+                          >
                             Phone Number *
                           </label>
                           <motion.input
@@ -428,13 +709,16 @@ export default function ContactPage() {
                             pattern="^[+]?[\d\s()-]{7,20}$"
                             whileFocus={{ scale: 1.02 }}
                             transition={{ duration: 0.2 }}
-                            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
+                            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
                             placeholder="+1 555 123 4567"
                             autoComplete="tel"
                           />
                         </div>
                         <div>
-                          <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-3">
+                          <label
+                            htmlFor="company"
+                            className="block text-sm font-medium text-gray-300 mb-3"
+                          >
                             Company
                           </label>
                           <motion.input
@@ -445,7 +729,7 @@ export default function ContactPage() {
                             onChange={handleInputChange}
                             whileFocus={{ scale: 1.02 }}
                             transition={{ duration: 0.2 }}
-                            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
+                            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
                             placeholder="Your Company"
                           />
                         </div>
@@ -460,7 +744,10 @@ export default function ContactPage() {
                         transition={{ delay: 0.22, duration: 0.6 }}
                       >
                         <div>
-                          <label htmlFor="country" className="block text-sm font-medium text-gray-300 mb-3">
+                          <label
+                            htmlFor="country"
+                            className="block text-sm font-medium text-gray-300 mb-3"
+                          >
                             Country *
                           </label>
                           <div className="relative">
@@ -472,13 +759,17 @@ export default function ContactPage() {
                               required
                               whileFocus={{ scale: 1.02 }}
                               transition={{ duration: 0.2 }}
-                              className="w-full px-4 py-3 pr-10 rounded-lg bg-white/5 border border-white/10 text-white focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 appearance-none cursor-pointer"
+                              className="w-full px-4 py-3 pr-10 rounded-lg bg-white/5 border border-white/10 text-white focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 appearance-none cursor-pointer"
                             >
                               <option value="" className="bg-slate-900">
                                 Select your country
                               </option>
                               {countries.map((country, index) => (
-                                <option key={index} value={country} className="bg-slate-900">
+                                <option
+                                  key={index}
+                                  value={country}
+                                  className="bg-slate-900"
+                                >
                                   {country}
                                 </option>
                               ))}
@@ -487,7 +778,10 @@ export default function ContactPage() {
                           </div>
                         </div>
                         <div>
-                          <label htmlFor="occupation" className="block text-sm font-medium text-gray-300 mb-3">
+                          <label
+                            htmlFor="occupation"
+                            className="block text-sm font-medium text-gray-300 mb-3"
+                          >
                             Occupation *
                           </label>
                           <div className="relative">
@@ -499,13 +793,17 @@ export default function ContactPage() {
                               required
                               whileFocus={{ scale: 1.02 }}
                               transition={{ duration: 0.2 }}
-                              className="w-full px-4 py-3 pr-10 rounded-lg bg-white/5 border border-white/10 text-white focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 appearance-none cursor-pointer"
+                              className="w-full px-4 py-3 pr-10 rounded-lg bg-white/5 border border-white/10 text-white focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 appearance-none cursor-pointer"
                             >
                               <option value="" className="bg-slate-900">
                                 Select your occupation
                               </option>
                               {occupations.map((occupation, index) => (
-                                <option key={index} value={occupation} className="bg-slate-900">
+                                <option
+                                  key={index}
+                                  value={occupation}
+                                  className="bg-slate-900"
+                                >
                                   {occupation}
                                 </option>
                               ))}
@@ -524,7 +822,10 @@ export default function ContactPage() {
                         transition={{ delay: 0.26, duration: 0.6 }}
                       >
                         <div>
-                          <label htmlFor="reason" className="block text-sm font-medium text-gray-300 mb-3">
+                          <label
+                            htmlFor="reason"
+                            className="block text-sm font-medium text-gray-300 mb-3"
+                          >
                             Reason for Inquiry *
                           </label>
                           <div className="relative">
@@ -536,13 +837,17 @@ export default function ContactPage() {
                               required
                               whileFocus={{ scale: 1.02 }}
                               transition={{ duration: 0.2 }}
-                              className="w-full px-4 py-3 pr-10 rounded-lg bg-white/5 border border-white/10 text-white focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 appearance-none cursor-pointer"
+                              className="w-full px-4 py-3 pr-10 rounded-lg bg-white/5 border border-white/10 text-white focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 appearance-none cursor-pointer"
                             >
                               <option value="" className="bg-slate-900">
                                 Select a reason
                               </option>
                               {reasonOptions.map((r, i) => (
-                                <option key={i} value={r} className="bg-slate-900">
+                                <option
+                                  key={i}
+                                  value={r}
+                                  className="bg-slate-900"
+                                >
                                   {r}
                                 </option>
                               ))}
@@ -552,7 +857,10 @@ export default function ContactPage() {
                         </div>
 
                         <div>
-                          <label htmlFor="howDidYouHear" className="block text-sm font-medium text-gray-300 mb-3">
+                          <label
+                            htmlFor="howDidYouHear"
+                            className="block text-sm font-medium text-gray-300 mb-3"
+                          >
                             How did you hear about us?
                           </label>
                           <div className="relative">
@@ -563,13 +871,17 @@ export default function ContactPage() {
                               onChange={handleInputChange}
                               whileFocus={{ scale: 1.02 }}
                               transition={{ duration: 0.2 }}
-                              className="w-full px-4 py-3 pr-10 rounded-lg bg-white/5 border border-white/10 text-white focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 appearance-none cursor-pointer"
+                              className="w-full px-4 py-3 pr-10 rounded-lg bg-white/5 border border-white/10 text-white focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 appearance-none cursor-pointer"
                             >
                               <option value="" className="bg-slate-900">
                                 Select an option (optional)
                               </option>
                               {hearOptions.map((h, i) => (
-                                <option key={i} value={h} className="bg-slate-900">
+                                <option
+                                  key={i}
+                                  value={h}
+                                  className="bg-slate-900"
+                                >
                                   {h}
                                 </option>
                               ))}
@@ -586,7 +898,10 @@ export default function ContactPage() {
                         viewport={{ once: true }}
                         transition={{ delay: 0.3, duration: 0.6 }}
                       >
-                        <label htmlFor="messageTitle" className="block text-sm font-medium text-gray-300 mb-3">
+                        <label
+                          htmlFor="messageTitle"
+                          className="block text-sm font-medium text-gray-300 mb-3"
+                        >
                           Message Title *
                         </label>
                         <motion.input
@@ -598,7 +913,7 @@ export default function ContactPage() {
                           required
                           whileFocus={{ scale: 1.02 }}
                           transition={{ duration: 0.2 }}
-                          className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
+                          className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200"
                           placeholder="Brief title for your message"
                         />
                       </motion.div>
@@ -610,7 +925,10 @@ export default function ContactPage() {
                         viewport={{ once: true }}
                         transition={{ delay: 0.34, duration: 0.6 }}
                       >
-                        <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-3">
+                        <label
+                          htmlFor="message"
+                          className="block text-sm font-medium text-gray-300 mb-3"
+                        >
                           Message Description *
                         </label>
                         <motion.textarea
@@ -622,7 +940,7 @@ export default function ContactPage() {
                           rows={5}
                           whileFocus={{ scale: 1.02 }}
                           transition={{ duration: 0.2 }}
-                          className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-purple-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 resize-none"
+                          className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-slate-400/50 focus:bg-white/10 focus:outline-none transition-all duration-200 resize-none"
                           placeholder="Provide detailed information about your requirements..."
                         />
                       </motion.div>
@@ -641,12 +959,16 @@ export default function ContactPage() {
                           type="checkbox"
                           checked={formData.consent}
                           onChange={handleInputChange}
-                          className="mt-1 h-4 w-4 rounded border-white/20 bg-white/10 text-purple-500 focus:ring-0"
+                          className="mt-1 h-4 w-4 rounded border-white/20 bg-white/10 text-slate-400 focus:ring-0"
                           required
                         />
-                        <label htmlFor="consent" className="text-sm text-gray-300">
-                          I agree to be contacted about my inquiry and understand my data will be handled according to
-                          the Privacy Policy.
+                        <label
+                          htmlFor="consent"
+                          className="text-sm text-gray-300"
+                        >
+                          I agree to be contacted about my inquiry and
+                          understand my data will be handled according to the
+                          Privacy Policy.
                         </label>
                       </motion.div>
 
@@ -663,7 +985,8 @@ export default function ContactPage() {
                           >
                             <CheckCircle className="w-5 h-5 flex-shrink-0" />
                             <span className="font-medium">
-                              Message sent successfully! We'll get back to you soon.
+                              Message sent successfully! We'll get back to you
+                              soon.
                             </span>
                           </motion.div>
                         )}
@@ -676,7 +999,10 @@ export default function ContactPage() {
                             className="flex items-center gap-3 text-red-400 bg-red-400/10 border border-red-400/20 rounded-lg p-4"
                           >
                             <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                            <span className="font-medium">Something went wrong. Please check the form and try again.</span>
+                            <span className="font-medium">
+                              Something went wrong. Please check the form and
+                              try again.
+                            </span>
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -692,11 +1018,11 @@ export default function ContactPage() {
                         <motion.button
                           type="submit"
                           disabled={isSubmitting}
-                          whileHover={{ scale: isSubmitting ? 1 : 1.02, y: isSubmitting ? 0 : -2 }}
+                          whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
                           whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
-                          className="w-full group relative overflow-hidden px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="w-full group relative overflow-hidden px-8 py-4 bg-gradient-to-r from-slate-700 to-gray-700 text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-xl hover:shadow-slate-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          <div className="absolute inset-0 bg-gradient-to-r from-purple-700 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          <div className="absolute inset-0 bg-gradient-to-r from-slate-600 to-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                           <div className="relative flex items-center justify-center gap-2">
                             {isSubmitting ? (
                               <>
@@ -715,21 +1041,11 @@ export default function ContactPage() {
                     </motion.form>
                   </AnimatePresence>
                 </div>
-              </motion.div>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
-
-      {/* FAQ Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-      >
-        <FAQSection />
-      </motion.div>
     </main>
   );
 }

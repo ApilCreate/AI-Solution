@@ -1,16 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, inquiries } from '@/db';
-import { requireAdmin } from '@/lib/auth';
-import { logError } from '@/lib/logger';
-import { count } from 'drizzle-orm';
-import { sql } from 'drizzle-orm';
+import { requireAdminSimple } from '@/app/lib/simple-auth';
+import { logError } from '@/app/lib/logger';
+import { count, sql } from 'drizzle-orm';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Require admin authentication
-    await requireAdmin();
+    await requireAdminSimple();
 
-    // Get count by reason using SQL grouping
+    // Get inquiries grouped by reason
     const results = await db
       .select({
         reason: inquiries.reason,
@@ -18,19 +17,16 @@ export async function GET(request: NextRequest) {
       })
       .from(inquiries)
       .groupBy(inquiries.reason)
-      .orderBy(count());
+      .orderBy(sql`count DESC`);
 
-    return NextResponse.json(
-      results,
-      { 
-        status: 200,
-        headers: {
-          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        }
+    return NextResponse.json(results, { 
+      status: 200,
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
       }
-    );
+    });
 
   } catch (error) {
     if (error instanceof Error && error.message === 'Unauthorized') {

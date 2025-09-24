@@ -24,6 +24,8 @@ export const inquiries = pgTable('inquiries', {
   howDidYouHear: varchar('how_did_you_hear', { length: 100 }), // Dropdown value
   messageTitle: varchar('message_title', { length: 255 }).notNull(),
   message: text('message').notNull(),
+  adminResponse: text('admin_response'), // Admin's response to the inquiry
+  respondedAt: timestamp('responded_at', { withTimezone: true }), // When admin responded
   status: varchar('status', { length: 50 }).default('new').notNull(),
   tags: jsonb('tags').$type<string[]>().default([]), // Array of strings stored as JSONB
   source: varchar('source', { length: 50 }).default('web-form').notNull(),
@@ -42,11 +44,15 @@ export const adminUsers = pgTable('admin_users', {
 export const events = pgTable('events', {
   id: uuid('id').primaryKey().$defaultFn(() => randomUUID()),
   title: varchar('title', { length: 255 }).notNull(),
-  date: date('date').notNull(),
-  location: varchar('location', { length: 255 }).notNull(),
-  bannerUrl: varchar('banner_url', { length: 500 }),
   description: text('description'),
+  date: date('date').notNull(),
+  time: varchar('time', { length: 50 }),
+  location: varchar('location', { length: 255 }).notNull(),
+  category: varchar('category', { length: 100 }),
+  bannerUrl: varchar('banner_url', { length: 500 }),
+  status: varchar('status', { length: 20 }).default('draft').notNull(), // 'draft' or 'published'
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
 // Event RSVPs table for tracking event attendees
@@ -57,6 +63,37 @@ export const eventRsvps = pgTable('event_rsvps', {
   email: varchar('email', { length: 255 }).notNull(),
   company: varchar('company', { length: 255 }),
   attendees: integer('attendees').default(1).notNull(), // Number of people attending
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Blogs table for managing blogs
+export const blogs = pgTable('blogs', {
+  id: uuid('id').primaryKey().$defaultFn(() => randomUUID()),
+  title: varchar('title', { length: 255 }).notNull(),
+  content: text('content').notNull(),
+  excerpt: text('excerpt'),
+  author: varchar('author', { length: 255 }).notNull(),
+  image: varchar('image', { length: 500 }),
+  category: varchar('category', { length: 100 }),
+  tags: jsonb('tags').$type<string[]>().default([]),
+  readTime: varchar('read_time', { length: 50 }),
+  status: varchar('status', { length: 20 }).default('draft').notNull(), // 'draft' or 'published'
+  publishedAt: timestamp('published_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Activity Log table for tracking admin actions
+export const activityLogs = pgTable('activity_logs', {
+  id: uuid('id').primaryKey().$defaultFn(() => randomUUID()),
+  adminId: uuid('admin_id').references(() => adminUsers.id, { onDelete: 'cascade' }).notNull(),
+  action: varchar('action', { length: 255 }).notNull(), // e.g., 'password_changed', 'logged_in', 'inquiry_responded', etc.
+  description: text('description').notNull(), // Detailed description of the action
+  targetType: varchar('target_type', { length: 100 }), // e.g., 'inquiry', 'event', 'blog', 'admin_account'
+  targetId: uuid('target_id'), // ID of the affected resource
+  metadata: jsonb('metadata').$type<Record<string, any>>().default({}), // Additional data about the action
+  ipAddress: varchar('ip_address', { length: 45 }), // User's IP address
+  userAgent: text('user_agent'), // User's browser/device info
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
@@ -72,3 +109,9 @@ export type NewEvent = typeof events.$inferInsert;
 
 export type EventRsvp = typeof eventRsvps.$inferSelect;
 export type NewEventRsvp = typeof eventRsvps.$inferInsert;
+
+export type Blog = typeof blogs.$inferSelect;
+export type NewBlog = typeof blogs.$inferInsert;
+
+export type ActivityLog = typeof activityLogs.$inferSelect;
+export type NewActivityLog = typeof activityLogs.$inferInsert;

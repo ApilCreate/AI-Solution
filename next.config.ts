@@ -12,18 +12,16 @@ const nextConfig: NextConfig = {
   
   // Performance optimizations
   experimental: {
-    // optimizeCss: true, // Disabled due to build issues
     optimizePackageImports: [
       'framer-motion',
       'lucide-react',
-      'react-icons'
+      'recharts'
     ],
-    // webpackBuildWorker: true, // Disabled due to build issues
   },
   
   // Image optimization
   images: {
-    domains: ['images.unsplash.com'],
+    domains: ['images.unsplash.com', 'randomuser.me', 'picsum.photos'],
     formats: ['image/webp', 'image/avif'],
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
@@ -32,26 +30,6 @@ const nextConfig: NextConfig = {
   // Compression and caching
   compress: true,
   poweredByHeader: false,
-  
-  // Bundle analyzer for production builds
-  webpack: (config, { isServer }) => {
-    // Optimize bundle splitting
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-      };
-    }
-    
-    // Tree shaking optimization
-    config.optimization = {
-      ...config.optimization,
-      usedExports: true,
-      sideEffects: false,
-    };
-    
-    return config;
-  },
   
   // Headers for better caching
   async headers() {

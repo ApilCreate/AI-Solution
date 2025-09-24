@@ -20,7 +20,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./*", "./src/*"],
+      "@/*": ["./*"],
       "@splinetool/react-spline": ["./node_modules/@splinetool/react-spline/dist/react-spline.js"]
     }
   },
