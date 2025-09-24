@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react";
 import { ThemeProvider } from "../app/contexts/ThemeContext";
+import RouteCurtain from "./RouteCurtain";
 
 interface ProvidersProps {
   children: ReactNode;
@@ -10,6 +11,7 @@ interface ProvidersProps {
 export default function Providers({ children }: ProvidersProps) {
   return (
     <ThemeProvider>
+      <RouteCurtain />
       {children}
     </ThemeProvider>
   );

@@ -22,6 +22,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { PointerHighlight } from "../../components/ui/pointer-highlight";
+import H1Reveal from "../../components/H1Reveal";
 
 // Lazy load Spline with proper Next.js import
 const Spline = dynamic(
@@ -533,6 +534,7 @@ export default function ContactPage() {
                 </span>
               </motion.div>
 
+              <H1Reveal>
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -547,6 +549,7 @@ export default function ContactPage() {
                   </span>
                 </PointerHighlight>
               </motion.h1>
+              </H1Reveal>
 
               <motion.p
                 initial={{ opacity: 0, y: 20 }}

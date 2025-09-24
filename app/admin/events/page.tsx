@@ -460,6 +460,25 @@ export default function AdminEventsPage() {
                 </div>
               </div>
 
+              {/* Image URL */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Image URL
+                </label>
+                <input
+                  type="url"
+                  value={formData.bannerUrl}
+                  onChange={(e) => setFormData(prev => ({ ...prev, bannerUrl: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="https://example.com/your-image.jpg"
+                />
+                {formData.bannerUrl && (
+                  <div className="mt-3 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                    <img src={formData.bannerUrl} alt="Preview" className="w-full h-48 object-cover" />
+                  </div>
+                )}
+              </div>
+
               {/* Action Buttons */}
               <div className="flex gap-3 pt-6">
                 <button

@@ -98,6 +98,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     localStorage.removeItem('adminUser');
     localStorage.removeItem('adminAuthenticated');
     localStorage.removeItem('adminLoginTime');
+    localStorage.removeItem('admin-theme');
     
     // Redirect to login
     router.push('/admin/login');

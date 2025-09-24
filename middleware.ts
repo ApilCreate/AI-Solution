@@ -6,10 +6,10 @@ export function middleware(request: NextRequest) {
 
   // Only apply middleware to admin routes (except login page)
   if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
-    // Check for admin session cookie
-    const adminSession = request.cookies.get('admin-session');
+    // Check for auth token cookie set on login
+    const authToken = request.cookies.get('auth-token');
     
-    if (!adminSession || !adminSession.value) {
+    if (!authToken || !authToken.value) {
       // No session cookie, redirect to login
       const loginUrl = new URL('/admin/login', request.url);
       const response = NextResponse.redirect(loginUrl);
@@ -23,26 +23,12 @@ export function middleware(request: NextRequest) {
     }
     
     try {
-      const sessionData = JSON.parse(adminSession.value);
-      const now = Date.now();
-      
-      // Check if session is expired (24 hours)
-      if (now > sessionData.expires) {
-        // Session expired, redirect to login
-        const response = NextResponse.redirect(new URL('/admin/login', request.url));
-        response.cookies.delete('admin-session');
-        
-        // Add cache headers
-        response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-        response.headers.set('Pragma', 'no-cache');
-        response.headers.set('Expires', '0');
-        
-        return response;
-      }
+      // We don't decode JWT in middleware to save perf; rely on presence only.
+      // Token itself carries expiry; invalid/expired tokens will fail on API calls.
     } catch (error) {
       // Invalid session data, redirect to login
       const response = NextResponse.redirect(new URL('/admin/login', request.url));
-      response.cookies.delete('admin-session');
+      response.cookies.delete('auth-token');
       
       // Add cache headers
       response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');

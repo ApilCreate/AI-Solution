@@ -3,11 +3,13 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Award, Quote, TrendingUp, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { GlobeDemo } from "../../components/GlobeDemo";
-import Magnet from "../../components/Magnet";
-import { InfiniteMovingCardsVertical } from "../../components/ui/infinite-moving-cards-vertical";
-import { PointerHighlight } from "../../components/ui/pointer-highlight";
-import { SparklesCore } from "../../components/ui/sparkles";
+import dynamic from "next/dynamic";
+import H1Reveal from "../../components/H1Reveal";
+const GlobeDemo = dynamic(() => import("../../components/GlobeDemo").then(m => m.GlobeDemo), { ssr: false });
+const Magnet = dynamic(() => import("../../components/Magnet"), { ssr: false });
+const InfiniteMovingCardsVertical = dynamic(() => import("../../components/ui/infinite-moving-cards-vertical").then(m => m.InfiniteMovingCardsVertical), { ssr: false });
+const PointerHighlight = dynamic(() => import("../../components/ui/pointer-highlight").then(m => m.PointerHighlight), { ssr: false });
+const SparklesCore = dynamic(() => import("../../components/ui/sparkles").then(m => m.SparklesCore), { ssr: false });
 
 const testimonials = [
   {
@@ -185,6 +187,7 @@ export default function TestimonialsPage() {
             </div>
             
             {/* Main Title */}
+            <H1Reveal>
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
               <div className="flex justify-center">
                 <PointerHighlight>
@@ -194,6 +197,7 @@ export default function TestimonialsPage() {
                 </PointerHighlight>
               </div>
             </h1>
+            </H1Reveal>
             
             {/* Description */}
             <p className="text-xl md:text-2xl text-gray-200 max-w-4xl mx-auto mb-12 leading-relaxed">
@@ -270,7 +274,7 @@ export default function TestimonialsPage() {
           >
             <p className="text-gray-200 text-lg mb-4">References</p>
             <h1 className="text-4xl md:text-6xl font-bold leading-tight text-white">
-              Read what my 
+              Read what our
               <div className="inline-flex">
                 <PointerHighlight>
                   <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
@@ -279,7 +283,7 @@ export default function TestimonialsPage() {
                 </PointerHighlight>
               </div>
               <br />
-              have to say about my work.
+              have to say about our work.
             </h1>
           </motion.div>
         </div>
@@ -297,7 +301,7 @@ export default function TestimonialsPage() {
                     quote: testimonial.testimonial,
                     name: testimonial.name,
                     title: `${testimonial.role} at ${testimonial.company}`,
-                    profileImage: `https://images.unsplash.com/photo-${1500000000000 + index * 100000}?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&h=400&q=80`
+                    profileImage: `https://picsum.photos/seed/testimonial-a-${index}/400/400`
                   }))}
                   direction="down"
                   speed="slow"
@@ -312,7 +316,7 @@ export default function TestimonialsPage() {
                     quote: testimonial.testimonial,
                     name: testimonial.name,
                     title: `${testimonial.role} at ${testimonial.company}`,
-                    profileImage: `https://images.unsplash.com/photo-${1500000600000 + index * 100000}?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&h=400&q=80`
+                    profileImage: `https://picsum.photos/seed/testimonial-b-${index}/400/400`
                   }))}
                   direction="up"
                   speed="slow"
@@ -327,7 +331,7 @@ export default function TestimonialsPage() {
                     quote: testimonial.testimonial,
                     name: testimonial.name,
                     title: `${testimonial.role} at ${testimonial.company}`,
-                    profileImage: `https://images.unsplash.com/photo-${1500001200000 + index * 100000}?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&h=400&q=80`
+                    profileImage: `https://picsum.photos/seed/testimonial-c-${index}/400/400`
                   }))}
                   direction="down"
                   speed="slow"

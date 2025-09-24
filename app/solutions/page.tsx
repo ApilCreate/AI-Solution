@@ -25,10 +25,12 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
-import Beams from "../../components/Beams";
-import Magnet from "../../components/Magnet";
-import { BackgroundBeams } from "../../components/ui/background-beams";
-import { PointerHighlight } from "../../components/ui/pointer-highlight";
+import dynamic from "next/dynamic";
+const Beams = dynamic(() => import("../../components/Beams"), { ssr: false });
+const Magnet = dynamic(() => import("../../components/Magnet"), { ssr: false });
+const BackgroundBeams = dynamic(() => import("../../components/ui/background-beams").then(m => m.BackgroundBeams), { ssr: false });
+const PointerHighlight = dynamic(() => import("../../components/ui/pointer-highlight").then(m => m.PointerHighlight), { ssr: false });
+import H1Reveal from "../../components/H1Reveal";
 import { useOutsideClick } from "../../hooks/use-outside-click";
 
 const solutions = [
@@ -234,6 +236,7 @@ export default function SolutionsPage() {
             </div>
             
             {/* Main Title */}
+            <H1Reveal>
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
               AI Solutions for
               <div className="flex justify-center">
@@ -247,6 +250,7 @@ export default function SolutionsPage() {
                 </PointerHighlight>
               </div>
             </h1>
+            </H1Reveal>
             
             {/* Description */}
             <p className="text-lg md:text-xl text-gray-200 max-w-4xl mx-auto mb-12 leading-relaxed">
@@ -628,7 +632,7 @@ export default function SolutionsPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="relative px-6 py-24 bg-slate-900">
+      <section className="relative px-6 py-24 bg-black">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

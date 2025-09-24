@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
   
   // Image optimization
   images: {
-    domains: ['images.unsplash.com'],
+    domains: ['images.unsplash.com', 'randomuser.me', 'picsum.photos'],
     formats: ['image/webp', 'image/avif'],
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",

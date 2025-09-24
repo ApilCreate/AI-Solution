@@ -8,6 +8,7 @@ import LightRays from "../components/LightRays";
 import LogoLoop from "../components/LogoLoop";
 import Magnet from "../components/Magnet";
 import { BackgroundBeams } from "../components/ui/background-beams";
+import H1Reveal from "../components/H1Reveal";
 import { CometCard } from "../components/ui/comet-card";
 import { ContainerScroll } from "../components/ui/container-scroll-animation";
 import { HorizontalScroll } from "../components/ui/horizontal-scroll-reveal";
@@ -569,7 +570,7 @@ export default function AILandingPage() {
         <div className="absolute inset-0 bg-black"></div>
         
         {/* LaserFlow Background - Curved edges for immersive effect */}
-        <div className="absolute inset-0 -mt-36">
+        <div className="absolute inset-0 -mt-[260px]">
           <LaserFlow
             className="w-full h-full"
             color="#ffffff"
@@ -595,6 +596,7 @@ export default function AILandingPage() {
           
           {/* Title and Description - Positioned above container */}
           <div className="text-center mb-16">
+            <H1Reveal>
             <h1 className="font-bold text-4xl md:text-6xl text-center text-white leading-tight drop-shadow-2xl mb-6">
               AI-Driven Solutions for Modern <br />
               <div className="flex justify-center">
@@ -608,6 +610,7 @@ export default function AILandingPage() {
                 </PointerHighlight>
               </div>
             </h1>
+            </H1Reveal>
 
             <p className="text-gray-200 text-center text-lg max-w-3xl drop-shadow-lg mb-8">
               "Innovate. Automate. Thrive." Our AI-driven solutions empowers

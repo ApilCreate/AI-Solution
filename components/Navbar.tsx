@@ -41,6 +41,14 @@ const Navbar = () => {
     { label: "Events", href: "/events", icon: Calendar },
   ];
 
+  useEffect(() => {
+    // Prefetch common routes to reduce navigation latency
+    const routesToPrefetch = ['/', '/solutions', '/testimonials', '/blog', '/events', '/contact'];
+    routesToPrefetch.forEach((route) => {
+      try { router.prefetch(route); } catch {}
+    });
+  }, [router]);
+
   const handleItemClick = (href: string) => {
     setMenuOpen(false);
     router.push(href);
@@ -64,10 +72,10 @@ const Navbar = () => {
             style={{ fontFamily: 'Manrope, sans-serif' }}
           >
             <div
-              className={`w-full max-w-7xl mx-auto rounded-xl border transition-all ring-1 ring-white/20 duration-300 ease-out ${
+              className={`w-full max-w-7xl mx-auto rounded-xl border transition-all ring-1 ring-white/10 duration-300 ease-out ${
                 scrolled 
-                  ? "bg-gray-950/98 border-gray-800/70 shadow-2xl shadow-black/30 backdrop-blur-xl" 
-                  : "bg-slate-950/80 border-slate-800/40 backdrop-blur-sm"
+                  ? "bg-black/98 border-black/70 shadow-2xl shadow-black/40 backdrop-blur-xl" 
+                  : "bg-black/90 border-black/60 backdrop-blur-md"
               }`}
             >
               <div className="flex items-center justify-between px-6 lg:px-8 py-3 lg:py-4">
@@ -187,7 +195,7 @@ const Navbar = () => {
             className="fixed bottom-6 inset-x-0 z-50 flex justify-center"
             style={{ fontFamily: 'Manrope, sans-serif' }}
           >
-            <div className="bg-slate-900/95 backdrop-blur-md border border-slate-700/60 rounded-2xl shadow-2xl shadow-white/20 px-4 py-3">
+            <div className="bg-black/95 backdrop-blur-md border border-black/70 rounded-2xl shadow-2xl shadow-black/40 px-4 py-3">
               <ul className="flex items-center gap-2">
                 {navItems.map((item, index) => {
                   const IconComponent = item.icon;

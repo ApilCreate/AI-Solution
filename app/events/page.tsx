@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from "react";
 import GradientBlinds from "../../components/GradientBlinds";
 import { GradientButton } from "../../components/ui";
 import { PointerHighlight } from "../../components/ui/pointer-highlight";
+import H1Reveal from "../../components/H1Reveal";
 
 
 
@@ -117,6 +118,7 @@ export default function EventsPage() {
                   AI Solutions Events
                 </span>
               </div>
+              <H1Reveal>
               <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
                 <div className="flex justify-center">
                   <PointerHighlight>
@@ -126,6 +128,7 @@ export default function EventsPage() {
                   </PointerHighlight>
                 </div>
               </h1>
+              </H1Reveal>
               <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
                 Join our exclusive AI workshops, solution demonstrations, and industry insights sessions designed to showcase the future of intelligent automation.
               </p>

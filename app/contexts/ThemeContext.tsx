@@ -22,18 +22,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       try {
         // Check localStorage first
         const savedTheme = localStorage.getItem('admin-theme') as Theme;
-        
-        // Check system preference
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const systemTheme: Theme = systemPrefersDark ? 'dark' : 'light';
-        
-        // Use saved theme or fall back to system preference
-        const initialTheme = savedTheme || systemTheme;
+        // Always default to light if nothing saved
+        const initialTheme: Theme = savedTheme || 'light';
         
         console.log('🎨 Theme initialization:', { 
-          savedTheme, 
-          systemPrefersDark, 
-          systemTheme, 
+          savedTheme,
           initialTheme 
         });
         

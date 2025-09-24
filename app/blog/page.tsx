@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Clock, Calendar, ArrowRight, Loader2 } from "lucide-react";
 import Galaxy from "../../components/Galaxy";
 import { PointerHighlight } from "../../components/ui/pointer-highlight";
+import H1Reveal from "../../components/H1Reveal";
 
 interface Blog {
   id: string;
@@ -141,6 +142,7 @@ export default function BlogPage() {
                   📝 Latest Insights & Stories
                 </span>
               </div>
+              <H1Reveal>
               <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
                 Discover Our 
                 <div className="flex justify-center">
@@ -151,6 +153,7 @@ export default function BlogPage() {
                   </PointerHighlight>
                 </div>
               </h1>
+              </H1Reveal>
               <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
                 Explore cutting-edge insights, innovative ideas, and transformative stories that shape tomorrow's world of AI and technology.
               </p>
