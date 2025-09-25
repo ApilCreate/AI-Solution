@@ -6,7 +6,8 @@ import {
   timestamp, 
   jsonb,
   integer,
-  date
+  date,
+  boolean
 } from 'drizzle-orm/pg-core';
 import { randomUUID } from 'crypto';
 
@@ -97,6 +98,35 @@ export const activityLogs = pgTable('activity_logs', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
+// Ratings and Feedback table
+export const ratings = pgTable('ratings', {
+  id: uuid('id').primaryKey().$defaultFn(() => randomUUID()),
+  name: varchar('name', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }).notNull(),
+  rating: integer('rating').notNull(), // 1-5 stars
+  comment: text('comment').notNull(),
+  isPublished: boolean('is_published').default(false).notNull(), // For testimonials page
+  adminReply: text('admin_reply'), // Admin's reply to the feedback
+  repliedAt: timestamp('replied_at', { withTimezone: true }), // When admin replied
+  status: varchar('status', { length: 50 }).default('new').notNull(), // 'new', 'replied', 'published'
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Testimonials table for published feedback
+export const testimonials = pgTable('testimonials', {
+  id: uuid('id').primaryKey().$defaultFn(() => randomUUID()),
+  ratingId: uuid('rating_id').references(() => ratings.id, { onDelete: 'cascade' }).notNull(),
+  name: varchar('name', { length: 255 }).notNull(),
+  role: varchar('role', { length: 255 }),
+  company: varchar('company', { length: 255 }),
+  testimonial: text('testimonial').notNull(),
+  rating: integer('rating').notNull(),
+  status: varchar('status', { length: 20 }).default('published').notNull(), // 'draft' or 'published'
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
 // Type exports for TypeScript
 export type Inquiry = typeof inquiries.$inferSelect;
 export type NewInquiry = typeof inquiries.$inferInsert;
@@ -115,3 +145,9 @@ export type NewBlog = typeof blogs.$inferInsert;
 
 export type ActivityLog = typeof activityLogs.$inferSelect;
 export type NewActivityLog = typeof activityLogs.$inferInsert;
+
+export type Rating = typeof ratings.$inferSelect;
+export type NewRating = typeof ratings.$inferInsert;
+
+export type Testimonial = typeof testimonials.$inferSelect;
+export type NewTestimonial = typeof testimonials.$inferInsert;

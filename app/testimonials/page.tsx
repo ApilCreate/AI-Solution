@@ -1,8 +1,9 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
 import { ArrowRight, Award, Quote, TrendingUp, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import H1Reveal from "../../components/H1Reveal";
 const GlobeDemo = dynamic(() => import("../../components/GlobeDemo").then(m => m.GlobeDemo), { ssr: false });
@@ -11,137 +12,220 @@ const InfiniteMovingCardsVertical = dynamic(() => import("../../components/ui/in
 const PointerHighlight = dynamic(() => import("../../components/ui/pointer-highlight").then(m => m.PointerHighlight), { ssr: false });
 const SparklesCore = dynamic(() => import("../../components/ui/sparkles").then(m => m.SparklesCore), { ssr: false });
 
-const testimonials = [
-  {
-    id: 1,
-    name: "Sarah Chen",
-    role: "Chief Technology Officer",
-    company: "TechFlow Solutions",
-    testimonial: "It's always a pleasure working with AI Solution, they are good at communicating and delivering results. They bring 100% to each project and get work done when it's needed the most."
-  },
-  {
-    id: 2,
-    name: "Marcus Rodriguez",
-    role: "Head of Operations", 
-    company: "DataMind Analytics",
-    testimonial: "We engaged AI Solution in Q4 of 2023 with the goal of telling a better story to our users for our AI platform. AI Solution was extraordinary in extrapolating user personas and the right narrative for each of our primary and secondary audiences."
-  },
-  {
-    id: 3,
-    name: "Dr. Emily Watson",
-    role: "Research Director",
-    company: "MedTech Innovations", 
-    testimonial: "AI Solution is an amazing AI consultant. They have a deep understanding about their sphere, and deliver great results."
-  },
-  {
-    id: 4,
-    name: "James Thompson",
-    role: "VP of Sales",
-    company: "Global Commerce Inc.",
-    testimonial: "The recommendation engine increased our conversion rates by 43% and average order value by 28%. Their team delivered exceptional results with outstanding support."
-  },
-  {
-    id: 5,
-    name: "Lisa Park",
-    role: "Chief Financial Officer",
-    company: "FinanceForward",
-    testimonial: "Their fraud detection AI caught 15 potentially costly security breaches that our previous system missed. The ROI was immediate and substantial."
-  },
-  {
-    id: 6,
-    name: "Alex Johnson",
-    role: "Head of Marketing",
-    company: "BrandVision",
-    testimonial: "The sentiment analysis tool transformed how we understand our customers. Campaign effectiveness increased by 65% within the first quarter."
-  },
-  {
-    id: 7,
-    name: "Dr. Michael Chang",
-    role: "Director of Research",
-    company: "BioTech Labs",
-    testimonial: "AI-powered drug discovery shortened our research cycles from 3 years to 8 months with 95% accuracy. Revolutionary technology."
-  },
-  {
-    id: 8,
-    name: "Rachel Martinez",
-    role: "Chief Operating Officer",
-    company: "LogisticsPro",
-    testimonial: "Their supply chain optimization AI reduced our delivery times by 40% and cut operational costs by $2M annually. Exceptional results."
-  },
-  {
-    id: 9,
-    name: "David Kim",
-    role: "Product Manager",
-    company: "InnovateTech",
-    testimonial: "Working with AI Solution was seamless. They delivered beyond expectations with exceptional support and innovative solutions."
-  },
-  {
-    id: 10,
-    name: "Jennifer Walsh",
-    role: "VP of Customer Success",
-    company: "RetailMax",
-    testimonial: "Customer satisfaction scores improved by 50% after implementing their personalization engine. The results exceeded all expectations."
-  },
-  {
-    id: 11,
-    name: "Dr. Robert Kim",
-    role: "Head of Data Science",
-    company: "QuantumTech",
-    testimonial: "Their machine learning models helped us predict market trends with 92% accuracy. It completely transformed our investment strategy."
-  },
-  {
-    id: 12,
-    name: "Maria Santos",
-    role: "Chief Marketing Officer",
-    company: "GrowthLabs",
-    testimonial: "The AI-powered content generation tool increased our marketing productivity by 300%. We can now create personalized campaigns at scale."
-  },
-  {
-    id: 13,
-    name: "Thomas Anderson",
-    role: "Operations Director",
-    company: "Manufacturing Pro",
-    testimonial: "Predictive maintenance AI reduced our equipment downtime by 60% and saved us over $1.5M in repair costs annually."
-  },
-  {
-    id: 14,
-    name: "Dr. Linda Zhang",
-    role: "Research Lead",
-    company: "HealthTech Solutions",
-    testimonial: "Their computer vision system for medical imaging achieved 98% diagnostic accuracy, significantly improving patient outcomes."
-  },
-  {
-    id: 15,
-    name: "Carlos Rodriguez",
-    role: "VP of Engineering",
-    company: "CloudStream",
-    testimonial: "The natural language processing solution automated 80% of our customer support tickets while maintaining high satisfaction rates."
-  },
-  {
-    id: 16,
-    name: "Amanda Foster",
-    role: "Head of Analytics",
-    company: "InsightCorp",
-    testimonial: "Real-time analytics dashboard powered by AI gave us actionable insights that increased revenue by 25% in just six months."
-  },
-  {
-    id: 17,
-    name: "Dr. Kevin Liu",
-    role: "CTO",
-    company: "FutureTech",
-    testimonial: "Their autonomous AI agents handle complex workflows seamlessly. It's like having a team of expert analysts working 24/7."
-  },
-  {
-    id: 18,
-    name: "Sophie Williams",
-    role: "Digital Transformation Lead",
-    company: "NextGen Industries",
-    testimonial: "The AI implementation strategy was flawless. We achieved digital transformation goals 18 months ahead of schedule."
-  }
-];
+interface Testimonial {
+  id: string;
+  name: string;
+  role?: string;
+  company?: string;
+  testimonial: string;
+  rating: number;
+  createdAt: string;
+}
+
 
 export default function TestimonialsPage() {
   const router = useRouter();
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchTestimonials();
+  }, []);
+
+  const fetchTestimonials = async () => {
+    try {
+      const response = await fetch('/api/testimonials');
+      if (response.ok) {
+        const dynamicTestimonials = await response.json();
+        // Mix static and dynamic testimonials, removing duplicates
+        const allTestimonials = [...staticTestimonials, ...dynamicTestimonials];
+        
+        // Remove duplicates based on testimonial content
+        const uniqueTestimonials = allTestimonials.filter((testimonial, index, self) => 
+          index === self.findIndex(t => t.testimonial === testimonial.testimonial)
+        );
+        
+        // Shuffle the testimonials for random display
+        const shuffledTestimonials = uniqueTestimonials.sort(() => Math.random() - 0.5);
+        setTestimonials(shuffledTestimonials);
+      } else {
+        // Fallback to static data if API fails
+        setTestimonials(staticTestimonials);
+      }
+    } catch (error) {
+      console.error('Error fetching testimonials:', error);
+      // Fallback to static data
+      setTestimonials(staticTestimonials);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Static testimonials as fallback
+  const staticTestimonials = [
+    {
+      id: "1",
+      name: "Sarah Chen",
+      role: "Chief Technology Officer",
+      company: "TechFlow Solutions",
+      testimonial: "It's always a pleasure working with AI Solution, they are good at communicating and delivering results. They bring 100% to each project and get work done when it's needed the most.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "2",
+      name: "Marcus Rodriguez",
+      role: "Head of Operations",
+      company: "DataMind Analytics",
+      testimonial: "We engaged AI Solution in Q4 of 2023 with the goal of telling a better story to our users for our AI platform. AI Solution was extraordinary in extrapolating user personas and the right narrative for each of our primary and secondary audiences.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "3",
+      name: "Dr. Emily Watson",
+      role: "Research Director",
+      company: "MedTech Innovations",
+      testimonial: "AI Solution is an amazing AI consultant. They have a deep understanding about their sphere, and deliver great results.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "4",
+      name: "James Thompson",
+      role: "VP of Sales",
+      company: "Global Commerce Inc.",
+      testimonial: "The recommendation engine increased our conversion rates by 43% and average order value by 28%. Their team delivered exceptional results with outstanding support.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "5",
+      name: "Lisa Park",
+      role: "Chief Financial Officer",
+      company: "FinanceForward",
+      testimonial: "Their fraud detection AI caught 15 potentially costly security breaches that our previous system missed. The ROI was immediate and substantial.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "6",
+      name: "Alex Johnson",
+      role: "Head of Marketing",
+      company: "BrandVision",
+      testimonial: "The sentiment analysis tool transformed how we understand our customers. Campaign effectiveness increased by 65% within the first quarter.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "7",
+      name: "Dr. Michael Chang",
+      role: "Director of Research",
+      company: "BioTech Labs",
+      testimonial: "AI-powered drug discovery shortened our research cycles from 3 years to 8 months with 95% accuracy. Revolutionary technology.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "8",
+      name: "Rachel Martinez",
+      role: "Chief Operating Officer",
+      company: "LogisticsPro",
+      testimonial: "Their supply chain optimization AI reduced our delivery times by 40% and cut operational costs by $2M annually. Exceptional results.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "9",
+      name: "David Kim",
+      role: "Product Manager",
+      company: "InnovateTech",
+      testimonial: "Working with AI Solution was seamless. They delivered beyond expectations with exceptional support and innovative solutions.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "10",
+      name: "Jennifer Walsh",
+      role: "VP of Customer Success",
+      company: "RetailMax",
+      testimonial: "Customer satisfaction scores improved by 50% after implementing their personalization engine. The results exceeded all expectations.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "11",
+      name: "Dr. Robert Kim",
+      role: "Head of Data Science",
+      company: "QuantumTech",
+      testimonial: "Their machine learning models helped us predict market trends with 92% accuracy. It completely transformed our investment strategy.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "12",
+      name: "Maria Santos",
+      role: "Chief Marketing Officer",
+      company: "GrowthLabs",
+      testimonial: "The AI-powered content generation tool increased our marketing productivity by 300%. We can now create personalized campaigns at scale.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "13",
+      name: "Thomas Anderson",
+      role: "Operations Director",
+      company: "Manufacturing Pro",
+      testimonial: "Predictive maintenance AI reduced our equipment downtime by 60% and saved us over $1.5M in repair costs annually.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "14",
+      name: "Dr. Linda Zhang",
+      role: "Research Lead",
+      company: "HealthTech Solutions",
+      testimonial: "Their computer vision system for medical imaging achieved 98% diagnostic accuracy, significantly improving patient outcomes.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "15",
+      name: "Carlos Rodriguez",
+      role: "VP of Engineering",
+      company: "CloudStream",
+      testimonial: "The natural language processing solution automated 80% of our customer support tickets while maintaining high satisfaction rates.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "16",
+      name: "Amanda Foster",
+      role: "Head of Analytics",
+      company: "InsightCorp",
+      testimonial: "Real-time analytics dashboard powered by AI gave us actionable insights that increased revenue by 25% in just six months.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "17",
+      name: "Dr. Kevin Liu",
+      role: "CTO",
+      company: "FutureTech",
+      testimonial: "Their autonomous AI agents handle complex workflows seamlessly. It's like having a team of expert analysts working 24/7.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "18",
+      name: "Sophie Williams",
+      role: "Digital Transformation Lead",
+      company: "NextGen Industries",
+      testimonial: "The AI implementation strategy was flawless. We achieved digital transformation goals 18 months ahead of schedule.",
+      rating: 5,
+      createdAt: new Date().toISOString(),
+    }
+  ];
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -292,54 +376,72 @@ export default function TestimonialsPage() {
       {/* Testimonials Infinite Moving Section */}
       <section className="pb-20">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="relative overflow-hidden">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 h-[800px]">
-              {/* First Column - Moving Down */}
-              <div className="relative h-full overflow-hidden">
-                <InfiniteMovingCardsVertical
-                  items={testimonials.slice(0, 6).map((testimonial, index) => ({
-                    quote: testimonial.testimonial,
-                    name: testimonial.name,
-                    title: `${testimonial.role} at ${testimonial.company}`,
-                    profileImage: `https://picsum.photos/seed/testimonial-a-${index}/400/400`
-                  }))}
-                  direction="down"
-                  speed="slow"
-                  className="h-full"
-                />
-              </div>
-
-              {/* Second Column - Moving Up */}
-              <div className="relative h-full overflow-hidden">
-                <InfiniteMovingCardsVertical
-                  items={testimonials.slice(6, 12).map((testimonial, index) => ({
-                    quote: testimonial.testimonial,
-                    name: testimonial.name,
-                    title: `${testimonial.role} at ${testimonial.company}`,
-                    profileImage: `https://picsum.photos/seed/testimonial-b-${index}/400/400`
-                  }))}
-                  direction="up"
-                  speed="slow"
-                  className="h-full"
-                />
-              </div>
-
-              {/* Third Column - Moving Down */}
-              <div className="relative h-full overflow-hidden lg:block hidden">
-                <InfiniteMovingCardsVertical
-                  items={testimonials.slice(12, 18).map((testimonial, index) => ({
-                    quote: testimonial.testimonial,
-                    name: testimonial.name,
-                    title: `${testimonial.role} at ${testimonial.company}`,
-                    profileImage: `https://picsum.photos/seed/testimonial-c-${index}/400/400`
-                  }))}
-                  direction="down"
-                  speed="slow"
-                  className="h-full"
-                />
+          {isLoading ? (
+            <div className="flex items-center justify-center h-[800px]">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+            </div>
+          ) : testimonials.length === 0 ? (
+            <div className="flex items-center justify-center h-[400px]">
+              <div className="text-center">
+                <p className="text-gray-400 text-lg mb-4">No testimonials available yet.</p>
+                <button 
+                  onClick={() => router.push('/contact')}
+                  className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                >
+                  Be the first to share your experience
+                </button>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="relative overflow-hidden">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 h-[800px]">
+                {/* First Column - Moving Down */}
+                <div className="relative h-full overflow-hidden">
+                  <InfiniteMovingCardsVertical
+                    items={testimonials.slice(0, Math.ceil(testimonials.length / 3)).map((testimonial, index) => ({
+                      quote: testimonial.testimonial,
+                      name: testimonial.name,
+                      title: `${testimonial.role || 'Client'} at ${testimonial.company || 'Client Company'}`,
+                      profileImage: `https://picsum.photos/seed/testimonial-a-${index}/400/400`
+                    }))}
+                    direction="down"
+                    speed="slow"
+                    className="h-full"
+                  />
+                </div>
+
+                {/* Second Column - Moving Up */}
+                <div className="relative h-full overflow-hidden">
+                  <InfiniteMovingCardsVertical
+                    items={testimonials.slice(Math.ceil(testimonials.length / 3), Math.ceil(testimonials.length * 2 / 3)).map((testimonial, index) => ({
+                      quote: testimonial.testimonial,
+                      name: testimonial.name,
+                      title: `${testimonial.role || 'Client'} at ${testimonial.company || 'Client Company'}`,
+                      profileImage: `https://picsum.photos/seed/testimonial-b-${index}/400/400`
+                    }))}
+                    direction="up"
+                    speed="slow"
+                    className="h-full"
+                  />
+                </div>
+
+                {/* Third Column - Moving Down */}
+                <div className="relative h-full overflow-hidden lg:block hidden">
+                  <InfiniteMovingCardsVertical
+                    items={testimonials.slice(Math.ceil(testimonials.length * 2 / 3)).map((testimonial, index) => ({
+                      quote: testimonial.testimonial,
+                      name: testimonial.name,
+                      title: `${testimonial.role || 'Client'} at ${testimonial.company || 'Client Company'}`,
+                      profileImage: `https://picsum.photos/seed/testimonial-c-${index}/400/400`
+                    }))}
+                    direction="down"
+                    speed="slow"
+                    className="h-full"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

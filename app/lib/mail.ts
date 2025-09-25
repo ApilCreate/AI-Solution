@@ -162,6 +162,54 @@ export async function sendAdminResponseEmail(
   }
 }
 
+// Generic email sending function
+export async function sendEmail(options: {
+  to: string;
+  subject: string;
+  html: string;
+}): Promise<boolean> {
+  if (!isValidEmail(options.to)) {
+    logError('Invalid email address', { email: options.to });
+    return false;
+  }
+
+  logInfo('Sending email', {
+    to: options.to,
+    subject: options.subject,
+    from: FROM_EMAIL
+  });
+
+  try {
+    const transporter = createTransporter();
+    
+    const result = await retryEmailSend(async () => {
+      const mailOptions = {
+        from: FROM_EMAIL,
+        to: options.to,
+        subject: options.subject,
+        html: options.html
+      };
+
+      return await transporter.sendMail(mailOptions);
+    });
+
+    logInfo('Email sent successfully', {
+      messageId: result.messageId,
+      to: options.to
+    });
+
+    return true;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logError('Failed to send email', {
+      to: options.to,
+      error: errorMessage
+    });
+    
+    return false;
+  }
+}
+
 export async function sendUserConfirmationEmail(inquiry: CreateInquiryInput & { id: string }): Promise<EmailResult> {
   if (!isValidEmail(inquiry.email)) {
     logError('Invalid user email address for confirmation', { 
