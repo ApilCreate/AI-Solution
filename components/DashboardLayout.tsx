@@ -10,7 +10,8 @@ import {
   IconFileText,
   IconLogout,
   IconSearch,
-  IconSettings
+  IconSettings,
+  IconStar
 } from '@tabler/icons-react';
 import ThemeToggle from './ui/ThemeToggle';
 import { Sidebar, SidebarBody, SidebarLink, useSidebar } from './ui/sidebar';
@@ -44,6 +45,11 @@ const navigationItems = [
     label: 'Blog', 
     href: '/admin/blog', 
     icon: <IconFileText className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0" />
+  },
+  { 
+    label: 'Ratings', 
+    href: '/admin/ratings', 
+    icon: <IconStar className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0" />
   },
   { 
     label: 'Settings', 

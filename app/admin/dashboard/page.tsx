@@ -13,7 +13,8 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Activity,
-  Eye
+  Eye,
+  Star
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -407,6 +408,21 @@ export default function AdminDashboard() {
                 <div>
                   <p className="text-sm font-medium text-gray-900 dark:text-white">View Analytics</p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">Detailed insights & reports</p>
+                </div>
+              </div>
+            </Link>
+
+            <Link
+              href="/admin/ratings"
+              className="flex items-center p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg hover:bg-yellow-100 dark:hover:bg-yellow-900/30 transition-colors group"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-yellow-100 dark:bg-yellow-900 rounded-lg group-hover:bg-yellow-200 dark:group-hover:bg-yellow-800 transition-colors">
+                  <Star className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">Manage Ratings</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">View & respond to feedback</p>
                 </div>
               </div>
             </Link>

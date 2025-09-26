@@ -20,9 +20,11 @@ import {
   AlertCircle,
   Loader2,
   ChevronDown,
+  Star,
 } from "lucide-react";
 import { PointerHighlight } from "../../components/ui/pointer-highlight";
 import H1Reveal from "../../components/H1Reveal";
+import RatingForm from "../../components/RatingForm";
 
 // Lazy load Spline with proper Next.js import
 const Spline = dynamic(
@@ -1044,6 +1046,54 @@ export default function ContactPage() {
               </div>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* Rating and Feedback Section */}
+      <section className="relative py-24 px-6">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-12"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-6"
+            >
+              <Star className="w-4 h-4 text-[#00FFB7]" />
+              <span className="text-sm font-medium text-gray-300">
+                Share Your Experience
+              </span>
+            </motion.div>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="text-3xl lg:text-4xl font-bold text-white mb-4"
+            >
+              Rate Your Experience
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="text-lg text-gray-300 max-w-2xl mx-auto"
+            >
+              Help us improve by sharing your feedback. Your rating and comments help us serve you better.
+            </motion.p>
+          </motion.div>
+
+          <RatingForm />
         </div>
       </section>
     </main>
