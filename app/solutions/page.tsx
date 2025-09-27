@@ -9,6 +9,7 @@ import {
   Bot,
   Brain,
   Building2,
+  Calendar,
   CheckCircle,
   ChevronRight,
   Cpu,
@@ -243,14 +244,14 @@ export default function SolutionsPage() {
             {/* CTA Button */}
             <Magnet magnetStrength={2} padding={100}>
               <button 
-                onClick={() => router.push('/contact')}
+                onClick={() => router.push('/book-demo')}
                 className="bg-white text-black no-underline group cursor-pointer relative shadow-2xl shadow-white/20 rounded-full px-8 py-4 text-lg font-semibold leading-6 inline-block transition-all duration-300 hover:scale-105 hover:shadow-white/40"
               >
                 <span className="absolute inset-0 overflow-hidden rounded-full">
                   <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
                 </span>
                 <div className="relative flex space-x-2 items-center z-10 rounded-full">
-                  <span className="text-black font-medium">Explore Solutions</span>
+                  <span className="text-black font-medium">Book a Demo</span>
                   <ArrowRight className="w-5 h-5 text-black group-hover:translate-x-1 transition-transform" />
                 </div>
                 <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-black/0 via-black/30 to-black/0 transition-opacity duration-500 group-hover:opacity-40"></span>
@@ -344,7 +345,10 @@ export default function SolutionsPage() {
                           layoutId={`icon-${active.title}-${id}`}
                           className="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm"
                         >
-                          {active.icon}
+                          {(() => {
+                            const IconComponent = getIcon(active.iconName);
+                            return <IconComponent size={32} className="text-white" />;
+                          })()}
                         </motion.div>
                         <div>
                           <div className="text-lg text-slate-400 mb-2 uppercase tracking-wider">{active.category}</div>
@@ -357,9 +361,9 @@ export default function SolutionsPage() {
                         </div>
                       </div>
                       
-                      {active.badge && (
+                      {active.featured && (
                         <div className="bg-white text-black px-4 py-2 rounded-full text-sm font-semibold mt-3">
-                          {active.badge}
+                          Featured
                         </div>
                       )}
                     </div>
@@ -433,7 +437,7 @@ export default function SolutionsPage() {
                       <button
                         onClick={() => {
                           setActive(null);
-                          router.push(`/solutions/${active.id}`);
+                          router.push(`/book-demo?solution=${active.id}`);
                         }}
                         className="bg-white text-black px-8 py-4 rounded-lg font-semibold hover:bg-slate-200 transition-colors flex items-center gap-2 text-lg"
                       >
@@ -462,7 +466,7 @@ export default function SolutionsPage() {
             </div>
           ) : (
             /* Solutions Grid with Proper Hover Effects */
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {transformedSolutions.map((solution, index) => (
               <div
                 key={`hover-card-${solution.title}-${id}`}
@@ -568,8 +572,8 @@ export default function SolutionsPage() {
                   </div>
                 </motion.div>
               </div>
-              ))}
-            </div>
+            ))}
+          </div>
           )}
         </div>
       </section>
@@ -724,11 +728,20 @@ export default function SolutionsPage() {
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                 <Magnet magnetStrength={1.5} padding={50}>
                   <button
-                    onClick={() => router.push('/contact')}
+                    onClick={() => router.push('/book-demo')}
                     className="group bg-white text-black px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 hover:bg-gray-200 hover:scale-105 flex items-center gap-3 shadow-2xl shadow-white/10"
                   >
+                    <Calendar className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                    Book a Demo
+                  </button>
+                </Magnet>
+                <Magnet magnetStrength={1.5} padding={50}>
+                  <button
+                    onClick={() => router.push('/contact')}
+                    className="group border border-white/30 text-white px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 hover:bg-white/10 hover:scale-105 flex items-center gap-3"
+                  >
                     <Phone className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                    Get Started Today
+                    Contact Us
                   </button>
                 </Magnet>
               </div>

@@ -12,7 +12,8 @@ import {
   IconSearch,
   IconSettings,
   IconStar,
-  IconBulb
+  IconBulb,
+  IconCalendarEvent
 } from '@tabler/icons-react';
 import ThemeToggle from './ui/ThemeToggle';
 import { Sidebar, SidebarBody, SidebarLink, useSidebar } from './ui/sidebar';
@@ -51,6 +52,11 @@ const navigationItems = [
     label: 'Solutions', 
     href: '/admin/solutions', 
     icon: <IconBulb className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0" />
+  },
+  { 
+    label: 'Bookings', 
+    href: '/admin/bookings', 
+    icon: <IconCalendarEvent className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0" />
   },
   { 
     label: 'Ratings', 

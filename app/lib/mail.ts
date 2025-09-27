@@ -271,3 +271,205 @@ export async function sendUserConfirmationEmail(inquiry: CreateInquiryInput & { 
     };
   }
 }
+
+// Demo booking reply email function
+export async function sendDemoBookingReplyEmail(
+  booking: { 
+    id: string; 
+    name: string; 
+    email: string; 
+    company: string;
+    solutionName: string;
+    preferredDate: string;
+    preferredTime: string;
+    message?: string;
+  }, 
+  adminReply: string
+): Promise<EmailResult> {
+  logInfo('Starting sendDemoBookingReplyEmail', { 
+    bookingId: booking.id, 
+    email: booking.email,
+    name: booking.name,
+    solutionName: booking.solutionName
+  });
+
+  if (!booking.email || booking.email.trim() === '') {
+    logError('Empty email address for demo booking reply', { 
+      bookingId: booking.id,
+      emailValue: booking.email
+    });
+    return { success: false, error: 'Email address is empty or undefined' };
+  }
+
+  const trimmedEmail = booking.email.trim();
+  if (!isValidEmail(trimmedEmail)) {
+    logError('Invalid email address for demo booking reply', { 
+      bookingId: booking.id, 
+      email: trimmedEmail,
+      emailLength: trimmedEmail.length
+    });
+    return { success: false, error: `Invalid email address format: ${trimmedEmail}` };
+  }
+
+  if (!adminReply.trim()) {
+    logError('Admin reply is empty', { bookingId: booking.id });
+    return { success: false, error: 'Admin reply cannot be empty' };
+  }
+
+  logInfo('Attempting to send demo booking reply email', { 
+    bookingId: booking.id, 
+    to: trimmedEmail,
+    from: FROM_EMAIL,
+    gmailConfigured: !!(GMAIL_USER && GMAIL_APP_PASSWORD)
+  });
+
+  try {
+    const transporter = createTransporter();
+    
+    const result = await retryEmailSend(async () => {
+      logInfo('Making Gmail SMTP call for demo booking reply', { 
+        bookingId: booking.id, 
+        to: trimmedEmail 
+      });
+      
+      const mailOptions = {
+        from: FROM_EMAIL,
+        to: trimmedEmail,
+        subject: `Demo Booking Response - ${booking.solutionName}`,
+        html: `
+          <h2>Demo Booking Response</h2>
+          <p>Hi ${booking.name},</p>
+          <p>Thank you for your interest in our <strong>${booking.solutionName}</strong> solution. Here's our response to your demo booking request:</p>
+          
+          <div style="background-color: #f5f5f5; padding: 20px; border-left: 4px solid #007bff; margin: 20px 0;">
+            ${adminReply.replace(/\n/g, '<br>')}
+          </div>
+
+          <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <h3>Your Demo Request Details:</h3>
+            <p><strong>Solution:</strong> ${booking.solutionName}</p>
+            <p><strong>Company:</strong> ${booking.company}</p>
+            <p><strong>Preferred Date:</strong> ${booking.preferredDate}</p>
+            <p><strong>Preferred Time:</strong> ${booking.preferredTime}</p>
+            ${booking.message ? `<p><strong>Your Message:</strong> ${booking.message}</p>` : ''}
+          </div>
+
+          <p>If you have any questions or need to reschedule, please don't hesitate to contact us.</p>
+          <p>Best regards,<br>AI Solutions Team</p>
+          <p><small>Reference ID: ${booking.id}</small></p>
+        `
+      };
+
+      return await transporter.sendMail(mailOptions);
+    });
+
+    logInfo('Demo booking reply email sent successfully via Gmail SMTP', { 
+      bookingId: booking.id,
+      messageId: result.messageId,
+      to: trimmedEmail
+    });
+
+    return {
+      success: true,
+      messageId: result.messageId
+    };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logError('Failed to send demo booking reply email', { 
+      bookingId: booking.id, 
+      to: trimmedEmail,
+      error: errorMessage,
+      errorType: error instanceof Error ? error.constructor.name : typeof error,
+      fromEmail: FROM_EMAIL
+    });
+    
+    return {
+      success: false,
+      error: errorMessage
+    };
+  }
+}
+
+// Demo booking confirmation email function
+export async function sendDemoBookingConfirmationEmail(
+  booking: { 
+    id: string; 
+    name: string; 
+    email: string; 
+    company: string;
+    solutionName: string;
+    preferredDate: string;
+    preferredTime: string;
+    message?: string;
+  }
+): Promise<EmailResult> {
+  if (!isValidEmail(booking.email)) {
+    logError('Invalid user email address for demo booking confirmation', { 
+      bookingId: booking.id, 
+      email: booking.email 
+    });
+    return { success: false, error: 'Invalid user email address' };
+  }
+
+  logInfo('Sending demo booking confirmation email', {
+    bookingId: booking.id,
+    to: booking.email,
+    from: FROM_EMAIL
+  });
+
+  try {
+    const transporter = createTransporter();
+    
+    const result = await retryEmailSend(async () => {
+      const mailOptions = {
+        from: FROM_EMAIL,
+        to: booking.email,
+        subject: 'Demo Booking Confirmation',
+        html: `
+          <h2>Demo Booking Confirmed!</h2>
+          <p>Hi ${booking.name},</p>
+          <p>Thank you for your interest in our <strong>${booking.solutionName}</strong> solution. We've received your demo booking request.</p>
+          
+          <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <h3>Your Demo Request Details:</h3>
+            <p><strong>Solution:</strong> ${booking.solutionName}</p>
+            <p><strong>Company:</strong> ${booking.company}</p>
+            <p><strong>Preferred Date:</strong> ${booking.preferredDate}</p>
+            <p><strong>Preferred Time:</strong> ${booking.preferredTime}</p>
+            ${booking.message ? `<p><strong>Your Message:</strong> ${booking.message}</p>` : ''}
+          </div>
+
+          <p>Our team will review your request and get back to you within 24 hours to confirm the demo schedule.</p>
+          <p>We're excited to show you how our AI solution can benefit your business!</p>
+          <p>Best regards,<br>AI Solutions Team</p>
+          <p><small>Reference ID: ${booking.id}</small></p>
+        `
+      };
+
+      return await transporter.sendMail(mailOptions);
+    });
+
+    logInfo('Demo booking confirmation email sent successfully', { 
+      bookingId: booking.id,
+      messageId: result.messageId,
+      to: booking.email 
+    });
+
+    return {
+      success: true,
+      messageId: result.messageId
+    };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logError('Failed to send demo booking confirmation email', { 
+      bookingId: booking.id, 
+      to: booking.email,
+      error: errorMessage 
+    });
+    
+    return {
+      success: false,
+      error: errorMessage
+    };
+  }
+}

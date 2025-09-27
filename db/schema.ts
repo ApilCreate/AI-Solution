@@ -133,6 +133,26 @@ export const solutions = pgTable('solutions', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
+// Demo Bookings table for managing demo requests
+export const demoBookings = pgTable('demo_bookings', {
+  id: uuid('id').primaryKey().$defaultFn(() => randomUUID()),
+  name: varchar('name', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }).notNull(),
+  company: varchar('company', { length: 255 }).notNull(),
+  solutionId: uuid('solution_id').references(() => solutions.id, { onDelete: 'cascade' }).notNull(),
+  solutionName: varchar('solution_name', { length: 255 }).notNull(), // Store solution name for reference
+  message: text('message'), // Optional message from user
+  preferredDate: varchar('preferred_date', { length: 50 }), // e.g., "ASAP", "Next week", "Specific date"
+  preferredTime: varchar('preferred_time', { length: 50 }), // e.g., "Morning", "Afternoon", "Evening"
+  status: varchar('status', { length: 50 }).default('pending').notNull(), // 'pending', 'confirmed', 'completed', 'cancelled'
+  adminNotes: text('admin_notes'), // Admin notes about the booking
+  adminReply: text('admin_reply'), // Admin's reply to the user
+  repliedAt: timestamp('replied_at', { withTimezone: true }), // When admin replied
+  scheduledAt: timestamp('scheduled_at', { withTimezone: true }), // When demo is scheduled
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
 // Testimonials table for published feedback
 export const testimonials = pgTable('testimonials', {
   id: uuid('id').primaryKey().$defaultFn(() => randomUUID()),
@@ -171,6 +191,9 @@ export type NewRating = typeof ratings.$inferInsert;
 
 export type Solution = typeof solutions.$inferSelect;
 export type NewSolution = typeof solutions.$inferInsert;
+
+export type DemoBooking = typeof demoBookings.$inferSelect;
+export type NewDemoBooking = typeof demoBookings.$inferInsert;
 
 export type Testimonial = typeof testimonials.$inferSelect;
 export type NewTestimonial = typeof testimonials.$inferInsert;

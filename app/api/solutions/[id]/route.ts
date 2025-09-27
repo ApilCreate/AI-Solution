@@ -24,19 +24,19 @@ export async function GET(
       id: solution.id,
       title: solution.title,
       description: solution.description,
-      shortDescription: solution.short_description,
+      shortDescription: solution.shortDescription,
       category: solution.category,
       features: solution.features || [],
       benefits: solution.benefits || [],
-      useCases: solution.use_cases || [],
+      useCases: solution.useCases || [],
       pricing: solution.pricing,
-      imageUrl: solution.image_url,
-      iconName: solution.icon_name,
+      imageUrl: solution.imageUrl,
+      iconName: solution.iconName,
       status: solution.status,
       featured: solution.featured,
-      sortOrder: solution.sort_order,
-      createdAt: solution.created_at?.toISOString(),
-      updatedAt: solution.updated_at?.toISOString()
+      sortOrder: solution.sortOrder,
+      createdAt: solution.createdAt?.toISOString(),
+      updatedAt: solution.updatedAt?.toISOString()
     };
 
     return NextResponse.json(transformedSolution);
@@ -113,19 +113,19 @@ export async function PUT(
       id: solution.id,
       title: solution.title,
       description: solution.description,
-      shortDescription: solution.short_description,
+      shortDescription: solution.shortDescription,
       category: solution.category,
       features: solution.features || [],
       benefits: solution.benefits || [],
-      useCases: solution.use_cases || [],
+      useCases: solution.useCases || [],
       pricing: solution.pricing,
-      imageUrl: solution.image_url,
-      iconName: solution.icon_name,
+      imageUrl: solution.imageUrl,
+      iconName: solution.iconName,
       status: solution.status,
       featured: solution.featured,
-      sortOrder: solution.sort_order,
-      createdAt: solution.created_at?.toISOString(),
-      updatedAt: solution.updated_at?.toISOString()
+      sortOrder: solution.sortOrder,
+      createdAt: solution.createdAt?.toISOString(),
+      updatedAt: solution.updatedAt?.toISOString()
     };
 
     return NextResponse.json(transformedSolution);
