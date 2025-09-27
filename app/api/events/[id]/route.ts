@@ -91,7 +91,18 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(result.rows[0]);
+    const event = result.rows[0] as any;
+    
+    // Add default fields if not present
+    const transformedEvent = {
+      ...event,
+      time: event.time || '',
+      category: event.category || 'Workshop',
+      status: event.status || 'published',
+      bannerUrl: event.banner_url || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop&crop=center", // Default image
+    };
+
+    return NextResponse.json(transformedEvent);
   } catch (error) {
     console.error('Error fetching event:', error);
     return NextResponse.json(
