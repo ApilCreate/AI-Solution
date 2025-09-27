@@ -3,6 +3,7 @@ import "./globals.css";
 import ConditionalLayout from "../components/ConditionalLayout";
 import Providers from "../components/Providers";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "AI Solutions",
@@ -74,6 +75,7 @@ export default function RootLayout({
             {children}
           </ConditionalLayout>
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
