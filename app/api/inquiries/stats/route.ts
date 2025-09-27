@@ -1,15 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { drizzle } from 'drizzle-orm/neon-http';
-import { neon } from '@neondatabase/serverless';
+import { db } from '../../../../db';
 import { inquiries } from '../../../../db/schema';
 import { sql } from 'drizzle-orm';
-
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL not found in environment variables');
-}
-
-const sqlConnection = neon(process.env.DATABASE_URL);
-const db = drizzle(sqlConnection);
 
 export async function GET() {
   try {

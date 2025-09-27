@@ -10,18 +10,28 @@ import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
 import * as schema from './schema';
 
-if (!process.env.DATABASE_URL) {
-  console.error('❌ DATABASE_URL environment variable is required');
-  console.log('💡 Please update your .env.local file with your Neon connection string:');
-  console.log('DATABASE_URL="postgresql://user:password@host/database?sslmode=require"');
-  throw new Error('DATABASE_URL environment variable is required');
+// Lazy initialization of database connection
+let _db: ReturnType<typeof drizzle> | null = null;
+
+function getDb() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error('DATABASE_URL environment variable is required. Please configure it in your Vercel environment variables.');
+  }
+  
+  if (!_db) {
+    const sql = neon(process.env.DATABASE_URL);
+    _db = drizzle(sql, { schema });
+  }
+  
+  return _db;
 }
 
-// Create the connection with improved settings
-const sql = neon(process.env.DATABASE_URL);
-
-// Create the db instance with schema
-export const db = drizzle(sql, { schema });
+// Export a function that returns the db instance
+export const db = new Proxy({} as ReturnType<typeof drizzle>, {
+  get(target, prop) {
+    return getDb()[prop as keyof ReturnType<typeof drizzle>];
+  }
+});
 
 // Database retry utility function
 export async function withRetry<T>(

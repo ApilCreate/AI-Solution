@@ -5,9 +5,14 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 });
 
 const nextConfig: NextConfig = {
-  // Skip linting during build
+  // Skip linting during build for faster deployments
   eslint: {
     ignoreDuringBuilds: true,
+  },
+  
+  // Skip type checking during build for faster deployments
+  typescript: {
+    ignoreBuildErrors: false, // Keep this false for production safety
   },
   
   // Performance optimizations
