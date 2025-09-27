@@ -2,19 +2,26 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import {
+  Activity,
   ArrowRight,
   Award,
+  BarChart3,
   Bot,
+  Brain,
   Building2,
   CheckCircle,
   ChevronRight,
+  Cpu,
+  Database,
   Eye,
   FileText,
   Globe,
   LineChart,
   Mic,
   Phone,
+  PieChart,
   Rocket,
+  Settings,
   Shield,
   Sparkles,
   Target,
@@ -33,92 +40,32 @@ const PointerHighlight = dynamic(() => import("../../components/ui/pointer-highl
 import H1Reveal from "../../components/H1Reveal";
 import { useOutsideClick } from "../../hooks/use-outside-click";
 
-const solutions = [
-  {
-    id: "ai-chatbots",
-    title: "AI Chatbots",
-    shortDescription: "Transform customer interactions with intelligent conversational AI",
-    description: "Transform customer interactions with intelligent conversational AI that understands context, learns from interactions, and provides 24/7 multilingual support across all platforms.",
-    icon: <Bot size={32} className="text-white" />,
-    badge: "Most Popular",
-    features: ["Natural Language Processing", "Multi-platform Integration", "Real-time Learning", "Sentiment Analysis"],
-    useCases: ["Customer Support", "Sales Assistance", "Internal Help Desk", "E-commerce Support"],
-    metrics: "90% faster response times",
-    color: "from-slate-700/20 to-slate-800/20",
-    borderColor: "border-slate-600/30",
-    category: "Communication"
-  },
-  {
-    id: "document-ai",
-    title: "Document AI",
-    shortDescription: "Revolutionize document processing with advanced OCR",
-    description: "Revolutionize document processing with advanced OCR, intelligent data extraction, and automated workflow integration for contracts, invoices, and reports.",
-    icon: <FileText size={32} className="text-white" />,
-    badge: "Enterprise Ready",
-    features: ["Smart OCR Technology", "Data Validation", "Workflow Automation", "Compliance Tracking"],
-    useCases: ["Contract Analysis", "Invoice Processing", "Compliance Reporting", "Legal Document Review"],
-    metrics: "85% reduction in processing time",
-    color: "from-gray-700/20 to-gray-800/20",
-    borderColor: "border-gray-600/30",
-    category: "Automation"
-  },
-  {
-    id: "vision-ai",
-    title: "Vision AI",
-    shortDescription: "Deploy cutting-edge computer vision solutions",
-    description: "Deploy cutting-edge computer vision for real-time object detection, quality control, security monitoring, and visual content analysis with enterprise-grade accuracy.",
-    icon: <Eye size={32} className="text-white" />,
-    badge: "High Accuracy",
-    features: ["Real-time Detection", "Custom Model Training", "Edge Computing", "3D Object Recognition"],
-    useCases: ["Quality Control", "Security Systems", "Inventory Management", "Medical Imaging"],
-    metrics: "99.2% accuracy rate",
-    color: "from-slate-600/20 to-slate-700/20",
-    borderColor: "border-slate-500/30",
-    category: "Vision"
-  },
-  {
-    id: "voice-ai",
-    title: "Voice AI",
-    shortDescription: "Enable natural voice interactions with advanced speech recognition",
-    description: "Enable natural voice interactions with advanced speech recognition, sentiment analysis, and text-to-speech capabilities for seamless user experiences.",
-    icon: <Mic size={32} className="text-white" />,
-    badge: "Voice First",
-    features: ["Speech Recognition", "Voice Synthesis", "Emotion Detection", "Multi-language Support"],
-    useCases: ["Voice Assistants", "Call Analytics", "Accessibility Solutions", "Voice Commerce"],
-    metrics: "95% voice recognition accuracy",
-    color: "from-gray-800/20 to-black/20",
-    borderColor: "border-gray-700/30",
-    category: "Speech"
-  },
-  {
-    id: "predictive-analytics",
-    title: "Predictive Analytics",
-    shortDescription: "Harness machine learning to forecast trends and optimize operations",
-    description: "Harness the power of machine learning to forecast trends, optimize operations, and make data-driven decisions that drive business growth and competitive advantage.",
-    icon: <LineChart size={32} className="text-white" />,
-    badge: "AI Powered",
-    features: ["Time Series Forecasting", "Anomaly Detection", "Risk Assessment", "Pattern Recognition"],
-    useCases: ["Demand Forecasting", "Fraud Detection", "Market Analysis", "Supply Chain Optimization"],
-    metrics: "40% improvement in forecasting accuracy",
-    color: "from-slate-800/20 to-gray-900/20",
-    borderColor: "border-slate-700/30",
-    category: "Analytics"
-  },
-  {
-    id: "recommendation-engines",
-    title: "Recommendation Engines",
-    shortDescription: "Boost engagement with AI-powered personalization",
-    description: "Boost engagement and revenue with AI-powered personalization that adapts to user behavior, preferences, and contextual signals in real-time to deliver perfect matches.",
-    icon: <Rocket size={32} className="text-white" />,
-    badge: "Revenue Boost",
-    features: ["Collaborative Filtering", "Content-based Filtering", "Hybrid Models", "Real-time Adaptation"],
-    useCases: ["E-commerce", "Content Platforms", "Product Discovery", "Personalized Marketing"],
-    metrics: "35% increase in user engagement",
-    color: "from-gray-600/20 to-slate-700/20",
-    borderColor: "border-gray-600/30",
-    category: "Personalization"
-  }
-];
+// Dynamic import for Lucide icons
+const getIcon = (iconName: string) => {
+  const icons: { [key: string]: any } = {
+    Bot, BarChart3, Database, Brain, Shield, Zap, Cpu, Globe, Users, Settings, TrendingUp, Target, PieChart, Activity, Eye, Mic, FileText, LineChart, Rocket
+  };
+  return icons[iconName] || Bot;
+};
+
+interface Solution {
+  id: string;
+  title: string;
+  description: string;
+  shortDescription: string;
+  category: string;
+  features: string[];
+  benefits: string[];
+  useCases: string[];
+  pricing: string;
+  imageUrl: string;
+  iconName: string;
+  status: 'draft' | 'published';
+  featured: boolean;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const benefits = [
   {
@@ -149,10 +96,31 @@ const benefits = [
 
 export default function SolutionsPage() {
   const router = useRouter();
-  const [active, setActive] = useState<(typeof solutions)[number] | boolean | null>(null);
+  const [solutions, setSolutions] = useState<Solution[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [active, setActive] = useState<Solution | boolean | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetchSolutions();
+  }, []);
+
+  const fetchSolutions = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/solutions/list?status=published');
+      if (response.ok) {
+        const data = await response.json();
+        setSolutions(data);
+      }
+    } catch (error) {
+      console.error('Error fetching solutions:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -173,9 +141,22 @@ export default function SolutionsPage() {
 
   useOutsideClick(ref as React.RefObject<HTMLDivElement>, () => setActive(null));
 
-  const handleLearnMore = (solution: typeof solutions[number]) => {
+  const handleLearnMore = (solution: Solution) => {
     setActive(solution);
   };
+
+  // Transform API data to match component expectations
+  const transformedSolutions = solutions.map(solution => {
+    const IconComponent = getIcon(solution.iconName);
+    return {
+      ...solution,
+      icon: <IconComponent size={32} className="text-white" />,
+      badge: solution.featured ? "Featured" : null,
+      metrics: solution.pricing || "Custom pricing available",
+      color: solution.featured ? "from-blue-700/20 to-blue-800/20" : "from-slate-700/20 to-slate-800/20",
+      borderColor: solution.featured ? "border-blue-600/30" : "border-slate-600/30"
+    };
+  });
 
   return (
     <main className="relative w-full overflow-hidden bg-black text-white">
@@ -407,7 +388,7 @@ export default function SolutionsPage() {
                           Key Features
                         </h4>
                         <div className="space-y-4">
-                          {active.features.map((feature, idx) => (
+                          {active.features && active.features.map((feature, idx) => (
                             <div key={idx} className="flex items-start gap-3 text-slate-300">
                               <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5" />
                               <span className="leading-relaxed text-lg">{feature}</span>
@@ -423,7 +404,7 @@ export default function SolutionsPage() {
                           Use Cases
                         </h4>
                         <div className="space-y-4">
-                          {active.useCases.map((useCase, idx) => (
+                          {active.useCases && active.useCases.map((useCase, idx) => (
                             <div key={idx} className="flex items-start gap-3 text-slate-300">
                               <div className="w-3 h-3 bg-blue-400 rounded-full flex-shrink-0 mt-2"></div>
                               <span className="leading-relaxed text-lg">{useCase}</span>
@@ -439,7 +420,7 @@ export default function SolutionsPage() {
                         <TrendingUp className="w-8 h-8 text-green-400" />
                         <span className="text-2xl font-semibold">Performance Metrics</span>
                       </div>
-                      <p className="text-slate-300 mt-2 text-xl">{active.metrics}</p>
+                      <p className="text-slate-300 mt-2 text-xl">{active.pricing || "Custom pricing available"}</p>
                     </div>
                   </div>
 
@@ -466,9 +447,23 @@ export default function SolutionsPage() {
             ) : null}
           </AnimatePresence>
 
-          {/* Solutions Grid with Proper Hover Effects */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {solutions.map((solution, index) => (
+          {/* Loading State */}
+          {loading ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, index) => (
+                <div key={index} className="bg-slate-800/50 rounded-2xl p-8 animate-pulse">
+                  <div className="w-16 h-16 bg-slate-700 rounded-xl mb-6"></div>
+                  <div className="h-4 bg-slate-700 rounded mb-2"></div>
+                  <div className="h-6 bg-slate-700 rounded mb-4"></div>
+                  <div className="h-20 bg-slate-700 rounded mb-4"></div>
+                  <div className="h-4 bg-slate-700 rounded"></div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            /* Solutions Grid with Proper Hover Effects */
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {transformedSolutions.map((solution, index) => (
               <div
                 key={`hover-card-${solution.title}-${id}`}
                 className="relative group block p-2 h-full w-full"
@@ -553,13 +548,13 @@ export default function SolutionsPage() {
                         Key Features
                       </div>
                       <div className="space-y-2">
-                        {solution.features.slice(0, 2).map((feature, idx) => (
+                        {solution.features && solution.features.slice(0, 2).map((feature, idx) => (
                           <div key={idx} className="text-base text-slate-300 flex items-center gap-3">
                             <div className="w-2 h-2 bg-slate-400 rounded-full"></div>
                             <span className="truncate">{feature}</span>
                           </div>
                         ))}
-                        {solution.features.length > 2 && (
+                        {solution.features && solution.features.length > 2 && (
                           <div className="text-base text-slate-400">+{solution.features.length - 2} more features</div>
                         )}
                       </div>
@@ -573,8 +568,9 @@ export default function SolutionsPage() {
                   </div>
                 </motion.div>
               </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

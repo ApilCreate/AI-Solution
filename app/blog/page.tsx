@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import staticBlogs from "@/data/blogs";
 import Link from "next/link";
-import { Clock, Calendar, ArrowRight, Loader2 } from "lucide-react";
+import { Clock, Calendar, ArrowRight, Loader2, BookOpen } from "lucide-react";
 import Galaxy from "../../components/Galaxy";
 import { PointerHighlight } from "../../components/ui/pointer-highlight";
 import H1Reveal from "../../components/H1Reveal";
@@ -138,8 +138,9 @@ export default function BlogPage() {
               className="space-y-6"
             >
               <div className="flex justify-center">
-                <span className="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-lg text-slate-300 border border-white/20">
-                  📝 Latest Insights & Stories
+                <span className="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-lg text-slate-300 border border-white/20 flex items-center gap-2">
+                  <BookOpen className="w-5 h-5" />
+                  Latest Insights & Stories
                 </span>
               </div>
               <H1Reveal>

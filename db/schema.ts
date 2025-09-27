@@ -113,6 +113,26 @@ export const ratings = pgTable('ratings', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
+// Solutions table for managing AI solutions
+export const solutions = pgTable('solutions', {
+  id: uuid('id').primaryKey().$defaultFn(() => randomUUID()),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description').notNull(),
+  shortDescription: text('short_description'), // Brief summary for cards
+  category: varchar('category', { length: 100 }).notNull(), // e.g., 'Analytics', 'Data Processing', 'AI Agents'
+  features: jsonb('features').$type<string[]>().default([]), // Array of features
+  benefits: jsonb('benefits').$type<string[]>().default([]), // Array of benefits
+  useCases: jsonb('use_cases').$type<string[]>().default([]), // Array of use cases
+  pricing: varchar('pricing', { length: 100 }), // e.g., 'Starting at $99/month', 'Custom pricing'
+  imageUrl: varchar('image_url', { length: 500 }),
+  iconName: varchar('icon_name', { length: 100 }), // Lucide icon name
+  status: varchar('status', { length: 20 }).default('draft').notNull(), // 'draft' or 'published'
+  featured: boolean('featured').default(false).notNull(), // Featured solution
+  sortOrder: integer('sort_order').default(0).notNull(), // For ordering solutions
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
 // Testimonials table for published feedback
 export const testimonials = pgTable('testimonials', {
   id: uuid('id').primaryKey().$defaultFn(() => randomUUID()),
@@ -148,6 +168,9 @@ export type NewActivityLog = typeof activityLogs.$inferInsert;
 
 export type Rating = typeof ratings.$inferSelect;
 export type NewRating = typeof ratings.$inferInsert;
+
+export type Solution = typeof solutions.$inferSelect;
+export type NewSolution = typeof solutions.$inferInsert;
 
 export type Testimonial = typeof testimonials.$inferSelect;
 export type NewTestimonial = typeof testimonials.$inferInsert;

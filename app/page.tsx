@@ -1,12 +1,10 @@
-﻿"use client";
+"use client";
 
 import { Activity, BarChart3, Bot, Brain, CheckSquare, Clipboard, Clock, Crown, Database, Globe, Link, Mail, Phone, RefreshCw, Rocket, Settings, Shield, Shuffle, Sparkles, Star, TrendingUp, Users, Webhook, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import LaserFlow from "../components/LaserFlow";
-import LightRays from "../components/LightRays";
-import LogoLoop from "../components/LogoLoop";
-import Magnet from "../components/Magnet";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import { BackgroundBeams } from "../components/ui/background-beams";
 import H1Reveal from "../components/H1Reveal";
 import { CometCard } from "../components/ui/comet-card";
@@ -15,8 +13,15 @@ import { HorizontalScroll } from "../components/ui/horizontal-scroll-reveal";
 import { InfiniteMovingCards } from "../components/ui/infinite-moving-cards";
 import { PointerHighlight } from "../components/ui/pointer-highlight";
 
+// Dynamic imports for heavy components
+const LaserFlow = dynamic(() => import("../components/LaserFlow"), { ssr: false });
+const LightRays = dynamic(() => import("../components/LightRays"), { ssr: false });
+const LogoLoop = dynamic(() => import("../components/LogoLoop"), { ssr: false });
+const Magnet = dynamic(() => import("../components/Magnet"), { ssr: false });
+
 export default function AILandingPage() {
   const router = useRouter();
+
 
   type Billing = "monthly" | "yearly";
 
@@ -563,9 +568,31 @@ export default function AILandingPage() {
         body, html {
           overflow-x: hidden;
         }
+        
+        /* Prevent layout shifts during hydration */
+        .hero-section {
+          min-height: 100vh;
+          background-color: #000000;
+        }
+        
+        /* Ensure content is visible during loading */
+        .hero-content {
+          opacity: 1;
+          visibility: visible;
+        }
+        
+        /* Prevent flash of unstyled content */
+        .bg-black {
+          background-color: #000000 !important;
+        }
+        
+        /* Ensure text is visible during loading */
+        .text-white {
+          color: #ffffff !important;
+        }
       `}</style>
       {/* Hero Section */}
-      <section className="min-h-screen flex justify-center items-center relative pt-20 md:pt-24">
+      <section className="hero-section min-h-screen flex justify-center items-center relative pt-20 md:pt-24">
         {/* Simple background first */}
         <div className="absolute inset-0 bg-black"></div>
         
@@ -592,86 +619,108 @@ export default function AILandingPage() {
         </div>
 
         {/* Content Container - Positioned at bottom like preview */}
-        <div className="flex flex-col justify-end items-center w-full max-w-6xl mx-auto px-6 relative z-20 min-h-screen pb-32">
+        <div className="hero-content flex flex-col justify-end items-center w-full max-w-6xl mx-auto px-6 relative z-20 min-h-screen pb-32">
           
           {/* Title and Description - Positioned above container */}
           <div className="text-center mb-16">
             <H1Reveal>
-            <h1 className="font-bold text-3xl sm:text-4xl md:text-6xl text-center text-white leading-tight drop-shadow-2xl mb-6">
-              AI-Driven Solutions for Modern <br />
-              <div className="flex justify-center">
-                <PointerHighlight
-                  pointerClassName="text-cyan-400"
-                  rectangleClassName="border-cyan-400/50"
-                >
-                  <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
-                    Businesses
-                  </span>
-                </PointerHighlight>
-              </div>
-            </h1>
+              <h1 className="font-bold text-3xl sm:text-4xl md:text-6xl text-center text-white leading-tight drop-shadow-2xl mb-6">
+                AI-Driven Solutions for Modern <br />
+                <div className="flex justify-center">
+                  <PointerHighlight
+                    pointerClassName="text-cyan-400"
+                    rectangleClassName="border-cyan-400/50"
+                  >
+                    <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
+                      Businesses
+                    </span>
+                  </PointerHighlight>
+                </div>
+              </h1>
             </H1Reveal>
 
-            <p className="text-gray-200 text-center text-sm sm:text-lg max-w-3xl drop-shadow-lg mb-8">
+            <motion.p 
+              className="text-gray-200 text-center text-sm sm:text-lg max-w-3xl drop-shadow-lg mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
               "Innovate. Automate. Thrive." Our AI-driven solutions empower
               modern businesses to streamline processes, personalize experiences,
               and stay ahead in the digital age.
-            </p>
+            </motion.p>
 
-            <Magnet magnetStrength={2} padding={100}>
-              <button 
-                onClick={() => router.push('/contact')}
-                className="bg-white text-black no-underline group cursor-pointer relative shadow-2xl shadow-white/20 rounded-full px-6 sm:px-8 py-2 sm:py-3 text-xs sm:text-sm font-semibold leading-6 inline-block transition-all duration-300 hover:scale-105 hover:shadow-white/40"
-              >
-                <span className="absolute inset-0 overflow-hidden rounded-full">
-                  <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
-                </span>
-                <div className="relative flex space-x-2 items-center z-10 rounded-full">
-                  <span className="text-black font-medium">Book a demo</span>
-                </div>
-                <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-black/0 via-black/30 to-black/0 transition-opacity duration-500 group-hover:opacity-40"></span>
-              </button>
-            </Magnet>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              <Magnet magnetStrength={2} padding={100}>
+                <button 
+                  onClick={() => router.push('/contact')}
+                  className="bg-white text-black no-underline group cursor-pointer relative shadow-2xl shadow-white/20 rounded-full px-6 sm:px-8 py-2 sm:py-3 text-xs sm:text-sm font-semibold leading-6 inline-block transition-all duration-300 hover:scale-105 hover:shadow-white/40"
+                >
+                  <span className="absolute inset-0 overflow-hidden rounded-full">
+                    <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
+                  </span>
+                  <div className="relative flex space-x-2 items-center z-10 rounded-full">
+                    <span className="text-black font-medium">Book a demo</span>
+                  </div>
+                  <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-black/0 via-black/30 to-black/0 transition-opacity duration-500 group-hover:opacity-40"></span>
+                </button>
+              </Magnet>
+            </motion.div>
           </div>
 
           {/* Container exactly like preview - where laser lands */}
-          <div className="w-full max-w-5xl">
+          <motion.div 
+            className="w-full max-w-5xl"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+          >
             {/* Outer container with rounded border - like preview */}
             <div className="p-4 rounded-3xl border-2 border-white/20 bg-gradient-to-b from-white/10 to-transparent backdrop-blur-sm">
               {/* Inner dark container */}
               <div className="bg-black/80 backdrop-blur-xl rounded-2xl p-8">
                 
                 {/* Happy Customers Badge - centered */}
-                <div className="mb-8 flex justify-center">
+                <motion.div 
+                  className="mb-8 flex justify-center"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: 1.0 }}
+                >
                   <div className="bg-black/60 backdrop-blur-xl border border-white/30 rounded-full px-6 py-2">
                     <span className="text-white text-sm font-medium">
                       30k+ Happy Customers
                     </span>
                   </div>
-                </div>
+                </motion.div>
                 
                 {/* Statistics Grid - Responsive */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                  <div className="bg-black/60 backdrop-blur-xl border border-white/20 rounded-xl p-6 text-center">
-                    <div className="text-2xl sm:text-3xl font-bold text-white mb-2">380+</div>
-                    <div className="text-xs sm:text-sm text-gray-300">Active Users</div>
-                  </div>
-                  <div className="bg-black/60 backdrop-blur-xl border border-white/20 rounded-xl p-6 text-center">
-                    <div className="text-2xl sm:text-3xl font-bold text-white mb-2">230+</div>
-                    <div className="text-xs sm:text-sm text-gray-300">Trusted by Company</div>
-                  </div>
-                  <div className="bg-black/60 backdrop-blur-xl border border-white/20 rounded-xl p-6 text-center">
-                    <div className="text-2xl sm:text-3xl font-bold text-white mb-2">$230M+</div>
-                    <div className="text-xs sm:text-sm text-gray-300">Transaction</div>
-                  </div>
-                  <div className="bg-black/60 backdrop-blur-xl border border-white/20 rounded-xl p-6 text-center">
-                    <div className="text-2xl sm:text-3xl font-bold text-white mb-2">10+</div>
-                    <div className="text-xs sm:text-sm text-gray-300">Years of Experience</div>
-                  </div>
+                  {[
+                    { value: "380+", label: "Active Users" },
+                    { value: "230+", label: "Trusted by Company" },
+                    { value: "$230M+", label: "Transaction" },
+                    { value: "10+", label: "Years of Experience" }
+                  ].map((stat, index) => (
+                    <motion.div 
+                      key={index}
+                      className="bg-black/60 backdrop-blur-xl border border-white/20 rounded-xl p-6 text-center"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 1.2 + (index * 0.1) }}
+                    >
+                      <div className="text-2xl sm:text-3xl font-bold text-white mb-2">{stat.value}</div>
+                      <div className="text-xs sm:text-sm text-gray-300">{stat.label}</div>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
 
         </div>

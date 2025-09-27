@@ -57,7 +57,7 @@ export default function EventsPage() {
           const contentType = response.headers.get('content-type');
           if (contentType && contentType.includes('application/json')) {
             const allEvents = await response.json();
-            console.log('✅ Fetched events:', allEvents);
+            console.log(' Fetched events:', allEvents);
             
             // Filter only published events and sort by date
             const publishedEvents = allEvents
@@ -67,14 +67,14 @@ export default function EventsPage() {
             setUpcomingEvents(publishedEvents);
           } else {
             const text = await response.text();
-            console.error('❌ API returned non-JSON response:', text);
+            console.error(' API returned non-JSON response:', text);
           }
         } else {
           const text = await response.text();
-          console.error('❌ API request failed:', response.status, text);
+          console.error(' API request failed:', response.status, text);
         }
       } catch (error) {
-        console.error('❌ Failed to fetch events:', error);
+        console.error('Failed to fetch events:', error);
       } finally {
         setLoading(false);
       }
@@ -159,7 +159,7 @@ export default function EventsPage() {
               <div className="flex justify-center">
                 <PointerHighlight>
                   <span className="bg-gradient-to-r from-[#00FFB7] to-[#0000E0] bg-clip-text text-transparent">
-                    Upcoming AI Events
+                    Upcoming Events
                   </span>
                 </PointerHighlight>
               </div>
