@@ -255,6 +255,21 @@ export async function DELETE(
 
     logInfo('Inquiry deleted', { inquiryId: id });
 
+    // Log activity for the deletion
+    await logActivity({
+      action: ACTIVITY_TYPES.INQUIRY_DELETED,
+      description: `Deleted inquiry from ${deletedInquiry.name} (${deletedInquiry.email})`,
+      targetType: 'inquiry',
+      targetId: id,
+      metadata: {
+        inquiryTitle: deletedInquiry.messageTitle,
+        inquiryName: deletedInquiry.name,
+        inquiryEmail: deletedInquiry.email,
+        deletionReason: 'Manual deletion by admin'
+      },
+      request
+    });
+
     return NextResponse.json(
       { message: 'Inquiry deleted successfully' },
       { status: 200 }

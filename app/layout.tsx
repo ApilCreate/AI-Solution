@@ -4,6 +4,7 @@ import ConditionalLayout from "../components/ConditionalLayout";
 import Providers from "../components/Providers";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { Analytics } from "@vercel/analytics/next";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "AI Solutions",
@@ -76,6 +77,29 @@ export default function RootLayout({
           </ConditionalLayout>
         </Providers>
         <Analytics />
+        <Toaster 
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: 'var(--toast-bg)',
+              color: 'var(--toast-color)',
+              border: '1px solid var(--toast-border)',
+            },
+            success: {
+              iconTheme: {
+                primary: '#10b981',
+                secondary: '#ffffff',
+              },
+            },
+            error: {
+              iconTheme: {
+                primary: '#ef4444',
+                secondary: '#ffffff',
+              },
+            },
+          }}
+        />
       </body>
     </html>
   );

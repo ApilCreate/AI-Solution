@@ -47,13 +47,9 @@ export const events = pgTable('events', {
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
   date: date('date').notNull(),
-  time: varchar('time', { length: 50 }),
   location: varchar('location', { length: 255 }).notNull(),
-  category: varchar('category', { length: 100 }),
   bannerUrl: varchar('banner_url', { length: 500 }),
-  status: varchar('status', { length: 20 }).default('draft').notNull(), // 'draft' or 'published'
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
 // Event RSVPs table for tracking event attendees
@@ -167,6 +163,62 @@ export const testimonials = pgTable('testimonials', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
+// Enhanced backup metadata table for tracking backups
+export const backupMetadata = pgTable('backup_metadata', {
+  id: uuid('id').primaryKey().$defaultFn(() => randomUUID()),
+  name: varchar('name', { length: 255 }).notNull(),
+  description: text('description'),
+  backupType: varchar('backup_type', { length: 50 }).notNull(), // 'manual', 'scheduled', 'automatic', 'recovery'
+  status: varchar('status', { length: 20 }).default('in_progress').notNull(), // 'in_progress', 'completed', 'failed'
+  tablesIncluded: jsonb('tables_included').$type<string[]>().notNull(), // Array of table names
+  recordCount: integer('record_count').default(0).notNull(),
+  fileSize: integer('file_size').default(0).notNull(), // Size in bytes
+  filePath: varchar('file_path', { length: 500 }), // Path to backup file
+  dateFrom: timestamp('date_from', { withTimezone: true }), // Start date for backup
+  dateTo: timestamp('date_to', { withTimezone: true }), // End date for backup
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(), // 3-6 months from creation
+  createdBy: uuid('created_by').references(() => adminUsers.id, { onDelete: 'cascade' }).notNull(),
+  recoveryPoint: boolean('recovery_point').default(false).notNull(), // Whether this is a recovery backup
+});
+
+// Enhanced backup data table for storing historical data
+export const backupData = pgTable('backup_data', {
+  id: uuid('id').primaryKey().$defaultFn(() => randomUUID()),
+  backupId: uuid('backup_id').references(() => backupMetadata.id, { onDelete: 'cascade' }).notNull(),
+  tableName: varchar('table_name', { length: 100 }).notNull(),
+  recordId: varchar('record_id', { length: 255 }).notNull(), // Original record ID
+  operation: varchar('operation', { length: 20 }).notNull(), // 'INSERT', 'UPDATE', 'DELETE'
+  data: jsonb('data').$type<Record<string, any>>().notNull(), // The actual record data
+  originalCreatedAt: timestamp('original_created_at', { withTimezone: true }),
+  originalUpdatedAt: timestamp('original_updated_at', { withTimezone: true }),
+  backedUpAt: timestamp('backed_up_at', { withTimezone: true }).defaultNow().notNull(),
+  isDeleted: boolean('is_deleted').default(false).notNull(), // Whether this record was deleted
+});
+
+// Deleted records table for tracking deleted data
+export const deletedRecords = pgTable('deleted_records', {
+  id: uuid('id').primaryKey().$defaultFn(() => randomUUID()),
+  tableName: varchar('table_name', { length: 100 }).notNull(),
+  recordId: varchar('record_id', { length: 255 }).notNull(), // Original record ID
+  deletedData: jsonb('deleted_data').$type<Record<string, any>>().notNull(), // The data that was deleted
+  deletedAt: timestamp('deleted_at', { withTimezone: true }).defaultNow().notNull(),
+  deletedBy: uuid('deleted_by').references(() => adminUsers.id, { onDelete: 'set null' }), // Who deleted the record
+  reason: varchar('reason', { length: 255 }), // Reason for deletion
+  originalCreatedAt: timestamp('original_created_at', { withTimezone: true }),
+  originalUpdatedAt: timestamp('original_updated_at', { withTimezone: true }),
+  recovered: boolean('recovered').default(false).notNull(), // Whether this record has been recovered
+});
+
+// Table metadata for tracking data ranges
+export const tableMetadata = pgTable('table_metadata', {
+  tableName: varchar('table_name', { length: 100 }).primaryKey().notNull(),
+  firstRecordDate: timestamp('first_record_date', { withTimezone: true }),
+  lastRecordDate: timestamp('last_record_date', { withTimezone: true }),
+  totalRecords: integer('total_records').default(0).notNull(),
+  lastUpdated: timestamp('last_updated', { withTimezone: true }).defaultNow().notNull(),
+});
+
 // Type exports for TypeScript
 export type Inquiry = typeof inquiries.$inferSelect;
 export type NewInquiry = typeof inquiries.$inferInsert;
@@ -197,3 +249,15 @@ export type NewDemoBooking = typeof demoBookings.$inferInsert;
 
 export type Testimonial = typeof testimonials.$inferSelect;
 export type NewTestimonial = typeof testimonials.$inferInsert;
+
+export type BackupMetadata = typeof backupMetadata.$inferSelect;
+export type NewBackupMetadata = typeof backupMetadata.$inferInsert;
+
+export type BackupData = typeof backupData.$inferSelect;
+export type NewBackupData = typeof backupData.$inferInsert;
+
+export type DeletedRecord = typeof deletedRecords.$inferSelect;
+export type NewDeletedRecord = typeof deletedRecords.$inferInsert;
+
+export type TableMetadata = typeof tableMetadata.$inferSelect;
+export type NewTableMetadata = typeof tableMetadata.$inferInsert;

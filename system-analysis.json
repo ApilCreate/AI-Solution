@@ -1,0 +1,1001 @@
+{
+  "system_overview": {
+    "name": "AI Solution Platform",
+    "description": "A cutting-edge full-stack web application showcasing AI-powered business solutions with modern design, comprehensive admin tools, and seamless deployment capabilities",
+    "version": "0.1.0",
+    "technology_stack": {
+      "frontend": {
+        "framework": "Next.js 15.4.4",
+        "ui_library": "React 19.1.0",
+        "language": "TypeScript 5.0",
+        "styling": "Tailwind CSS 3.4",
+        "animations": ["Framer Motion 12.23", "GSAP 3.13"],
+        "3d_graphics": ["Three.js 0.180", "React Three Fiber 9.0", "Spline 4.1.0"],
+        "particles": "TSParticles 3.9",
+        "charts": "Recharts 3.2.1",
+        "notifications": "React Hot Toast",
+        "ui_components": "Lucide React Icons"
+      },
+      "backend": {
+        "database": "Neon Database (PostgreSQL)",
+        "orm": "Drizzle ORM 0.44",
+        "email_service": "Resend",
+        "validation": "Zod 4.0",
+        "authentication": "JWT",
+        "password_hashing": "bcrypt"
+      },
+      "deployment": {
+        "platform": "Vercel",
+        "analytics": "Vercel Analytics",
+        "monitoring": "Built-in performance monitoring"
+      }
+    }
+  },
+  "modules": {
+    "user_facing": [
+      {
+        "name": "Home Page",
+        "route": "/",
+        "description": "AI solutions showcase with 3D elements and interactive demos",
+        "features": ["3D animations", "Interactive showcases", "Call-to-action sections", "Performance metrics"]
+      },
+      {
+        "name": "Solutions Page",
+        "route": "/solutions",
+        "description": "Detailed AI service offerings with categories and features",
+        "features": ["Solution categories", "Feature comparisons", "Pricing information", "Demo booking"]
+      },
+      {
+        "name": "Blog",
+        "route": "/blog",
+        "description": "Public blog with articles and content management",
+        "features": ["Article listings", "Markdown support", "Category filtering", "Search functionality"]
+      },
+      {
+        "name": "Events",
+        "route": "/events",
+        "description": "Event listings and detailed event information",
+        "features": ["Event calendar", "RSVP functionality", "Event details", "Location information"]
+      },
+      {
+        "name": "Contact",
+        "route": "/contact",
+        "description": "Contact form with inquiry submission and 3D elements",
+        "features": ["Multi-field form", "Validation", "3D background", "Success/error states"]
+      },
+      {
+        "name": "Testimonials",
+        "route": "/testimonials",
+        "description": "Customer reviews and feedback display",
+        "features": ["Rating display", "Customer testimonials", "Filtering options", "Admin moderation"]
+      },
+      {
+        "name": "Book Demo",
+        "route": "/book-demo",
+        "description": "Interactive demo booking system for AI solutions",
+        "features": ["Solution selection", "Scheduling", "Form validation", "Email confirmations"]
+      }
+    ],
+    "admin_facing": [
+      {
+        "name": "Admin Dashboard",
+        "route": "/admin/dashboard",
+        "description": "Main admin dashboard with analytics and overview",
+        "features": ["Real-time metrics", "Charts and graphs", "Quick actions", "Recent activity"]
+      },
+      {
+        "name": "Analytics",
+        "route": "/admin/analytics",
+        "description": "Detailed analytics with charts and insights",
+        "features": ["Country-based analytics", "Reason-based analytics", "Source tracking", "Time-series data"]
+      },
+      {
+        "name": "Inquiry Management",
+        "route": "/admin/inquiries",
+        "description": "Manage customer inquiries with filtering and responses",
+        "features": ["Inquiry listing", "Status management", "Admin responses", "Filtering and search"]
+      },
+      {
+        "name": "Blog Management",
+        "route": "/admin/blog",
+        "description": "Create and manage blog posts with rich text editing",
+        "features": ["CRUD operations", "Rich text editor", "Image uploads", "Publishing workflow"]
+      },
+      {
+        "name": "Event Management",
+        "route": "/admin/events",
+        "description": "Event creation and management system",
+        "features": ["Event CRUD", "RSVP tracking", "Status management", "Banner uploads"]
+      },
+      {
+        "name": "Demo Booking Management",
+        "route": "/admin/bookings",
+        "description": "Manage AI solution demonstration bookings",
+        "features": ["Booking listing", "Scheduling", "Status updates", "Admin notes"]
+      },
+      {
+        "name": "AI Solutions Management",
+        "route": "/admin/solutions",
+        "description": "Create and manage AI service offerings",
+        "features": ["Solution CRUD", "Feature management", "Pricing setup", "Category organization"]
+      },
+      {
+        "name": "Rating & Testimonial Management",
+        "route": "/admin/ratings",
+        "description": "Handle customer ratings and reviews",
+        "features": ["Rating moderation", "Testimonial creation", "Status management", "Admin replies"]
+      },
+      {
+        "name": "Settings",
+        "route": "/admin/settings",
+        "description": "System configuration and user management",
+        "features": ["Password change", "Activity logs", "User preferences", "System diagnostics", "Enhanced backup management", "Deleted data recovery"]
+      }
+    ],
+    "system_services": [
+      {
+        "name": "Authentication & Authorization",
+        "description": "JWT-based authentication with session management",
+        "features": ["Admin login", "Session validation", "Route protection", "Password hashing"]
+      },
+      {
+        "name": "Email Service",
+        "description": "Resend integration for email delivery",
+        "features": ["Inquiry confirmations", "Admin notifications", "Demo confirmations", "Status tracking"]
+      },
+      {
+        "name": "Database Operations",
+        "description": "PostgreSQL database with Drizzle ORM",
+        "features": ["CRUD operations", "Query optimization", "Migrations", "Connection pooling"]
+      },
+      {
+        "name": "Rate Limiting & Validation",
+        "description": "API protection and input validation",
+        "features": ["Rate limiting", "Input sanitization", "XSS protection", "CSRF protection"]
+      },
+      {
+        "name": "Activity Logging",
+        "description": "Comprehensive activity tracking system",
+        "features": ["Admin actions", "User interactions", "System events", "Audit trails"]
+      },
+      {
+        "name": "Analytics Data Processing",
+        "description": "Real-time analytics and reporting",
+        "features": ["Data aggregation", "Chart generation", "Export functionality", "Performance metrics"]
+      },
+      {
+        "name": "File Upload & Media Management",
+        "description": "Image and media handling",
+        "features": ["Image optimization", "WebP/AVIF support", "File validation", "Storage management"]
+      },
+      {
+        "name": "Data Export",
+        "description": "Export functionality for analytics and user data",
+        "features": ["CSV export", "PDF reports", "Data filtering", "Bulk operations"]
+      },
+      {
+        "name": "Enhanced Backup & Recovery",
+        "description": "Comprehensive backup and data recovery system",
+        "features": ["Table-specific backups", "Deleted data tracking", "CSV export", "Dual storage", "Dynamic date ranges", "3-month retention", "Recovery operations", "Permanent deletion"]
+      }
+    ]
+  },
+  "data_stores": [
+    {
+      "name": "Inquiries",
+      "table": "inquiries",
+      "description": "Contact form submissions and customer inquiries",
+      "primary_key": "id (uuid)",
+      "fields": [
+        "id", "name", "email", "phone", "company", "country", "occupation",
+        "reason", "howDidYouHear", "messageTitle", "message", "adminResponse",
+        "respondedAt", "status", "tags", "source", "createdAt"
+      ],
+      "relationships": [
+        "ActivityLogs (one-to-many) - inquiries.id -> activity_logs.targetId"
+      ]
+    },
+    {
+      "name": "Demo Bookings",
+      "table": "demo_bookings",
+      "description": "AI solution demonstration booking requests",
+      "primary_key": "id (uuid)",
+      "fields": [
+        "id", "name", "email", "company", "solutionId", "solutionName",
+        "message", "preferredDate", "preferredTime", "status", "adminNotes",
+        "adminReply", "repliedAt", "scheduledAt", "createdAt", "updatedAt"
+      ],
+      "relationships": [
+        "Solutions (many-to-one) - demo_bookings.solutionId -> solutions.id",
+        "ActivityLogs (one-to-many) - demo_bookings.id -> activity_logs.targetId"
+      ]
+    },
+    {
+      "name": "Solutions",
+      "table": "solutions",
+      "description": "AI solution offerings and services",
+      "primary_key": "id (uuid)",
+      "fields": [
+        "id", "title", "description", "shortDescription", "category", "features",
+        "benefits", "useCases", "pricing", "imageUrl", "iconName", "status",
+        "featured", "sortOrder", "createdAt", "updatedAt"
+      ],
+      "relationships": [
+        "DemoBookings (one-to-many) - solutions.id -> demo_bookings.solutionId"
+      ]
+    },
+    {
+      "name": "Blogs",
+      "table": "blogs",
+      "description": "Blog posts and articles",
+      "primary_key": "id (uuid)",
+      "fields": [
+        "id", "title", "content", "excerpt", "author", "image", "category",
+        "tags", "readTime", "status", "publishedAt", "createdAt", "updatedAt"
+      ],
+      "relationships": []
+    },
+    {
+      "name": "Events",
+      "table": "events",
+      "description": "Events and conferences",
+      "primary_key": "id (uuid)",
+      "fields": [
+        "id", "title", "description", "date", "time", "location", "category",
+        "bannerUrl", "status", "createdAt", "updatedAt"
+      ],
+      "relationships": [
+        "EventRsvps (one-to-many) - events.id -> event_rsvps.eventId"
+      ]
+    },
+    {
+      "name": "Event RSVPs",
+      "table": "event_rsvps",
+      "description": "Event RSVP registrations",
+      "primary_key": "id (uuid)",
+      "fields": [
+        "id", "eventId", "name", "email", "company", "attendees", "createdAt"
+      ],
+      "relationships": [
+        "Events (many-to-one) - event_rsvps.eventId -> events.id"
+      ]
+    },
+    {
+      "name": "Ratings",
+      "table": "ratings",
+      "description": "Customer ratings and feedback",
+      "primary_key": "id (uuid)",
+      "fields": [
+        "id", "name", "email", "rating", "comment", "isPublished", "adminReply",
+        "repliedAt", "status", "createdAt", "updatedAt"
+      ],
+      "relationships": [
+        "Testimonials (one-to-one) - ratings.id -> testimonials.ratingId"
+      ]
+    },
+    {
+      "name": "Testimonials",
+      "table": "testimonials",
+      "description": "Published customer testimonials",
+      "primary_key": "id (uuid)",
+      "fields": [
+        "id", "ratingId", "name", "role", "company", "testimonial", "rating",
+        "status", "createdAt", "updatedAt"
+      ],
+      "relationships": [
+        "Ratings (one-to-one) - testimonials.ratingId -> ratings.id"
+      ]
+    },
+    {
+      "name": "Admin Users",
+      "table": "admin_users",
+      "description": "Admin user authentication and authorization",
+      "primary_key": "id (uuid)",
+      "fields": ["id", "email", "passwordHash", "role", "createdAt"],
+      "relationships": [
+        "ActivityLogs (one-to-many) - admin_users.id -> activity_logs.adminId"
+      ]
+    },
+    {
+      "name": "Activity Logs",
+      "table": "activity_logs",
+      "description": "System activity tracking and audit logs",
+      "primary_key": "id (uuid)",
+      "fields": [
+        "id", "adminId", "action", "description", "targetType", "targetId",
+        "metadata", "ipAddress", "userAgent", "createdAt"
+      ],
+      "relationships": [
+        "AdminUsers (many-to-one) - activity_logs.adminId -> admin_users.id",
+        "Inquiries (many-to-one) - activity_logs.targetId -> inquiries.id (when targetType='inquiry')",
+        "DemoBookings (many-to-one) - activity_logs.targetId -> demo_bookings.id (when targetType='booking')"
+      ]
+    },
+    {
+      "name": "Backup Metadata",
+      "table": "backup_metadata",
+      "description": "Backup creation metadata and configuration",
+      "primary_key": "id (uuid)",
+      "fields": [
+        "id", "name", "description", "tables", "createdBy", "dateFrom", 
+        "dateTo", "recoveryPoint", "createdAt"
+      ],
+      "relationships": [
+        "AdminUsers (many-to-one) - backup_metadata.createdBy -> admin_users.id",
+        "BackupData (one-to-many) - backup_metadata.id -> backup_data.backupId"
+      ]
+    },
+    {
+      "name": "Backup Data",
+      "table": "backup_data",
+      "description": "Actual backup data storage",
+      "primary_key": "id (uuid)",
+      "fields": [
+        "id", "backupId", "tableName", "recordData", "isDeleted", "createdAt"
+      ],
+      "relationships": [
+        "BackupMetadata (many-to-one) - backup_data.backupId -> backup_metadata.id"
+      ]
+    },
+    {
+      "name": "Deleted Records",
+      "table": "deleted_records",
+      "description": "Tracked deleted records for recovery",
+      "primary_key": "id (uuid)",
+      "fields": [
+        "id", "tableName", "recordId", "deletedData", "deletedAt", 
+        "deletedBy", "reason", "originalCreatedAt", "originalUpdatedAt", "recovered"
+      ],
+      "relationships": [
+        "AdminUsers (many-to-one) - deleted_records.deletedBy -> admin_users.id"
+      ]
+    },
+    {
+      "name": "Table Metadata",
+      "table": "table_metadata",
+      "description": "Metadata about table data ranges and statistics",
+      "primary_key": "tableName",
+      "fields": [
+        "tableName", "firstRecordDate", "lastRecordDate", "totalRecords", "lastUpdated"
+      ],
+      "relationships": []
+    }
+  ],
+  "api_endpoints": {
+    "authentication": [
+      {
+        "endpoint": "/api/auth/login",
+        "method": "POST",
+        "description": "Admin user authentication",
+        "features": ["Credential validation", "JWT token generation", "Session management"]
+      },
+      {
+        "endpoint": "/api/auth/logout",
+        "method": "POST",
+        "description": "Admin user logout",
+        "features": ["Session invalidation", "Token cleanup"]
+      },
+      {
+        "endpoint": "/api/auth/session",
+        "method": "GET",
+        "description": "Session validation",
+        "features": ["Token verification", "User data retrieval"]
+      },
+      {
+        "endpoint": "/api/auth/change-password",
+        "method": "POST",
+        "description": "Password change functionality",
+        "features": ["Current password verification", "New password hashing", "Activity logging"]
+      }
+    ],
+    "inquiries": [
+      {
+        "endpoint": "/api/inquiries",
+        "method": "POST",
+        "description": "Create new inquiry",
+        "features": ["Form validation", "Rate limiting", "Email confirmation", "Activity logging"]
+      },
+      {
+        "endpoint": "/api/inquiries/list",
+        "method": "GET",
+        "description": "List inquiries with filtering",
+        "features": ["Pagination", "Status filtering", "Search functionality", "Date filtering"]
+      },
+      {
+        "endpoint": "/api/inquiries/stats",
+        "method": "GET",
+        "description": "Inquiry statistics",
+        "features": ["Count analytics", "Status breakdown", "Time-based metrics"]
+      },
+      {
+        "endpoint": "/api/inquiries/[id]",
+        "method": "PUT/DELETE",
+        "description": "Update or delete inquiry",
+        "features": ["Status updates", "Admin responses", "Delete functionality", "Activity logging"]
+      }
+    ],
+    "demo_bookings": [
+      {
+        "endpoint": "/api/demo-bookings",
+        "method": "POST",
+        "description": "Create demo booking",
+        "features": ["Form validation", "Solution validation", "Email confirmation"]
+      },
+      {
+        "endpoint": "/api/demo-bookings/[id]",
+        "method": "PUT",
+        "description": "Update demo booking",
+        "features": ["Status updates", "Scheduling", "Admin notes"]
+      }
+    ],
+    "content_management": [
+      {
+        "endpoint": "/api/blogs",
+        "method": "GET/POST",
+        "description": "Blog management",
+        "features": ["List blogs", "Create blog", "Status filtering"]
+      },
+      {
+        "endpoint": "/api/events",
+        "method": "GET/POST",
+        "description": "Event management",
+        "features": ["List events", "Create event", "Status management"]
+      },
+      {
+        "endpoint": "/api/solutions",
+        "method": "GET/POST",
+        "description": "AI solutions management",
+        "features": ["List solutions", "Create solution", "Category management"]
+      },
+      {
+        "endpoint": "/api/ratings",
+        "method": "GET/POST",
+        "description": "Rating and testimonial management",
+        "features": ["List ratings", "Create rating", "Moderation"]
+      }
+    ],
+    "analytics": [
+      {
+        "endpoint": "/api/analytics/overview",
+        "method": "GET",
+        "description": "Overview analytics",
+        "features": ["Total counts", "Recent activity", "Pending items"]
+      },
+      {
+        "endpoint": "/api/analytics/by-country",
+        "method": "GET",
+        "description": "Country-based analytics",
+        "features": ["Geographic distribution", "Percentage breakdown"]
+      },
+      {
+        "endpoint": "/api/analytics/by-reason",
+        "method": "GET",
+        "description": "Reason-based analytics",
+        "features": ["Inquiry reasons", "Trend analysis"]
+      },
+      {
+        "endpoint": "/api/analytics/over-time",
+        "method": "GET",
+        "description": "Time-series analytics",
+        "features": ["Historical data", "Trend visualization"]
+      }
+    ],
+    "system": [
+      {
+        "endpoint": "/api/diagnostic",
+        "method": "GET",
+        "description": "System diagnostics",
+        "features": ["Health checks", "Performance metrics", "Database status"]
+      },
+      {
+        "endpoint": "/api/export/inquiries",
+        "method": "GET",
+        "description": "Export inquiries data",
+        "features": ["CSV export", "Data filtering", "Bulk operations"]
+      },
+      {
+        "endpoint": "/api/email/status",
+        "method": "POST",
+        "description": "Email delivery status",
+        "features": ["Delivery tracking", "Status updates", "Error handling"]
+      }
+    ],
+    "backup_management": [
+      {
+        "endpoint": "/api/backups",
+        "method": "GET/POST",
+        "description": "List and create backups",
+        "features": ["Backup listing", "Backup creation", "Table selection", "Date range filtering"]
+      },
+      {
+        "endpoint": "/api/backups/[id]",
+        "method": "GET/DELETE",
+        "description": "Get or delete backup",
+        "features": ["Backup details", "Backup deletion", "Metadata retrieval"]
+      },
+      {
+        "endpoint": "/api/backups/[id]/download",
+        "method": "GET",
+        "description": "Download backup as CSV",
+        "features": ["CSV generation", "File download", "Data export"]
+      },
+      {
+        "endpoint": "/api/backups/[id]/restore",
+        "method": "POST",
+        "description": "Restore from backup",
+        "features": ["Data restoration", "Table recreation", "Conflict resolution"]
+      },
+      {
+        "endpoint": "/api/backups/table-ranges",
+        "method": "GET",
+        "description": "Get dynamic date ranges for tables",
+        "features": ["Date range detection", "Table metadata", "Dynamic filtering"]
+      },
+      {
+        "endpoint": "/api/backups/deleted-data",
+        "method": "GET/POST",
+        "description": "Manage deleted data",
+        "features": ["Deleted records listing", "CSV export", "Recovery filtering"]
+      },
+      {
+        "endpoint": "/api/backups/recover",
+        "method": "POST",
+        "description": "Recover deleted records",
+        "features": ["Record recovery", "Bulk operations", "Data validation"]
+      },
+      {
+        "endpoint": "/api/backups/permanent-delete",
+        "method": "POST",
+        "description": "Permanently delete records",
+        "features": ["Permanent deletion", "Bulk operations", "Audit logging"]
+      },
+      {
+        "endpoint": "/api/backups/cleanup",
+        "method": "POST",
+        "description": "Cleanup expired backups",
+        "features": ["Retention policy", "Automatic cleanup", "Expired data removal"]
+      }
+    ]
+  },
+  "actors": [
+    {
+      "name": "Visitor",
+      "type": "External Entity",
+      "description": "Website visitors who browse content, submit inquiries, and book demos",
+      "interactions": [
+        "Browse AI solutions showcase",
+        "Submit contact inquiries",
+        "Book AI solution demos",
+        "View blog posts and events",
+        "Submit ratings and feedback"
+      ]
+    },
+    {
+      "name": "Admin",
+      "type": "External Entity", 
+      "description": "System administrators who manage content, respond to inquiries, and monitor analytics",
+      "interactions": [
+        "Authenticate and access admin dashboard",
+        "Manage inquiries and demo bookings with delete functionality",
+        "Create and edit content (blogs, events, solutions)",
+        "Monitor analytics and system health",
+        "Respond to customer communications",
+        "Create and manage data backups",
+        "Recover accidentally deleted records",
+        "Export data in CSV format",
+        "Configure backup retention policies",
+        "Monitor deleted data and perform cleanup operations"
+      ]
+    },
+    {
+      "name": "Email Service (Resend)",
+      "type": "External Entity",
+      "description": "Third-party email delivery service for sending notifications and confirmations",
+      "interactions": [
+        "Send inquiry confirmation emails",
+        "Send demo booking confirmations",
+        "Send admin notifications",
+        "Provide email delivery status"
+      ]
+    },
+    {
+      "name": "Database (Neon PostgreSQL)",
+      "type": "External Entity",
+      "description": "Cloud database service for data persistence",
+      "interactions": [
+        "Store and retrieve inquiry data",
+        "Manage user authentication data",
+        "Handle content management operations",
+        "Process analytics queries"
+      ]
+    }
+  ],
+  "core_flows": [
+    {
+      "name": "Inquiry Submission Flow",
+      "description": "Visitor submits inquiry through contact form",
+      "level": "Level 1",
+      "steps": [
+        "Visitor fills contact form",
+        "Client-side validation",
+        "Rate limiting check",
+        "Server-side validation",
+        "Database insertion",
+        "Email confirmation to visitor",
+        "Admin notification",
+        "Activity logging"
+      ],
+      "sub_flows": [
+        {
+          "name": "Inquiry Validation & Processing",
+          "level": "Level 2",
+          "description": "Detailed validation and processing of inquiry submissions",
+          "steps": [
+            "Form data collection",
+            "Client-side validation (required fields, email format)",
+            "Rate limiting check (IP-based)",
+            "Server-side validation with Zod schemas",
+            "Input sanitization (XSS protection)",
+            "Database insertion with retry logic",
+            "Email service integration",
+            "Activity log creation",
+            "Response to client"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Demo Booking Flow",
+      "description": "Visitor books AI solution demonstration",
+      "level": "Level 1",
+      "steps": [
+        "Visitor selects solution",
+        "Fills booking form",
+        "Validation and rate limiting",
+        "Database insertion",
+        "Email confirmation",
+        "Admin scheduling",
+        "Status updates",
+        "Activity logging"
+      ],
+      "sub_flows": [
+        {
+          "name": "Demo Booking Processing",
+          "level": "Level 2",
+          "description": "Detailed processing of demo booking requests",
+          "steps": [
+            "Solution selection and validation",
+            "Booking form data collection",
+            "Availability checking",
+            "Rate limiting verification",
+            "Solution ID validation",
+            "Database insertion with foreign key constraints",
+            "Email confirmation generation",
+            "Admin notification dispatch",
+            "Activity logging with metadata",
+            "Status tracking initialization"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin Content Management Flow",
+      "description": "Admin creates and manages content",
+      "level": "Level 1",
+      "steps": [
+        "Admin authentication",
+        "Content creation/editing",
+        "Validation and sanitization",
+        "Database operations",
+        "Status management",
+        "Activity logging",
+        "Public page updates"
+      ]
+    },
+    {
+      "name": "Admin Authentication Flow",
+      "description": "Admin login and session management",
+      "level": "Level 1",
+      "steps": [
+        "Admin enters credentials",
+        "Server validation",
+        "Password verification",
+        "JWT token generation",
+        "Session establishment",
+        "Dashboard access",
+        "Activity logging"
+      ]
+    },
+    {
+      "name": "Analytics Processing Flow",
+      "description": "Real-time analytics and reporting",
+      "level": "Level 1",
+      "steps": [
+        "Data collection",
+        "Aggregation processing",
+        "Chart generation",
+        "Dashboard updates",
+        "Export functionality",
+        "Performance monitoring"
+      ]
+    },
+    {
+      "name": "Backup & Recovery Flow",
+      "description": "Data backup creation and recovery operations",
+      "level": "Level 1",
+      "steps": [
+        "Admin initiates backup creation",
+        "Dynamic date range detection",
+        "Table data extraction",
+        "CSV generation and storage",
+        "Database backup storage",
+        "Metadata recording",
+        "Recovery operations",
+        "Data validation and restoration"
+      ],
+      "sub_flows": [
+        {
+          "name": "Backup Creation Process",
+          "level": "Level 2",
+          "description": "Detailed backup creation and storage process",
+          "steps": [
+            "Admin selects tables and date range",
+            "Dynamic date range calculation",
+            "Data extraction from selected tables",
+            "CSV file generation",
+            "Database backup record creation",
+            "File system storage",
+            "Metadata logging",
+            "Activity logging"
+          ]
+        },
+        {
+          "name": "Data Recovery Process",
+          "level": "Level 2",
+          "description": "Recovery of deleted or backed up data",
+          "steps": [
+            "Admin selects records for recovery",
+            "Data validation and integrity checks",
+            "Record insertion with conflict resolution",
+            "Activity logging",
+            "Status updates",
+            "Notification dispatch"
+          ]
+        }
+      ]
+    }
+  ],
+  "security_features": [
+    {
+      "category": "Authentication & Authorization",
+      "features": [
+        "JWT token-based authentication",
+        "HttpOnly cookies for session management",
+        "Route protection with AdminGuard",
+        "bcrypt password hashing",
+        "Session validation middleware"
+      ]
+    },
+    {
+      "category": "Input Validation & Sanitization",
+      "features": [
+        "Zod schema validation",
+        "XSS protection with input sanitization",
+        "SQL injection prevention with Drizzle ORM",
+        "CSRF protection with Next.js built-in features",
+        "Rate limiting on API endpoints"
+      ]
+    },
+    {
+      "category": "Data Protection",
+      "features": [
+        "Environment variables for sensitive data",
+        "API endpoint protection",
+        "CORS configuration",
+        "Security headers implementation",
+        "Data encryption in transit"
+      ]
+    }
+  ],
+  "performance_optimizations": [
+    {
+      "category": "Frontend Optimizations",
+      "features": [
+        "Code splitting with dynamic imports",
+        "Image optimization with Next.js Image",
+        "Lazy loading for heavy components",
+        "Bundle analysis and optimization",
+        "3D components lazy loading"
+      ]
+    },
+    {
+      "category": "Backend Optimizations",
+      "features": [
+        "Database query optimization",
+        "Connection pooling",
+        "Caching strategies",
+        "API response compression",
+        "Retry logic for database operations"
+      ]
+    },
+    {
+      "category": "Vercel-Specific Optimizations",
+      "features": [
+        "Edge functions deployment",
+        "CDN distribution",
+        "Automatic image processing",
+        "Zero-config analytics integration",
+        "Preview deployments"
+      ]
+    }
+  ],
+  "deployment_configuration": {
+    "platform": "Vercel",
+    "environment_variables": [
+      "DATABASE_URL (PostgreSQL connection string)",
+      "RESEND_API_KEY (Email service API key)",
+      "FROM_EMAIL (Sender email address)",
+      "ADMIN_EMAIL (Admin email address)",
+      "JWT_SECRET (JWT token secret)"
+    ],
+    "build_commands": [
+      "npm run db:generate (Generate database schema)",
+      "npm run db:migrate (Run database migrations)",
+      "npm run build (Build production bundle)"
+    ],
+    "features": [
+      "Automatic deployments from Git",
+      "Preview deployments for branches",
+      "Environment variable management",
+      "Analytics integration",
+      "Performance monitoring"
+    ]
+  },
+  "database_schema": {
+    "tables": [
+      {
+        "name": "inquiries",
+        "description": "Contact form submissions",
+        "primary_key": "id (uuid)",
+        "indexes": ["email", "status", "createdAt"],
+        "constraints": ["NOT NULL on required fields", "UNIQUE on id"]
+      },
+      {
+        "name": "admin_users",
+        "description": "Admin user accounts",
+        "primary_key": "id (uuid)",
+        "indexes": ["email"],
+        "constraints": ["UNIQUE on email", "NOT NULL on required fields"]
+      },
+      {
+        "name": "demo_bookings",
+        "description": "AI solution demo bookings",
+        "primary_key": "id (uuid)",
+        "foreign_keys": ["solutionId -> solutions.id"],
+        "indexes": ["solutionId", "status", "createdAt"]
+      },
+      {
+        "name": "blogs",
+        "description": "Blog posts and articles",
+        "primary_key": "id (uuid)",
+        "indexes": ["status", "publishedAt", "category"],
+        "constraints": ["NOT NULL on required fields"]
+      },
+      {
+        "name": "events",
+        "description": "Events and conferences",
+        "primary_key": "id (uuid)",
+        "indexes": ["date", "status", "category"],
+        "constraints": ["NOT NULL on required fields"]
+      },
+      {
+        "name": "solutions",
+        "description": "AI solution offerings",
+        "primary_key": "id (uuid)",
+        "indexes": ["category", "status", "featured"],
+        "constraints": ["NOT NULL on required fields"]
+      },
+      {
+        "name": "ratings",
+        "description": "Customer ratings and feedback",
+        "primary_key": "id (uuid)",
+        "indexes": ["status", "isPublished", "createdAt"],
+        "constraints": ["CHECK rating BETWEEN 1 AND 5"]
+      },
+      {
+        "name": "testimonials",
+        "description": "Published customer testimonials",
+        "primary_key": "id (uuid)",
+        "foreign_keys": ["ratingId -> ratings.id"],
+        "indexes": ["status", "createdAt"]
+      },
+      {
+        "name": "event_rsvps",
+        "description": "Event RSVP registrations",
+        "primary_key": "id (uuid)",
+        "foreign_keys": ["eventId -> events.id"],
+        "indexes": ["eventId", "createdAt"]
+      },
+      {
+        "name": "activity_logs",
+        "description": "System activity audit logs",
+        "primary_key": "id (uuid)",
+        "foreign_keys": ["adminId -> admin_users.id"],
+        "indexes": ["adminId", "action", "createdAt", "targetType"]
+      },
+      {
+        "name": "backup_metadata",
+        "description": "Backup creation metadata and configuration",
+        "primary_key": "id (uuid)",
+        "foreign_keys": ["createdBy -> admin_users.id"],
+        "indexes": ["createdBy", "createdAt", "tables"]
+      },
+      {
+        "name": "backup_data",
+        "description": "Actual backup data storage",
+        "primary_key": "id (uuid)",
+        "foreign_keys": ["backupId -> backup_metadata.id"],
+        "indexes": ["backupId", "tableName", "createdAt"]
+      },
+      {
+        "name": "deleted_records",
+        "description": "Tracked deleted records for recovery",
+        "primary_key": "id (uuid)",
+        "foreign_keys": ["deletedBy -> admin_users.id"],
+        "indexes": ["tableName", "deletedAt", "recovered", "deletedBy"]
+      },
+      {
+        "name": "table_metadata",
+        "description": "Metadata about table data ranges and statistics",
+        "primary_key": "tableName",
+        "foreign_keys": [],
+        "indexes": ["lastUpdated", "totalRecords"]
+      }
+    ]
+  },
+  "file_structure": {
+    "app": {
+      "description": "Next.js App Router structure",
+      "subdirectories": [
+        "admin/ - Admin dashboard pages",
+        "api/ - API route handlers (including backup management)",
+        "blog/ - Public blog pages",
+        "contact/ - Contact form page",
+        "events/ - Public events pages",
+        "solutions/ - AI solutions showcase",
+        "testimonials/ - Customer testimonials",
+        "contexts/ - React context providers",
+        "hooks/ - Custom React hooks",
+        "lib/ - Utility libraries and services (including backup services)"
+      ]
+    },
+    "components": {
+      "description": "Reusable React components",
+      "subdirectories": [
+        "ui/ - Base UI components",
+        "Admin-specific components",
+        "Animation and 3D components",
+        "Form components",
+        "Chart and visualization components",
+        "Backup and recovery components"
+      ]
+    },
+    "db": {
+      "description": "Database configuration and schema",
+      "files": [
+        "index.ts - Database connection",
+        "schema.ts - Table definitions",
+        "migrations/ - Database migration files"
+      ]
+    },
+    "scripts": {
+      "description": "Utility and setup scripts",
+      "files": [
+        "Database management scripts",
+        "Data seeding scripts",
+        "Setup and configuration scripts",
+        "Development utilities"
+      ]
+    }
+  }
+}

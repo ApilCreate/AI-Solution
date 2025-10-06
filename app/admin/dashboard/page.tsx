@@ -98,7 +98,7 @@ const StatCard = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+      className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow duration-200"
     >
       <div className="flex items-center justify-between">
         <div>
@@ -151,8 +151,8 @@ export default function AdminDashboard() {
     try {
       console.log('🔄 Starting fetchDashboardData...');
       
-      // Fetch inquiries data
-      const inquiriesRes = await fetch('/api/inquiries/list', {
+      // Fetch inquiries data - get ALL inquiries for chart data
+      const inquiriesRes = await fetch('/api/inquiries/list?limit=1000', {
         method: 'GET'
       });
       
@@ -166,6 +166,14 @@ export default function AdminDashboard() {
         const inquiries = Array.isArray(inquiriesData) ? inquiriesData : (inquiriesData.inquiries || []);
         console.log('📊 Processed inquiries array:', inquiries);
         console.log('📈 Total inquiries count:', inquiries.length);
+        
+        // Debug: Show date range of fetched data
+        if (inquiries.length > 0) {
+          const dates = inquiries.map((i: any) => new Date(i.createdAt));
+          const earliest = new Date(Math.min(...dates.map(d => d.getTime())));
+          const latest = new Date(Math.max(...dates.map(d => d.getTime())));
+          console.log('📅 Data date range:', earliest.toISOString(), 'to', latest.toISOString());
+        }
         
         // Calculate stats
         const totalCount = inquiries.length;
@@ -184,16 +192,31 @@ export default function AdminDashboard() {
           inquiry.status === 'resolved' || inquiry.status === 'completed'
         ).length;
 
-        // Generate monthly chart data for the last 12 months
+        // Generate monthly chart data based on actual data range
         const months = [];
-        const currentDate = new Date();
-        for (let i = 11; i >= 0; i--) {
-          const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+        
+        // Find the actual date range from the inquiries
+        const inquiryDates = inquiries.map((inquiry: any) => new Date(inquiry.createdAt));
+        const earliestDate = new Date(Math.min(...inquiryDates.map(d => d.getTime())));
+        const latestDate = new Date(Math.max(...inquiryDates.map(d => d.getTime())));
+        
+        // Generate months from earliest to latest date
+        const startYear = earliestDate.getFullYear();
+        const startMonth = earliestDate.getMonth();
+        const endYear = latestDate.getFullYear();
+        const endMonth = latestDate.getMonth();
+        
+        let currentYear = startYear;
+        let currentMonth = startMonth;
+        
+        while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
+          const date = new Date(currentYear, currentMonth, 1);
           const monthName = date.toLocaleDateString('en-US', { month: 'short' });
+          const yearSuffix = currentYear !== new Date().getFullYear() ? ` ${currentYear}` : '';
           
           // Filter inquiries for this month and calculate values
-          const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
-          const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+          const monthStart = new Date(currentYear, currentMonth, 1);
+          const monthEnd = new Date(currentYear, currentMonth + 1, 0);
           
           const monthInquiries = inquiries.filter((inquiry: any) => {
             const inquiryDate = new Date(inquiry.createdAt);
@@ -209,11 +232,18 @@ export default function AdminDashboard() {
           ).length;
           
           months.push({
-            month: monthName,
+            month: monthName + yearSuffix,
             inquiries: monthInquiries.length,
             completed: monthCompleted,
             pending: monthPending
           });
+          
+          // Move to next month
+          currentMonth++;
+          if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+          }
         }
 
         // Generate category data based on inquiry reasons
@@ -265,6 +295,7 @@ export default function AdminDashboard() {
           avgResponseTime: '2.4h'
         });
 
+        console.log('📊 Generated months for chart:', months);
         setChartData(months);
         setCategoryData(categories);
         setCountryData(countries);
@@ -298,15 +329,15 @@ export default function AdminDashboard() {
   return (
     <DashboardLayout>
       <AdminGuard>
-        <div className="space-y-6">
+        <div className="space-y-8">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Overview of your AI solution platform</p>
+        <div className="pb-6">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+          <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">Overview of your AI solution platform</p>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <StatCard
             title="Total Inquiries"
             value={stats.totalInquiries}
@@ -346,18 +377,18 @@ export default function AdminDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
-          className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+          className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow duration-200"
         >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Quick Actions</h3>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Quick Actions</h3>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             <Link
               href="/admin/settings"
-              className="flex items-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors group"
+              className="flex items-center p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors group hover:scale-105 transform duration-200"
             >
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors">
+                <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-xl group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors">
                   <Activity className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
@@ -430,17 +461,17 @@ export default function AdminDashboard() {
         </motion.div>
 
         {/* Charts Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Monthly Inquiry Trend */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.1 }}
-            className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+            className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow duration-200"
           >
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Monthly Inquiry Trend</h3>
-              <BarChart3 className="w-5 h-5 text-gray-500" />
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Monthly Inquiry Trend</h3>
+              <BarChart3 className="w-6 h-6 text-gray-500" />
             </div>
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={chartData}>
@@ -484,11 +515,11 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.2 }}
-            className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+            className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow duration-200"
           >
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Inquiry Categories</h3>
-              <Activity className="w-5 h-5 text-gray-500" />
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Inquiry Categories</h3>
+              <Activity className="w-6 h-6 text-gray-500" />
             </div>
             <ResponsiveContainer width="100%" height={350}>
               <PieChart>
@@ -538,7 +569,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Countries Chart and Recent Inquiries */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Countries Chart - Takes 2/3 width */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -546,9 +577,9 @@ export default function AdminDashboard() {
             transition={{ duration: 0.3, delay: 0.3 }}
             className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700"
           >
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Inquiries by Country</h3>
-              <TrendingUp className="w-5 h-5 text-gray-500" />
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Inquiries by Country</h3>
+              <TrendingUp className="w-6 h-6 text-gray-500" />
             </div>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={countryData} barCategoryGap="20%">
@@ -585,11 +616,11 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.4 }}
-            className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+            className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow duration-200"
           >
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Inquiries</h3>
-              <Eye className="w-5 h-5 text-gray-500" />
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Recent Inquiries</h3>
+              <Eye className="w-6 h-6 text-gray-500" />
             </div>
             
             <div className="space-y-3">

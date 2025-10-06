@@ -83,6 +83,7 @@ export const ACTIVITY_TYPES = {
   INQUIRY_RESPONDED: 'inquiry_responded',
   INQUIRY_UPDATED: 'inquiry_updated',
   INQUIRY_STATUS_CHANGED: 'inquiry_status_changed',
+  INQUIRY_DELETED: 'inquiry_deleted',
   EVENT_CREATED: 'event_created',
   EVENT_UPDATED: 'event_updated',
   EVENT_DELETED: 'event_deleted',

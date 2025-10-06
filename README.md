@@ -44,7 +44,9 @@ AI Solution is a comprehensive business platform that demonstrates the power of 
 
 ### 🔧 Admin Dashboard
 - **Real-time Analytics**: Live data visualization with charts and metrics
-- **Inquiry Management**: Track, filter, and respond to customer inquiries
+- **Enhanced Backup System**: Comprehensive data backup and recovery with CSV export
+- **Deleted Data Recovery**: Track and recover accidentally deleted records (3-month retention)
+- **Inquiry Management**: Track, filter, and respond to customer inquiries with delete functionality
 - **Demo Booking Management**: Manage AI solution demonstration bookings
 - **AI Solutions Management**: Create and manage AI service offerings
 - **Rating & Testimonial Management**: Handle customer ratings and reviews
@@ -52,6 +54,7 @@ AI Solution is a comprehensive business platform that demonstrates the power of 
 - **Email Monitoring**: Track email delivery and engagement rates
 - **Data Export**: Export analytics and user data for external analysis
 - **System Diagnostics**: Health monitoring and performance metrics
+- **Modern Navigation**: Spacious, responsive admin interface with improved UX
 
 ### 🔐 Security & Authentication
 - **Secure Admin Access**: JWT-based authentication with cookie sessions
@@ -96,7 +99,43 @@ Vercel Analytics        # Built-in page view tracking
 Performance Monitoring  # Real-time performance metrics
 Error Tracking          # Comprehensive error logging
 User Engagement         # Session and interaction analytics
+Recharts 3.2.1         # Advanced chart visualization
 ```
+
+### Notifications & UX
+```
+React Hot Toast        # Modern toast notifications
+Custom Confirmation    # Toast-based confirmation modals
+Activity Logging       # Comprehensive audit trails
+```
+
+## 🆕 Recent Updates
+
+### Enhanced Backup & Recovery System
+- **Comprehensive Backup Management**: Create backups for all tables or specific tables with dynamic date selection
+- **Deleted Data Recovery**: Track and recover accidentally deleted records with 3-month retention
+- **CSV Export**: Download backups and deleted data in CSV format
+- **Dual Storage**: Backups stored both in database and file system for maximum reliability
+- **Dynamic Date Ranges**: Automatic detection of actual data ranges for backup creation
+
+### Improved Admin Experience
+- **Modern Navigation**: Redesigned admin interface with spacious top navigation for desktop
+- **Mobile Responsive**: Enhanced mobile sidebar with improved touch interactions
+- **Toast Notifications**: Replaced browser alerts with modern toast notifications throughout
+- **Enhanced Inquiry Management**: Added delete functionality with confirmation dialogs
+- **Realistic Data**: Updated inquiry data with proper categories, countries, and date distribution
+
+### Chart & Analytics Improvements
+- **Fixed Chart Display**: Resolved monthly trend chart to show complete date ranges
+- **Dynamic Data Range**: Charts now adapt to actual data availability
+- **Country Analytics Sync**: Synchronized country data between dashboard and analytics pages
+- **Real-time Updates**: Enhanced data fetching for comprehensive chart visualization
+
+### Performance & UX Enhancements
+- **Responsive Design**: Fully responsive admin section with improved spacing
+- **Error Handling**: Enhanced error messages and debugging capabilities
+- **Activity Logging**: Comprehensive tracking of all admin actions
+- **Confirmation Modals**: Custom toast-based confirmation system for critical actions
 
 ## 🚀 Quick Start
 
@@ -345,53 +384,53 @@ AI-Solution/
 
 | Feature | Description | Route |
 |---------|-------------|-------|
-| **🏠 Home** | AI solutions showcase with 3D elements | `/` |
-| **🤖 Solutions** | Detailed AI service offerings | `/solutions` |
-| **📝 Blog** | Public blog with articles | `/blog` |
-| **📅 Events** | Event listings and details | `/events` |
-| **📬 Contact** | Contact form with inquiry submission | `/contact` |
-| **⭐ Testimonials** | Customer reviews and feedback | `/testimonials` |
-| **🎯 Book Demo** | Interactive demo booking system | `/book-demo` |
+| **Home** | AI solutions showcase with 3D elements | `/` |
+| **Solutions** | Detailed AI service offerings | `/solutions` |
+| **Blog** | Public blog with articles | `/blog` |
+| **Events** | Event listings and details | `/events` |
+| **Contact** | Contact form with inquiry submission | `/contact` |
+| **Testimonials** | Customer reviews and feedback | `/testimonials` |
+| **Book Demo** | Interactive demo booking system | `/book-demo` |
 
 ### 🔐 Admin Features
 
 | Feature | Description | Route |
 |---------|-------------|-------|
-| **🏠 Dashboard** | Overview with key metrics | `/admin/dashboard` |
-| **📊 Analytics** | Detailed charts and insights | `/admin/analytics` |
-| **📬 Inquiries** | Manage customer inquiries | `/admin/inquiries` |
-| **📝 Blog** | Create and manage blog posts | `/admin/blog` |
-| **📅 Events** | Event creation and management | `/admin/events` |
-| **📅 Bookings** | Demo booking management | `/admin/bookings` |
-| **🤖 Solutions** | AI solutions management | `/admin/solutions` |
-| **⭐ Ratings** | Rating & testimonial management | `/admin/ratings` |
-| **⚙️ Settings** | System configuration | `/admin/settings` |
+| **Dashboard** | Overview with key metrics | `/admin/dashboard` |
+| **Analytics** | Detailed charts and insights | `/admin/analytics` |
+| **Inquiries** | Manage customer inquiries | `/admin/inquiries` |
+| **Blog** | Create and manage blog posts | `/admin/blog` |
+| **Events** | Event creation and management | `/admin/events` |
+| **Bookings** | Demo booking management | `/admin/bookings` |
+| **Solutions** | AI solutions management | `/admin/solutions` |
+| **Ratings** | Rating & testimonial management | `/admin/ratings` |
+| **Settings** | System configuration | `/admin/settings` |
 
-### 🔑 Admin Access
+### Admin Access
 1. Navigate to `/admin/login`
 2. Use credentials from your environment variables
 3. Access the full admin dashboard
 
-## 📊 Analytics & Monitoring
+## Analytics & Monitoring
 
 ### Built-in Analytics
-- **📈 Page Views**: Track visitor engagement across all pages
-- **⏱️ Session Duration**: Monitor user interaction time
-- **🔄 Bounce Rate**: Analyze page effectiveness
-- **📱 Device Analytics**: Mobile vs desktop usage
-- **🌍 Geographic Data**: Visitor location insights
+- **Page Views**: Track visitor engagement across all pages
+- **Session Duration**: Monitor user interaction time
+- **Bounce Rate**: Analyze page effectiveness
+- **Device Analytics**: Mobile vs desktop usage
+- **Geographic Data**: Visitor location insights
 
 ### Performance Monitoring
-- **⚡ Core Web Vitals**: LCP, FID, CLS tracking
-- **🚀 Load Times**: Page and API response monitoring
-- **💾 Bundle Analysis**: JavaScript bundle optimization
-- **🗄️ Database Performance**: Query optimization tracking
+- **Core Web Vitals**: LCP, FID, CLS tracking
+- **Load Times**: Page and API response monitoring
+- **Bundle Analysis**: JavaScript bundle optimization
+- **Database Performance**: Query optimization tracking
 
 ### Business Intelligence
-- **📬 Inquiry Tracking**: Lead generation analytics
-- **📧 Email Performance**: Delivery and engagement rates
-- **🎯 Conversion Rates**: Demo booking to inquiry conversion
-- **📈 Growth Metrics**: User engagement trends
+- **Inquiry Tracking**: Lead generation analytics
+- **Email Performance**: Delivery and engagement rates
+- **Conversion Rates**: Demo booking to inquiry conversion
+- **Growth Metrics**: User engagement trends
 
 ## 🚀 Deployment
 
@@ -422,20 +461,11 @@ This project is optimized for Vercel with built-in analytics and performance mon
    - Custom domain configuration available
 
 #### Automatic Features
-- ✅ **Analytics Integration**: Page views tracked automatically
-- ✅ **Performance Optimization**: Edge functions and CDN
-- ✅ **SSL Certificate**: Automatic HTTPS
-- ✅ **Preview Deployments**: Branch-based previews
-- ✅ **Monitoring**: Real-time performance metrics
+- **Analytics Integration**: Page views tracked automatically
+- **Performance Optimization**: Edge functions and CDN
+- **Preview Deployments**: Branch-based previews
+- **Monitoring**: Real-time performance metrics
 
-### 🔧 Other Deployment Options
-
-| Platform | Setup | Notes |
-|----------|-------|-------|
-| **Netlify** | Static export | Limited API functionality |
-| **Railway** | Full-stack | Good for custom configurations |
-| **AWS** | Manual setup | Enterprise-grade deployment |
-| **DigitalOcean** | App Platform | Cost-effective alternative |
 
 ## 🛠️ Development
 
@@ -457,7 +487,7 @@ npm run db:seed      # Seed with sample data
 npm run db:check     # Check database setup
 ```
 
-### 🎨 Customization
+### Customization
 
 #### Theme Configuration
 ```typescript
@@ -494,7 +524,7 @@ export const inquiries = pgTable('inquiries', {
 });
 ```
 
-## 🔒 Security Features
+## Security Features
 
 ### Authentication & Authorization
 - **JWT Tokens**: Secure token-based authentication
@@ -514,7 +544,7 @@ export const inquiries = pgTable('inquiries', {
 - **CORS Configuration**: Controlled cross-origin requests
 - **Security Headers**: Comprehensive security headers
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -553,7 +583,7 @@ npx tsc --noEmit
 - Monitor Vercel function logs for API issues
 - Use `npm run analyze` to optimize bundle size
 
-## 📈 Performance Optimization
+## Performance Optimization
 
 ### Frontend Optimizations
 - **Code Splitting**: Automatic route-based splitting
@@ -573,7 +603,7 @@ npx tsc --noEmit
 - **Image Optimization**: Automatic image processing
 - **Analytics Integration**: Zero-config performance tracking
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Here's how to get started:
 
@@ -592,17 +622,17 @@ We welcome contributions! Here's how to get started:
 - Update documentation as needed
 - Ensure responsive design compatibility
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Author
+## Author
 
 **ApilCreate**
-- 🌐 GitHub: [@ApilCreate](https://github.com/ApilCreate)
+- GitHub: [@ApilCreate](https://github.com/ApilCreate)
 
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Next.js Team** - For the amazing React framework
 - **Vercel** - For seamless deployment and analytics
@@ -611,13 +641,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Tailwind CSS** - For utility-first styling
 
 ---
-
-<div align="center">
-
-**⭐ Star this repository if you found it helpful!**
-
-[🔗 Live Demo](https://ai-solution.vercel.app) • [📚 Documentation](https://github.com/ApilCreate/AI-Solution/wiki) • [🐛 Report Bug](https://github.com/ApilCreate/AI-Solution/issues) • [💡 Request Feature](https://github.com/ApilCreate/AI-Solution/issues)
-
-*Built with ❤️ using modern web technologies*
-
-</div>

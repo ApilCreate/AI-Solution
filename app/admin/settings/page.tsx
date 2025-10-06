@@ -7,12 +7,14 @@ import DashboardLayout from '@/components/DashboardLayout';
 import AdminGuard from '@/components/AdminGuard';
 import ChangePassword from '@/components/ChangePassword';
 import ActivityLog from '@/components/ActivityLog';
+import EnhancedBackupManagement from '@/components/EnhancedBackupManagement';
 import { 
   Settings, 
   Shield, 
   Activity, 
   User,
-  ArrowLeft
+  ArrowLeft,
+  Database
 } from 'lucide-react';
 
 export default function AdminSettings() {
@@ -47,6 +49,12 @@ export default function AdminSettings() {
       label: 'Activity Log',
       icon: Activity,
       description: 'View your account activity'
+    },
+    {
+      id: 'backups',
+      label: 'Database Backups',
+      icon: Database,
+      description: 'Manage database backups and recovery'
     }
   ];
 
@@ -165,6 +173,10 @@ export default function AdminSettings() {
               
               {activeTab === 'activity' && (
                 <ActivityLog adminId={adminUser.id} />
+              )}
+              
+              {activeTab === 'backups' && (
+                <EnhancedBackupManagement />
               )}
             </motion.div>
           </div>

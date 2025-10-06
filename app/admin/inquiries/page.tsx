@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import toast from 'react-hot-toast';
 import { 
   Search,
   Filter,
@@ -18,7 +19,8 @@ import {
   Send,
   Download,
   RefreshCw,
-  Loader2
+  Loader2,
+  Trash2
 } from "lucide-react";
 import DashboardLayout from "../../../components/DashboardLayout";
 import AdminGuard from "../../../components/AdminGuard";
@@ -85,6 +87,7 @@ export default function InquiriesPage() {
   const [showResponseModal, setShowResponseModal] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
   const [isSendingResponse, setIsSendingResponse] = useState(false);
+  const [deletingInquiry, setDeletingInquiry] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [filters, setFilters] = useState<FilterOptions>({
@@ -325,6 +328,7 @@ export default function InquiriesPage() {
 
       if (response.ok) {
         console.log('Response sent successfully!');
+        toast.success('Response sent successfully!');
         setShowResponseModal(false);
         setResponseMessage("");
         setSelectedInquiry(null);
@@ -338,11 +342,49 @@ export default function InquiriesPage() {
       }
     } catch (error) {
       console.error('Failed to send response:', error);
-      // Show error message to user (you could use toast notification here)
       const errorMessage = error instanceof Error ? error.message : 'Error sending response. Please try again.';
+      toast.error(errorMessage);
       console.error('Error details:', errorMessage);
     } finally {
       setIsSendingResponse(false);
+    }
+  };
+
+  const deleteInquiry = async (inquiryId: string, inquiryName: string) => {
+    if (!confirm(`Are you sure you want to delete the inquiry from ${inquiryName}? This action cannot be undone and will be tracked for recovery purposes.`)) {
+      return;
+    }
+
+    setDeletingInquiry(inquiryId);
+    try {
+      const response = await fetch(`/api/inquiries/${inquiryId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        console.log('Inquiry deleted successfully!');
+        toast.success('Inquiry deleted successfully!');
+        
+        // Remove from local state
+        setInquiries(prev => prev.filter(inquiry => inquiry.id !== inquiryId));
+        setFilteredInquiries(prev => prev.filter(inquiry => inquiry.id !== inquiryId));
+        
+        // Refresh the list to ensure consistency
+        await fetchInquiries();
+      } else {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('Failed to delete inquiry:', errorData);
+        throw new Error(errorData.error || 'Failed to delete inquiry');
+      }
+    } catch (error) {
+      console.error('Failed to delete inquiry:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Error deleting inquiry. Please try again.';
+      toast.error(errorMessage);
+    } finally {
+      setDeletingInquiry(null);
     }
   };
 
@@ -407,24 +449,24 @@ export default function InquiriesPage() {
   return (
     <DashboardLayout>
       <AdminGuard>
-      <div className="space-y-6">
+      <div className="space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
               Inquiries Management
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
+            <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">
               Manage and respond to customer inquiries
             </p>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <button
               onClick={exportInquiries}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
+              className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors duration-200 hover:scale-105 transform"
             >
-              <Download className="w-4 h-4" />
+              <Download className="w-5 h-5" />
               Export CSV
             </button>
             <button
@@ -434,16 +476,16 @@ export default function InquiriesPage() {
                 setFilteredInquiries([]);
                 fetchInquiries(1, false);
               }}
-              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+              className="p-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200 hover:scale-105 transform"
             >
-              <RefreshCw className="w-4 h-4" />
+              <RefreshCw className="w-5 h-5" />
             </button>
           </div>
         </div>
 
         {/* Search and Filters */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
-          <div className="flex flex-col lg:flex-row gap-4">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 border border-gray-100 dark:border-gray-700 shadow-sm">
+          <div className="flex flex-col lg:flex-row gap-6">
             {/* Search */}
             <div className="flex-1 flex gap-2">
               <div className="flex-1 relative">
@@ -781,6 +823,18 @@ export default function InquiriesPage() {
                           className="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300"
                         >
                           <MessageSquare className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => deleteInquiry(inquiry.id, inquiry.name)}
+                          disabled={deletingInquiry === inquiry.id}
+                          className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                          title="Delete inquiry"
+                        >
+                          {deletingInquiry === inquiry.id ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="w-4 h-4" />
+                          )}
                         </button>
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                           inquiry.status === 'new' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :

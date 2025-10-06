@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '../../../db';
-import { sql } from 'drizzle-orm';
+import { events } from '../../../db/schema';
 import { logActivity, ACTIVITY_TYPES } from '@/app/lib/activity-logger';
 
 export async function POST(request: NextRequest) {
@@ -8,14 +8,14 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { title, description, date, location, bannerUrl } = body;
     
-    // Insert using raw SQL to work with existing table structure
-    const result = await db.execute(sql`
-      INSERT INTO events (id, title, description, date, location, banner_url, created_at) 
-      VALUES (gen_random_uuid(), ${title}, ${description}, ${date}, ${location}, ${bannerUrl || null}, now()) 
-      RETURNING *
-    `);
-
-    const newEvent = result.rows[0] as any;
+    // Insert using Drizzle schema
+    const [newEvent] = await db.insert(events).values({
+      title,
+      description,
+      date,
+      location,
+      bannerUrl: bannerUrl || null
+    }).returning();
 
     // Log the event creation activity
     await logActivity({

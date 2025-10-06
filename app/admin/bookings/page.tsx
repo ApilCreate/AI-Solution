@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Calendar, Clock, Mail, User, Building2, Search, Filter, Eye, Reply, CheckCircle, XCircle, AlertCircle, CalendarDays, Timer, Trash2, Download } from 'lucide-react';
 import DashboardLayout from '../../../components/DashboardLayout';
 import AdminGuard from '../../../components/AdminGuard';
+import toast from 'react-hot-toast';
 
 interface DemoBooking {
   id: string;
@@ -70,7 +71,7 @@ export default function AdminBookingsPage() {
           b.id === bookingId ? { ...b, status: newStatus } : b
         ));
       } else {
-        alert('Failed to update booking status');
+        toast.error('Failed to update booking status');
       }
     } catch (error) {
       console.error('Error updating booking status:', error);
@@ -109,11 +110,11 @@ export default function AdminBookingsPage() {
         setReplyText('');
         setNotes('');
       } else {
-        alert('Failed to send reply');
+        toast.error('Failed to send reply');
       }
     } catch (error) {
       console.error('Error sending reply:', error);
-      alert('Failed to send reply');
+      toast.error('Failed to send reply');
     } finally {
       setReplying(false);
     }
@@ -134,12 +135,13 @@ export default function AdminBookingsPage() {
         if (selectedBooking && selectedBooking.id === id) {
           setSelectedBooking(null);
         }
+        toast.success('Booking deleted successfully!');
       } else {
-        alert('Failed to delete booking');
+        toast.error('Failed to delete booking');
       }
     } catch (error) {
       console.error('Error deleting booking:', error);
-      alert('Error deleting booking');
+      toast.error('Error deleting booking');
     }
   };
 

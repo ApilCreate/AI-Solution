@@ -1,16 +1,16 @@
 import { NextResponse } from 'next/server';
 import { db } from '../../../../db';
-import { sql } from 'drizzle-orm';
+import { events } from '../../../../db/schema';
+import { desc } from 'drizzle-orm';
 
 export async function GET() {
   try {
     console.log('🔄 Fetching events from database...');
     
-    const result = await db.execute(sql`
-      SELECT * FROM events ORDER BY created_at DESC
-    `);
+    // Use Drizzle schema instead of raw SQL
+    const result = await db.select().from(events).orderBy(desc(events.createdAt));
     
-    console.log(`✅ Found ${result.rows.length} events`);
+    console.log(`✅ Found ${result.length} events`);
     
     // Curated AI/Tech event images
     const eventImages = [
@@ -25,12 +25,12 @@ export async function GET() {
     ];
 
     // Transform data to add missing fields for frontend compatibility
-    const transformedEvents = result.rows.map((event: any, index: number) => ({
+    const transformedEvents = result.map((event: any, index: number) => ({
       ...event,
       time: '', // Default empty string for time
       category: 'Workshop', // Default category
       status: 'published', // Default status for existing events
-      updatedAt: event.created_at, // Use created_at as updatedAt fallback
+      updatedAt: event.createdAt, // Use createdAt as updatedAt fallback
       bannerUrl: eventImages[index % eventImages.length], // Assign image based on index
     }));
 
