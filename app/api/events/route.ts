@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '../../../db';
 import { events } from '../../../db/schema';
 import { logActivity, ACTIVITY_TYPES } from '@/app/lib/activity-logger';
+import { sql } from 'drizzle-orm';
 
 export async function POST(request: NextRequest) {
   try {

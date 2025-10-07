@@ -4,6 +4,7 @@ import { adminUsers } from '../../../../db/schema';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { logActivity } from '../../../../app/lib/activity-logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -66,6 +67,21 @@ export async function POST(request: NextRequest) {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 86400 // 24 hours
+    });
+
+    // Log successful login activity
+    await logActivity({
+      action: 'admin_login',
+      description: `Admin user ${user.email} logged in successfully`,
+      targetType: 'admin_account',
+      targetId: user.id,
+      metadata: {
+        loginTime: new Date().toISOString(),
+        userAgent: request.headers.get('user-agent') || 'unknown',
+        ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
+      },
+      request,
+      adminEmail: user.email
     });
 
     return response;

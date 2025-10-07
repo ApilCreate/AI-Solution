@@ -16,7 +16,8 @@
     "db:view": "tsx scripts/view-database.ts",
     "db:query": "tsx scripts/query-database.ts",
     "db:seed": "tsx scripts/seed-database.ts",
-    "db:check": "tsx scripts/check-setup.ts"
+    "db:check": "tsx scripts/check-setup.ts",
+    "db:add-ratings": "tsx scripts/add-sample-ratings.ts"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
