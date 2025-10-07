@@ -170,8 +170,8 @@ export default function AdminDashboard() {
         // Debug: Show date range of fetched data
         if (inquiries.length > 0) {
           const dates = inquiries.map((i: any) => new Date(i.createdAt));
-          const earliest = new Date(Math.min(...dates.map(d => d.getTime())));
-          const latest = new Date(Math.max(...dates.map(d => d.getTime())));
+          const earliest = new Date(Math.min(...dates.map((d: Date) => d.getTime())));
+          const latest = new Date(Math.max(...dates.map((d: Date) => d.getTime())));
           console.log('📅 Data date range:', earliest.toISOString(), 'to', latest.toISOString());
         }
         
@@ -197,8 +197,8 @@ export default function AdminDashboard() {
         
         // Find the actual date range from the inquiries
         const inquiryDates = inquiries.map((inquiry: any) => new Date(inquiry.createdAt));
-        const earliestDate = new Date(Math.min(...inquiryDates.map(d => d.getTime())));
-        const latestDate = new Date(Math.max(...inquiryDates.map(d => d.getTime())));
+        const earliestDate = new Date(Math.min(...inquiryDates.map((d: Date) => d.getTime())));
+        const latestDate = new Date(Math.max(...inquiryDates.map((d: Date) => d.getTime())));
         
         // Generate months from earliest to latest date
         const startYear = earliestDate.getFullYear();
