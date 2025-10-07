@@ -12,7 +12,7 @@ const client = neon(connectionString);
 const db = drizzle(client);
 
 async function addMarkdownBlog() {
-  console.log('🚀 Adding markdown-formatted blog...');
+  console.log('Adding markdown-formatted blog...');
   
   try {
     await db.insert(blogs).values({
@@ -88,9 +88,9 @@ The journey ahead is exciting, challenging, and full of possibilities. By workin
       publishedAt: new Date()
     });
 
-    console.log('✅ Markdown blog added successfully!');
+    console.log('Markdown blog added successfully!');
   } catch (error) {
-    console.error('❌ Error adding markdown blog:', error);
+    console.error('Error adding markdown blog:', error);
   }
 }
 

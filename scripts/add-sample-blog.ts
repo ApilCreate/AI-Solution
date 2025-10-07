@@ -52,9 +52,9 @@ Stay tuned for regular updates and don't forget to subscribe to our newsletter f
       publishedAt: new Date()
     });
 
-    console.log('✅ Sample blog added successfully!');
+    console.log('Sample blog added successfully!');
   } catch (error) {
-    console.error('❌ Error adding sample blog:', error);
+    console.error('Error adding sample blog:', error);
   }
 }
 

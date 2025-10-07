@@ -48,7 +48,7 @@ async function runBackupMigration() {
         ADD CONSTRAINT "backup_metadata_created_by_admin_users_id_fk" 
         FOREIGN KEY ("created_by") REFERENCES "admin_users"("id") ON DELETE cascade
       `);
-    } catch (error) {
+    } catch (error: any) {
       if (!error.message.includes('already exists')) {
         console.log('Foreign key constraint already exists or error:', error.message);
       }
@@ -60,7 +60,7 @@ async function runBackupMigration() {
         ADD CONSTRAINT "backup_data_backup_id_backup_metadata_id_fk" 
         FOREIGN KEY ("backup_id") REFERENCES "backup_metadata"("id") ON DELETE cascade
       `);
-    } catch (error) {
+    } catch (error: any) {
       if (!error.message.includes('already exists')) {
         console.log('Foreign key constraint already exists or error:', error.message);
       }
@@ -75,14 +75,14 @@ async function runBackupMigration() {
     await db.execute(sql`CREATE INDEX IF NOT EXISTS "backup_data_table_name_idx" ON "backup_data" ("table_name")`);
     await db.execute(sql`CREATE INDEX IF NOT EXISTS "backup_data_record_id_idx" ON "backup_data" ("record_id")`);
     
-    console.log('✅ Backup system migration completed successfully!');
+    console.log('Backup system migration completed successfully!');
     console.log('Created tables:');
     console.log('- backup_metadata');
     console.log('- backup_data');
     console.log('Created indexes for performance optimization');
     
   } catch (error) {
-    console.error('❌ Migration failed:', error);
+    console.error('Migration failed:', error);
     process.exit(1);
   }
 }

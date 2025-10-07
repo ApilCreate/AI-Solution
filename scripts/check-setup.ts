@@ -11,8 +11,8 @@ async function checkSetup() {
   const databaseUrl = process.env.DATABASE_URL;
   
   if (!databaseUrl) {
-    console.log('❌ DATABASE_URL not found in environment variables');
-    console.log('\n📋 Setup Instructions:');
+    console.log('DATABASE_URL not found in environment variables');
+    console.log('\nSetup Instructions:');
     console.log('1. Go to your Neon Console: https://console.neon.tech/');
     console.log('2. Select your project → Connection Details');
     console.log('3. Copy the "Pooled connection string (PostgreSQL)"');
@@ -23,26 +23,26 @@ async function checkSetup() {
   
   // Check if it's still the placeholder
   if (databaseUrl.includes('user:password@HOST')) {
-    console.log('❌ DATABASE_URL appears to be a placeholder');
+    console.log('DATABASE_URL appears to be a placeholder');
     console.log('Current value:', databaseUrl);
-    console.log('\n📋 Please update .env.local with your actual Neon connection string');
+    console.log('\nPlease update .env.local with your actual Neon connection string');
     return false;
   }
   
   // Basic format validation
   if (!databaseUrl.startsWith('postgresql://') && !databaseUrl.startsWith('postgres://')) {
-    console.log('❌ DATABASE_URL should start with postgresql://');
+    console.log('DATABASE_URL should start with postgresql://');
     console.log('Current value:', databaseUrl);
     return false;
   }
   
   if (!databaseUrl.includes('sslmode=require')) {
-    console.log('⚠️  Warning: DATABASE_URL should include ?sslmode=require for Neon');
+    console.log('Warning: DATABASE_URL should include ?sslmode=require for Neon');
     console.log('Current value:', databaseUrl);
   }
   
-  console.log('✅ DATABASE_URL appears to be configured correctly');
-  console.log('🔗 Ready to test connection!\n');
+  console.log('DATABASE_URL appears to be configured correctly');
+  console.log('Ready to test connection!\n');
   
   return true;
 }
@@ -52,7 +52,7 @@ if (require.main === module) {
   checkSetup()
     .then((isReady) => {
       if (isReady) {
-        console.log('🚀 Run: npm run db:test');
+        console.log('Run: npm run db:test');
       }
       process.exit(isReady ? 0 : 1);
     });

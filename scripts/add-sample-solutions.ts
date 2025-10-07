@@ -334,9 +334,9 @@ async function addSampleSolutions() {
       console.log(`Added solution: ${solution.title}`);
     }
     
-    console.log('✅ Successfully added all sample solutions!');
+    console.log('Successfully added all sample solutions!');
   } catch (error) {
-    console.error('❌ Error adding sample solutions:', error);
+    console.error('Error adding sample solutions:', error);
   }
 }
 

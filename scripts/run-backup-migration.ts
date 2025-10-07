@@ -25,14 +25,14 @@ async function runBackupMigration() {
       }
     }
     
-    console.log('✅ Backup system migration completed successfully!');
+    console.log('Backup system migration completed successfully!');
     console.log('Created tables:');
     console.log('- backup_metadata');
     console.log('- backup_data');
     console.log('Created indexes for performance optimization');
     
   } catch (error) {
-    console.error('❌ Migration failed:', error);
+    console.error('Migration failed:', error);
     process.exit(1);
   }
 }

@@ -52,12 +52,12 @@ async function addSampleEvents() {
     
     for (const event of sampleEvents) {
       await db.insert(events).values(event);
-      console.log(`✅ Added event: ${event.title}`);
+      console.log(`Added event: ${event.title}`);
     }
     
-    console.log('🎉 All sample events added successfully!');
+    console.log('All sample events added successfully!');
   } catch (error) {
-    console.error('❌ Error adding sample events:', error);
+    console.error('Error adding sample events:', error);
   }
   
   process.exit(0);

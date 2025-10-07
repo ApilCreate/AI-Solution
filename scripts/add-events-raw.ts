@@ -55,12 +55,12 @@ async function addSampleEvents() {
         INSERT INTO events (id, title, description, date, location, banner_url, created_at)
         VALUES (gen_random_uuid(), ${event.title}, ${event.description}, ${event.date}, ${event.location}, ${event.banner_url}, NOW())
       `);
-      console.log(`✅ Added event: ${event.title}`);
+      console.log(`Added event: ${event.title}`);
     }
     
-    console.log('🎉 All sample events added successfully!');
+    console.log('All sample events added successfully!');
   } catch (error) {
-    console.error('❌ Error adding sample events:', error);
+    console.error('Error adding sample events:', error);
   }
   
   process.exit(0);

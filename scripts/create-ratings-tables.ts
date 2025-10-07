@@ -1,6 +1,5 @@
-import { db } from '../db';
-import { ratings, testimonials } from '../db/schema';
 import { sql } from 'drizzle-orm';
+import { db } from '../db';
 
 async function createRatingsTables() {
   try {
@@ -60,10 +59,10 @@ async function createRatingsTables() {
       CREATE INDEX IF NOT EXISTS idx_testimonials_rating_id ON testimonials(rating_id);
     `);
 
-    console.log('✅ Successfully created ratings and testimonials tables with indexes!');
+    console.log('Successfully created ratings and testimonials tables with indexes!');
     
   } catch (error) {
-    console.error('❌ Error creating ratings tables:', error);
+    console.error('Error creating ratings tables:', error);
     throw error;
   }
 }
@@ -71,10 +70,10 @@ async function createRatingsTables() {
 // Run the migration
 createRatingsTables()
   .then(() => {
-    console.log('🎉 Migration completed successfully!');
+    console.log('Migration completed successfully!');
     process.exit(0);
   })
   .catch((error) => {
-    console.error('💥 Migration failed:', error);
+    console.error('Migration failed:', error);
     process.exit(1);
   });

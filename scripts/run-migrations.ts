@@ -10,7 +10,7 @@ import { join as pathJoin } from 'path';
 
 async function runMigrations() {
   try {
-    console.log('🚀 Running database migrations...');
+    console.log('Running database migrations...');
     
     // Read the migration file
     const migrationPath = pathJoin(process.cwd(), 'db', 'migrations', '0000_new_giant_man.sql');
@@ -22,30 +22,30 @@ async function runMigrations() {
       .map(stmt => stmt.trim())
       .filter(stmt => stmt.length > 0);
     
-    console.log(`📝 Found ${statements.length} migration statements`);
+    console.log(`Found ${statements.length} migration statements`);
     
     // Execute each statement
     for (let i = 0; i < statements.length; i++) {
       const statement = statements[i];
-      console.log(`⚡ Executing statement ${i + 1}/${statements.length}`);
+      console.log(`Executing statement ${i + 1}/${statements.length}`);
       
       try {
         await db.execute(statement);
-        console.log(`✅ Statement ${i + 1} completed`);
+        console.log(`Statement ${i + 1} completed`);
       } catch (error) {
         // Check if it's a "table already exists" error
         if (error instanceof Error && error.message.includes('already exists')) {
-          console.log(`⚠️  Statement ${i + 1}: Table already exists, skipping`);
+          console.log(`Statement ${i + 1}: Table already exists, skipping`);
         } else {
           throw error;
         }
       }
     }
     
-    console.log('🎉 Migration completed successfully!');
+    console.log('Migration completed successfully!');
     
     // Verify tables were created
-    console.log('\n🔍 Verifying tables...');
+    console.log('\nVerifying tables...');
     const result = await db.execute(`
       SELECT table_name 
       FROM information_schema.tables 
@@ -53,15 +53,15 @@ async function runMigrations() {
       ORDER BY table_name
     `);
     
-    console.log('📊 Tables in database:');
+    console.log('Tables in database:');
     result.rows.forEach((table: any) => {
-      console.log(`  ✅ ${table.table_name}`);
+      console.log(` ${table.table_name}`);
     });
     
     return true;
     
   } catch (error) {
-    console.error('❌ Migration failed:', error);
+    console.error('Migration failed:', error);
     return false;
   }
 }

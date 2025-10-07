@@ -129,18 +129,18 @@ function generateSampleInquiries() {
 
 async function addSampleInquiries() {
   try {
-    console.log('🚀 Adding 50 diverse sample inquiries...');
+    console.log('Adding 50 diverse sample inquiries...');
     console.log('=========================================');
     
     // Check current state
     const existingInquiries = await db.select().from(inquiries);
-    console.log(`📊 Current inquiries in database: ${existingInquiries.length}`);
+    console.log(`Current inquiries in database: ${existingInquiries.length}`);
     
     // Generate 50 new sample inquiries
     const sampleInquiries = generateSampleInquiries();
-    console.log(`📝 Generated ${sampleInquiries.length} new sample inquiries`);
+    console.log(`Generated ${sampleInquiries.length} new sample inquiries`);
     
-    console.log('\n🔄 Adding inquiries to database...');
+    console.log('\nAdding inquiries to database...');
     
     // Insert all inquiries
     let addedCount = 0;
@@ -149,18 +149,18 @@ async function addSampleInquiries() {
         await db.insert(inquiries).values(inquiry);
         addedCount++;
         if (addedCount % 10 === 0) {
-          console.log(`   ✅ Added ${addedCount}/${sampleInquiries.length} inquiries...`);
+          console.log(`   Added ${addedCount}/${sampleInquiries.length} inquiries...`);
         }
       } catch (error) {
-        console.error(`   ❌ Failed to add inquiry for ${inquiry.name}:`, error);
+        console.error(`   Failed to add inquiry for ${inquiry.name}:`, error);
       }
     }
     
-    console.log('\n✅ Sample inquiries added successfully!');
+    console.log('\nSample inquiries added successfully!');
     
     // Show final statistics
     const finalInquiries = await db.select().from(inquiries);
-    console.log('\n📈 Final Database Statistics:');
+    console.log('\nFinal Database Statistics:');
     console.log(`   Total inquiries: ${finalInquiries.length}`);
     console.log(`   New inquiries added: ${addedCount}`);
     
@@ -171,7 +171,7 @@ async function addSampleInquiries() {
       reasonCounts[reason] = (reasonCounts[reason] || 0) + 1;
     });
     
-    console.log('\n📊 Distribution by Reason:');
+    console.log('\nDistribution by Reason:');
     Object.entries(reasonCounts).forEach(([reason, count]) => {
       console.log(`   ${reason}: ${count} inquiries`);
     });
@@ -183,7 +183,7 @@ async function addSampleInquiries() {
       statusCounts[status] = (statusCounts[status] || 0) + 1;
     });
     
-    console.log('\n🏷️ Distribution by Status:');
+    console.log('\nDistribution by Status:');
     Object.entries(statusCounts).forEach(([status, count]) => {
       console.log(`   ${status}: ${count} inquiries`);
     });
@@ -213,7 +213,7 @@ async function addSampleInquiries() {
       }
     });
     
-    console.log('\n📅 Distribution by Month:');
+    console.log('\nDistribution by Month:');
     Object.entries(monthCounts)
       .sort(([a], [b]) => a.localeCompare(b))
       .forEach(([month, count]) => {
@@ -221,7 +221,7 @@ async function addSampleInquiries() {
       });
     
   } catch (error) {
-    console.error('❌ Error adding sample inquiries:', error);
+    console.error('Error adding sample inquiries:', error);
     throw error;
   }
 }

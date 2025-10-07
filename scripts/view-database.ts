@@ -9,11 +9,11 @@ import { adminUsers, inquiries, events, eventRsvps } from '../db/schema';
 
 async function viewDatabase() {
   try {
-    console.log('🔍 Database Verification Report');
+    console.log(' Database Verification Report');
     console.log('================================\n');
 
     // Check admin users
-    console.log('👤 Admin Users:');
+    console.log(' Admin Users:');
     const admins = await db.select().from(adminUsers);
     console.log(`   Total: ${admins.length} users`);
     admins.forEach((admin, index) => {
@@ -24,7 +24,7 @@ async function viewDatabase() {
     });
 
     // Check inquiries
-    console.log('📝 Inquiries:');
+    console.log(' Inquiries:');
     const allInquiries = await db.select().from(inquiries);
     console.log(`   Total: ${allInquiries.length} inquiries`);
     allInquiries.forEach((inquiry, index) => {
@@ -39,7 +39,7 @@ async function viewDatabase() {
     });
 
     // Check events
-    console.log('🎉 Events:');
+    console.log(' Events:');
     const allEvents = await db.select().from(events);
     console.log(`   Total: ${allEvents.length} events`);
     if (allEvents.length > 0) {
@@ -54,7 +54,7 @@ async function viewDatabase() {
     }
 
     // Check event RSVPs
-    console.log('🎫 Event RSVPs:');
+    console.log(' Event RSVPs:');
     const allRsvps = await db.select().from(eventRsvps);
     console.log(`   Total: ${allRsvps.length} RSVPs`);
     if (allRsvps.length > 0) {
@@ -69,18 +69,18 @@ async function viewDatabase() {
     }
 
     // Summary
-    console.log('📊 Summary:');
-    console.log(`   ✅ Tables: 4 (admin_users, inquiries, events, event_rsvps)`);
-    console.log(`   ✅ Admin Users: ${admins.length}`);
-    console.log(`   ✅ Inquiries: ${allInquiries.length}`);
-    console.log(`   ✅ Events: ${allEvents.length}`);
-    console.log(`   ✅ RSVPs: ${allRsvps.length}`);
+    console.log('Summary:');
+    console.log(` Tables: 4 (admin_users, inquiries, events, event_rsvps)`);
+    console.log(` Admin Users: ${admins.length}`);
+    console.log(` Inquiries: ${allInquiries.length}`);
+    console.log(` Events: ${allEvents.length}`);
+    console.log(` RSVPs: ${allRsvps.length}`);
     console.log('\n🎉 Database setup is complete and working correctly!');
     
     return true;
 
   } catch (error) {
-    console.error('❌ Error viewing database:', error);
+    console.error('Error viewing database:', error);
     return false;
   }
 }

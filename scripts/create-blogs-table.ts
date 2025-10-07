@@ -14,7 +14,7 @@ const db = drizzle(sql);
 
 async function createBlogsTable() {
   try {
-    console.log('🚀 Creating blogs table...');
+    console.log('Creating blogs table...');
     
     await sql`
       CREATE TABLE IF NOT EXISTS "blogs" (
@@ -34,10 +34,10 @@ async function createBlogsTable() {
       );
     `;
     
-    console.log('✅ Blogs table created successfully!');
+    console.log('Blogs table created successfully!');
     
   } catch (error) {
-    console.error('❌ Error creating blogs table:', error);
+    console.error('Error creating blogs table:', error);
     throw error;
   }
 }
@@ -45,10 +45,10 @@ async function createBlogsTable() {
 // Run the migration
 createBlogsTable()
   .then(() => {
-    console.log('\n✅ Migration completed successfully');
+    console.log('\nMigration completed successfully');
     process.exit(0);
   })
   .catch((error) => {
-    console.error('❌ Migration failed:', error);
+    console.error('Migration failed:', error);
     process.exit(1);
   });

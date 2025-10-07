@@ -86,7 +86,7 @@ async function runEnhancedBackupMigration() {
         ADD CONSTRAINT "backup_metadata_created_by_admin_users_id_fk" 
         FOREIGN KEY ("created_by") REFERENCES "admin_users"("id") ON DELETE cascade
       `);
-    } catch (error) {
+    } catch (error: any) {
       console.log('Foreign key constraint already exists or error:', error.message);
     }
     
@@ -96,7 +96,7 @@ async function runEnhancedBackupMigration() {
         ADD CONSTRAINT "backup_data_backup_id_backup_metadata_id_fk" 
         FOREIGN KEY ("backup_id") REFERENCES "backup_metadata"("id") ON DELETE cascade
       `);
-    } catch (error) {
+    } catch (error: any) {
       console.log('Foreign key constraint already exists or error:', error.message);
     }
     
@@ -106,7 +106,7 @@ async function runEnhancedBackupMigration() {
         ADD CONSTRAINT "deleted_records_deleted_by_admin_users_id_fk" 
         FOREIGN KEY ("deleted_by") REFERENCES "admin_users"("id") ON DELETE set null
       `);
-    } catch (error) {
+    } catch (error: any) {
       console.log('Foreign key constraint already exists or error:', error.message);
     }
     
@@ -146,7 +146,7 @@ async function runEnhancedBackupMigration() {
       ON CONFLICT ("table_name") DO NOTHING
     `);
     
-    console.log('✅ Enhanced backup system migration completed successfully!');
+    console.log('Enhanced backup system migration completed successfully!');
     console.log('Created tables:');
     console.log('- backup_metadata (enhanced)');
     console.log('- backup_data (enhanced)');
@@ -161,7 +161,7 @@ async function runEnhancedBackupMigration() {
     console.log('- Recovery points for crash scenarios');
     
   } catch (error) {
-    console.error('❌ Migration failed:', error);
+    console.error('Migration failed:', error);
     process.exit(1);
   }
 }

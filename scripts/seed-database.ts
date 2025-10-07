@@ -11,7 +11,7 @@ import bcrypt from 'bcrypt';
 
 async function seedDatabase() {
   try {
-    console.log('🌱 Starting database seeding...');
+    console.log('Starting database seeding...');
 
     // Generate password hash for Admin@123
     const passwordHash = await bcrypt.hash('Admin@123', 12);
@@ -25,10 +25,10 @@ async function seedDatabase() {
       role: 'admin',
     }).returning();
 
-    console.log('✅ Admin user created:', adminUser[0]);
+    console.log('Admin user created:', adminUser[0]);
 
     // Insert sample inquiries for testing
-    console.log('📝 Creating sample inquiries...');
+    console.log('Creating sample inquiries...');
     
     const sampleInquiries = [
       {
@@ -83,10 +83,10 @@ async function seedDatabase() {
 
     const insertedInquiries = await db.insert(inquiries).values(sampleInquiries).returning();
     
-    console.log('✅ Sample inquiries created:', insertedInquiries.length);
+    console.log('Sample inquiries created:', insertedInquiries.length);
 
-    console.log('\n🎉 Database seeding completed successfully!');
-    console.log('\n📊 Summary:');
+    console.log('\nDatabase seeding completed successfully!');
+    console.log('\nSummary:');
     console.log(`- Admin users: 1`);
     console.log(`- Sample inquiries: ${insertedInquiries.length}`);
     
@@ -96,7 +96,7 @@ async function seedDatabase() {
     };
 
   } catch (error) {
-    console.error('❌ Seeding failed:', error);
+    console.error('Seeding failed:', error);
     throw error;
   }
 }
@@ -105,11 +105,11 @@ async function seedDatabase() {
 if (require.main === module) {
   seedDatabase()
     .then(() => {
-      console.log('\n✅ Seeding complete. You can now run "npm run db:studio" to view your data.');
+      console.log('\nSeeding complete. You can now run "npm run db:studio" to view your data.');
       process.exit(0);
     })
     .catch((error) => {
-      console.error('\n❌ Seeding failed:', error);
+      console.error('\nSeeding failed:', error);
       process.exit(1);
     });
 }

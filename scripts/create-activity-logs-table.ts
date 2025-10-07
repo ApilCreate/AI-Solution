@@ -2,7 +2,7 @@ import { db } from '@/db';
 import { sql } from 'drizzle-orm';
 
 async function createActivityLogsTable() {
-  console.log('🔄 Creating activity_logs table...');
+  console.log('Creating activity_logs table...');
 
   try {
     // Create the activity_logs table
@@ -38,9 +38,9 @@ async function createActivityLogsTable() {
       CREATE INDEX IF NOT EXISTS "activity_logs_target_type_id_idx" ON "activity_logs" ("target_type", "target_id");
     `);
 
-    console.log('✅ Activity logs table created successfully');
+    console.log('Activity logs table created successfully');
   } catch (error) {
-    console.error('❌ Error creating activity logs table:', error);
+    console.error('Error creating activity logs table:', error);
     throw error;
   }
 }
@@ -48,9 +48,9 @@ async function createActivityLogsTable() {
 async function main() {
   try {
     await createActivityLogsTable();
-    console.log('🎉 Migration completed successfully!');
+    console.log('Migration completed successfully!');
   } catch (error) {
-    console.error('💥 Migration failed:', error);
+    console.error('Migration failed:', error);
     process.exit(1);
   }
 }
