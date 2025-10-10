@@ -4,7 +4,7 @@ import ConditionalLayout from "../components/ConditionalLayout";
 import Providers from "../components/Providers";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
