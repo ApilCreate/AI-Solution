@@ -7,36 +7,31 @@ import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { BackgroundBeams } from "../components/ui/background-beams";
 import H1Reveal from "../components/H1Reveal";
+import MinimalHero from "../components/MinimalHero";
 import { CometCard } from "../components/ui/comet-card";
 import { ContainerScroll } from "../components/ui/container-scroll-animation";
 import { HorizontalScroll } from "../components/ui/horizontal-scroll-reveal";
 import { InfiniteMovingCards } from "../components/ui/infinite-moving-cards";
 import { PointerHighlight } from "../components/ui/pointer-highlight";
 
-// Dynamic imports for heavy components with loading fallbacks
-const LaserFlow = dynamic(() => import("../components/LaserFlow"), { 
-  ssr: false,
-  loading: () => <div className="w-full h-full bg-black" />
-});
-const LightRays = dynamic(() => import("../components/LightRays"), { 
-  ssr: false,
-  loading: () => <div className="w-full h-full bg-black" />
-});
-const LogoLoop = dynamic(() => import("../components/LogoLoop"), { 
-  ssr: false,
-  loading: () => <div className="w-full h-full bg-black" />
-});
-const Magnet = dynamic(() => import("../components/Magnet"), { 
-  ssr: false,
-  loading: () => <div className="w-full h-full bg-black" />
-});
+// Dynamic imports for heavy components
+const LaserFlow = dynamic(() => import("../components/LaserFlow"), { ssr: false });
+const LightRays = dynamic(() => import("../components/LightRays"), { ssr: false });
+const LogoLoop = dynamic(() => import("../components/LogoLoop"), { ssr: false });
+const Magnet = dynamic(() => import("../components/Magnet"), { ssr: false });
 
 export default function AILandingPage() {
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
+  const [deferredComponents, setDeferredComponents] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
+    // Delay heavy components much longer to prioritize LCP
+    const timer = setTimeout(() => {
+      setDeferredComponents(true);
+    }, 8000); // 8 second delay for heavy components
+    return () => clearTimeout(timer);
   }, []);
 
 
@@ -216,23 +211,21 @@ export default function AILandingPage() {
 
     return (
       <section className="w-full text-white py-24 relative overflow-hidden">
-         {/* LightRays Background */}
-         <div className="absolute inset-0">
-           {isClient && (
-             <LightRays 
-               raysOrigin="top-center"
-               raysColor="#ffffff"
-               raysSpeed={0.5}
-               lightSpread={1.2}
-               rayLength={3}
-               pulsating={true}
-               fadeDistance={1.5}
-               saturation={0.3}
-               noiseAmount={0}
-               className="w-full h-full opacity-80"
-             />
-           )}
-         </div>
+        {/* LightRays Background */}
+        <div className="absolute inset-0">
+          <LightRays 
+            raysOrigin="top-center"
+            raysColor="#ffffff"
+            raysSpeed={0.5}
+            lightSpread={1.2}
+            rayLength={3}
+            pulsating={true}
+            fadeDistance={1.5}
+            saturation={0.3}
+            noiseAmount={0}
+            className="w-full h-full opacity-80"
+          />
+        </div>
         <div className="absolute inset-0" />
 
         <div className="relative z-10">
@@ -381,11 +374,14 @@ export default function AILandingPage() {
       ),
       content: (
         <div className="h-full w-full bg-black rounded-lg p-12 flex flex-col justify-center items-center shadow-2xl border border-gray-800">
-          <img
-            src="/images/ai-finance.png"
-            alt="AI Business Operations"
-            className="w-96 h-64 object-cover rounded-lg mb-8 shadow-lg"
-          />
+          {/* Deferred image loading */}
+          {deferredComponents && (
+            <img
+              src="/images/ai-finance.png"
+              alt="AI Business Operations"
+              className="w-96 h-64 object-cover rounded-lg mb-8 shadow-lg"
+            />
+          )}
           <div className="text-white text-center">
             <h3 className="text-2xl font-bold mb-4">Advanced Analytics Dashboard</h3>
             <p className="text-gray-300 text-lg">Real-time insights and comprehensive reporting</p>
@@ -442,11 +438,14 @@ export default function AILandingPage() {
       ),
       content: (
         <div className="h-full w-full bg-black rounded-lg p-12 flex flex-col justify-center items-center shadow-2xl border border-gray-800">
-          <img
-            src="/images/ai-marketing.png"
-            alt="Smart Automation"
-            className="w-96 h-64 object-cover rounded-lg mb-8 shadow-lg"
-          />
+          {/* Deferred image loading */}
+          {deferredComponents && (
+            <img
+              src="/images/ai-marketing.png"
+              alt="Smart Automation"
+              className="w-96 h-64 object-cover rounded-lg mb-8 shadow-lg"
+            />
+          )}
           <div className="text-white text-center">
             <h3 className="text-2xl font-bold mb-4">Intelligent Automation</h3>
             <p className="text-gray-300 text-lg">Smart workflow management and optimization</p>
@@ -503,11 +502,14 @@ export default function AILandingPage() {
       ),
       content: (
         <div className="h-full w-full bg-black rounded-lg p-12 flex flex-col justify-center items-center shadow-2xl border border-gray-800">
-          <img
-            src="/images/ai-healthcare.png"
-            alt="API Integration"
-            className="w-96 h-64 object-cover rounded-lg mb-8 shadow-lg"
-          />
+          {/* Deferred image loading */}
+          {deferredComponents && (
+            <img
+              src="/images/ai-healthcare.png"
+              alt="API Integration"
+              className="w-96 h-64 object-cover rounded-lg mb-8 shadow-lg"
+            />
+          )}
           <div className="text-white text-center">
             <h3 className="text-2xl font-bold mb-4">API Integration Hub</h3>
             <p className="text-gray-300 text-lg">Connect with 1000+ applications seamlessly</p>
@@ -610,37 +612,8 @@ export default function AILandingPage() {
           color: #ffffff !important;
         }
       `}</style>
-      {/* Hero Section */}
-      <section className="hero-section min-h-screen flex justify-center items-center relative pt-20 md:pt-24">
-        {/* Simple background first */}
-        <div className="absolute inset-0 bg-black"></div>
-        
-        {/* LaserFlow Background - Curved edges for immersive effect */}
-        <div className="absolute inset-0 -mt-[260px]">
-          {isClient && (
-            <LaserFlow
-              className="w-full h-full"
-              color="#ffffff"
-              wispDensity={1.5}
-              flowSpeed={0.5}
-              wispSpeed={25}
-              wispIntensity={3}
-              fogIntensity={0.45}
-              mouseTiltStrength={0.6}
-              verticalSizing={2}
-              horizontalSizing={0.6}
-              decay={1.1}
-              falloffStart={0.38}
-              verticalBeamOffset={-0.2}
-              horizontalBeamOffset={0}
-              fogScale={1.2}
-              flowStrength={1.5}
-            />
-          )}
-        </div>
-
-        {/* Content Container - Positioned at bottom like preview */}
-        <div className="hero-content flex flex-col justify-end items-center w-full max-w-6xl mx-auto px-6 relative z-20 min-h-screen pb-32">
+      {/* Minimal Hero Section for LCP Optimization */}
+      <MinimalHero />
           
           {/* Title and Description - Positioned above container */}
           <div className="text-center mb-16">
@@ -671,41 +644,26 @@ export default function AILandingPage() {
               and stay ahead in the digital age.
             </motion.p>
 
-             <motion.div
-               initial={{ opacity: 0, y: 20 }}
-               animate={{ opacity: 1, y: 0 }}
-               transition={{ duration: 0.8, delay: 0.6 }}
-             >
-               {isClient ? (
-                 <Magnet magnetStrength={2} padding={100}>
-                   <button 
-                     onClick={() => router.push('/contact')}
-                     className="bg-white text-black no-underline group cursor-pointer relative shadow-2xl shadow-white/20 rounded-full px-6 sm:px-8 py-2 sm:py-3 text-xs sm:text-sm font-semibold leading-6 inline-block transition-all duration-300 hover:scale-105 hover:shadow-white/40"
-                   >
-                     <span className="absolute inset-0 overflow-hidden rounded-full">
-                       <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
-                     </span>
-                     <div className="relative flex space-x-2 items-center z-10 rounded-full">
-                       <span className="text-black font-medium">Book a demo</span>
-                     </div>
-                     <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-black/0 via-black/30 to-black/0 transition-opacity duration-500 group-hover:opacity-40"></span>
-                   </button>
-                 </Magnet>
-               ) : (
-                 <button 
-                   onClick={() => router.push('/contact')}
-                   className="bg-white text-black no-underline group cursor-pointer relative shadow-2xl shadow-white/20 rounded-full px-6 sm:px-8 py-2 sm:py-3 text-xs sm:text-sm font-semibold leading-6 inline-block transition-all duration-300 hover:scale-105 hover:shadow-white/40"
-                 >
-                   <span className="absolute inset-0 overflow-hidden rounded-full">
-                     <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
-                   </span>
-                   <div className="relative flex space-x-2 items-center z-10 rounded-full">
-                     <span className="text-black font-medium">Book a demo</span>
-                   </div>
-                   <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-black/0 via-black/30 to-black/0 transition-opacity duration-500 group-hover:opacity-40"></span>
-                 </button>
-               )}
-             </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              <Magnet magnetStrength={2} padding={100}>
+                <button 
+                  onClick={() => router.push('/contact')}
+                  className="bg-white text-black no-underline group cursor-pointer relative shadow-2xl shadow-white/20 rounded-full px-6 sm:px-8 py-2 sm:py-3 text-xs sm:text-sm font-semibold leading-6 inline-block transition-all duration-300 hover:scale-105 hover:shadow-white/40"
+                >
+                  <span className="absolute inset-0 overflow-hidden rounded-full">
+                    <span className="absolute inset-0 rounded-full bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0)_75%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
+                  </span>
+                  <div className="relative flex space-x-2 items-center z-10 rounded-full">
+                    <span className="text-black font-medium">Book a demo</span>
+                  </div>
+                  <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-black/0 via-black/30 to-black/0 transition-opacity duration-500 group-hover:opacity-40"></span>
+                </button>
+              </Magnet>
+            </motion.div>
           </div>
 
           {/* Container exactly like preview - where laser lands */}
@@ -880,6 +838,7 @@ export default function AILandingPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Horizontal Scroll Sections */}
       <section className="w-full h-screen overflow-hidden relative">
@@ -898,9 +857,8 @@ export default function AILandingPage() {
               Trusted by leading companies worldwide
             </p>
           </div>
-           {isClient && (
-             <LogoLoop
-               logos={[
+          <LogoLoop
+            logos={[
               {
                 node: (
                   <svg className="h-8 w-auto" viewBox="0 0 108 24" fill="currentColor">
@@ -1042,7 +1000,6 @@ export default function AILandingPage() {
             fadeOutColor="rgba(0, 0, 0, 1)"
             className="text-gray-200 opacity-80"
           />
-           )}
         </div>
       </section>
 
