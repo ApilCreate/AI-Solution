@@ -44,8 +44,12 @@ AI Solution is a comprehensive business platform that demonstrates the power of 
 
 ### 🔧 Admin Dashboard
 - **Real-time Analytics**: Live data visualization with charts and metrics
-- **Enhanced Backup System**: Comprehensive data backup and recovery with CSV export
+- **Enhanced Backup & Recovery System**: Comprehensive data protection with dual storage
 - **Deleted Data Recovery**: Track and recover accidentally deleted records (3-month retention)
+- **Database Backup Management**: Create, manage, and restore backups with dynamic date ranges
+- **CSV Export & Import**: Full data export capabilities with filtering options
+- **Recovery Point Creation**: Disaster recovery points for system restoration
+- **Bulk Operations**: Mass recovery and deletion operations with confirmation dialogs
 - **Inquiry Management**: Track, filter, and respond to customer inquiries with delete functionality
 - **Demo Booking Management**: Manage AI solution demonstration bookings
 - **AI Solutions Management**: Create and manage AI service offerings
@@ -114,9 +118,14 @@ Activity Logging       # Comprehensive audit trails
 ### Enhanced Backup & Recovery System
 - **Comprehensive Backup Management**: Create backups for all tables or specific tables with dynamic date selection
 - **Deleted Data Recovery**: Track and recover accidentally deleted records with 3-month retention
-- **CSV Export**: Download backups and deleted data in CSV format
-- **Dual Storage**: Backups stored both in database and file system for maximum reliability
+- **CSV Export & Import**: Download backups and deleted data in CSV format with advanced filtering
+- **Dual Storage System**: Backups stored both in database and file system for maximum reliability
 - **Dynamic Date Ranges**: Automatic detection of actual data ranges for backup creation
+- **Recovery Points**: Create special disaster recovery points for critical system restoration
+- **Bulk Operations**: Mass recovery and deletion operations with confirmation dialogs
+- **Backup Statistics**: Comprehensive dashboard showing backup metrics and health
+- **Retention Policies**: Automated cleanup with 6-month backup retention and 3-month deleted data retention
+- **Audit Trails**: Complete logging of all backup, recovery, and deletion operations
 
 ### Improved Admin Experience
 - **Modern Navigation**: Redesigned admin interface with spacious top navigation for desktop
@@ -226,6 +235,15 @@ AI-Solution/
 │   │   │   └── [id]/                # 📄 Individual blog APIs
 │   │   ├── demo-bookings/           # 🎯 Demo booking APIs
 │   │   │   └── [id]/                # 📅 Individual booking APIs
+│   │   ├── backups/                   # 💾 Backup management APIs
+│   │   │   ├── [id]/                # 📄 Individual backup APIs
+│   │   │   │   ├── download/        # 📥 Backup download
+│   │   │   │   └── restore/         # 🔄 Backup restoration
+│   │   │   ├── cleanup/             # 🧹 Cleanup operations
+│   │   │   ├── deleted-data/        # 🗑️ Deleted data management
+│   │   │   ├── permanent-delete/    # ⚠️ Permanent deletion
+│   │   │   ├── recover/             # 🔄 Data recovery
+│   │   │   └── table-ranges/        # 📊 Table metadata
 │   │   ├── diagnostic/              # 🔍 System diagnostics
 │   │   ├── email/                   # 📧 Email APIs
 │   │   │   └── status/              # 📊 Email status tracking
@@ -260,6 +278,11 @@ AI-Solution/
 │   │   └── useAuthCheck.ts          # 🔐 Authentication hook
 │   ├── 📁 lib/                      # 📚 Utility libraries
 │   │   ├── activity-logger.ts       # 📋 Activity logging
+│   │   ├── backup-cleanup.ts        # 🧹 Backup cleanup utilities
+│   │   ├── backup-service.ts        # 💾 Backup service
+│   │   ├── backup-trigger.ts        # 🎯 Backup trigger
+│   │   ├── deletion-tracker.ts      # 🗑️ Deletion tracking
+│   │   ├── enhanced-backup-service.ts # 💾 Enhanced backup service
 │   │   ├── logger.ts                # 📝 Logging utilities
 │   │   ├── mail.ts                  # 📧 Email utilities
 │   │   ├── rate-limit.ts            # ⚡ Rate limiting
@@ -274,12 +297,17 @@ AI-Solution/
 │   ├── AdminChart.tsx               # 📊 Admin chart component
 │   ├── AdminGuard.tsx               # 🛡️ Admin route protection
 │   ├── AIGallery.tsx                # 🤖 AI showcase gallery
+│   ├── BackupManagement.tsx         # 💾 Basic backup management
+│   ├── BackupModal.tsx              # 💾 Backup creation modal
 │   ├── Beams.tsx                    # ✨ Beam animation effect
 │   ├── ChangePassword.tsx           # 🔑 Password change form
 │   ├── ConditionalLayout.tsx        # 📱 Conditional layout wrapper
 │   ├── ContactForm.tsx              # 📬 Contact form component
 │   ├── DashboardHeader.tsx          # 📊 Dashboard header
 │   ├── DashboardLayout.tsx          # 📊 Dashboard layout
+│   ├── DeletedDataModal.tsx         # 🗑️ Deleted data export modal
+│   ├── EnhancedBackupManagement.tsx # 💾 Enhanced backup management
+│   ├── EnhancedBackupModal.tsx      # 💾 Enhanced backup creation modal
 │   ├── FAQSection.tsx               # ❓ FAQ section component
 │   ├── Footer.tsx                   # 🔗 Footer component
 │   ├── Galaxy.tsx                   # 🌌 Galaxy animation effect
@@ -354,17 +382,23 @@ AI-Solution/
 │   ├── add-sample-events.ts         # 📅 Add sample events
 │   ├── add-sample-inquiries.ts      # 📬 Add sample inquiries
 │   ├── add-sample-solutions.ts      # 🤖 Add sample solutions
+│   ├── check-and-migrate.ts         # ✅ Check and migrate database
 │   ├── check-setup.ts               # ✅ Check setup
+│   ├── cleanup-backups.js           # 🧹 Cleanup backup files
 │   ├── create-activity-logs-table.ts # 📋 Create activity logs table
 │   ├── create-blogs-table.ts        # 📝 Create blogs table
 │   ├── create-ratings-tables.ts     # ⭐ Create ratings tables
 │   ├── dev-with-warming.js          # 🔥 Dev with warming
 │   ├── query-database.ts            # 🔍 Query database
+│   ├── run-backup-migration.ts      # 🔄 Run backup migration
+│   ├── run-backup-migration-v2.ts   # 🔄 Run backup migration v2
+│   ├── run-enhanced-backup-migration.ts # 🔄 Run enhanced backup migration
 │   ├── run-migrations.ts            # 🔄 Run migrations
 │   ├── seed-database.ts             # 🌱 Seed database
 │   └── view-database.ts             # 👁️ View database
 ├── 📁 types/                        # 📋 Global type definitions
 │   └── spline.d.ts                  # 🎨 Spline type definitions
+├── 📁 backups/                      # 💾 Backup storage directory (auto-generated)
 ├── components.json                  # ⚙️ Components configuration
 ├── drizzle.config.ts                # 🗄️ Drizzle configuration
 ├── eslint.config.mjs                # 🔍 ESLint configuration
@@ -372,10 +406,11 @@ AI-Solution/
 ├── next.config.ts                   # ⚡ Next.js configuration
 ├── package.json                     # 📦 Package configuration
 ├── postcss.config.mjs               # 🎨 PostCSS configuration
+├── README.md                        # 📖 Comprehensive documentation
 ├── setup-admin.ts                   # 👤 Admin setup script
 ├── tailwind.config.js               # 🎨 Tailwind configuration
 ├── tsconfig.json                    # 📝 TypeScript configuration
-└── VERCEL_DEPLOYMENT.md             # 🚀 Deployment guide
+└── vercel.json                      # 🚀 Vercel configuration
 ```
 
 ## 🎮 Usage Guide
@@ -441,30 +476,98 @@ This project is optimized for Vercel with built-in analytics and performance mon
 #### One-Click Deploy
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ApilCreate/AI-Solution)
 
-#### Manual Deployment
-1. **Connect Repository**
-   - Import your GitHub repository to Vercel
-   - Vercel auto-detects Next.js configuration
+#### Manual Deployment Steps
 
-2. **Configure Environment Variables**
-   ```
-   DATABASE_URL=postgresql://username:password@hostname/database?sslmode=require
-   RESEND_API_KEY=your_resend_api_key (optional)
-   FROM_EMAIL=noreply@yourdomain.com (optional)
-   ADMIN_EMAIL=admin@yourdomain.com (optional)
-   JWT_SECRET=your_jwt_secret (optional)
-   ```
+**1. Connect Repository**
+- Import your GitHub repository to Vercel
+- Vercel auto-detects Next.js configuration
 
-3. **Deploy**
-   - Vercel automatically builds and deploys
-   - Analytics tracking starts immediately
-   - Custom domain configuration available
+**2. Configure Environment Variables in Vercel Dashboard**
+
+Go to Settings → Environment Variables and add:
+
+**Required:**
+```env
+DATABASE_URL=postgresql://username:password@hostname/database?sslmode=require
+```
+- Get this from your [Neon Database](https://neon.tech) dashboard
+- Required for all database operations
+- Ensure `?sslmode=require` is included
+
+**Optional but Recommended:**
+```env
+# Email Service (for contact forms)
+RESEND_API_KEY=your_resend_api_key_here
+FROM_EMAIL=noreply@yourdomain.com
+ADMIN_EMAIL=admin@yourdomain.com
+
+# Authentication
+JWT_SECRET=your_strong_jwt_secret_key_here
+```
+
+**3. Database Setup**
+```bash
+# After deployment, run migrations
+npm run db:migrate
+
+# Seed with sample data (optional)
+npm run db:seed
+```
+
+**4. Create Admin User**
+```bash
+# Run the setup script
+npx tsx setup-admin.ts
+```
+
+**5. Deploy**
+- Click "Deploy" in Vercel dashboard
+- Vercel automatically builds and deploys
+- Analytics tracking starts immediately
+- Custom domain configuration available
+
+#### Pre-Deployment Checklist
+
+- [ ] All environment variables configured
+- [ ] Neon database created and accessible
+- [ ] Build succeeds locally (`npm run build`)
+- [ ] All TypeScript errors resolved (or `ignoreBuildErrors` set)
+- [ ] Admin credentials created
+
+#### Post-Deployment Verification
+
+- [ ] Home page loads correctly
+- [ ] Contact form works
+- [ ] Admin login accessible at `/admin/login`
+- [ ] Database connections working
+- [ ] Email notifications sending (if configured)
+- [ ] Analytics tracking active
 
 #### Automatic Features
 - **Analytics Integration**: Page views tracked automatically
 - **Performance Optimization**: Edge functions and CDN
 - **Preview Deployments**: Branch-based previews
 - **Monitoring**: Real-time performance metrics
+- **Auto-scaling**: Handles traffic spikes automatically
+
+#### Common Deployment Issues
+
+**Build Timeout:**
+- Solution: Using optimized `next.config.ts` with package optimization
+- Alternative: Increase build timeout in Vercel settings
+
+**Memory Issues:**
+- Solution: `vercel.json` includes memory optimizations
+- Memory allocation automatically scaled
+
+**Database Connection:**
+- Verify `DATABASE_URL` format
+- Check Neon database accessibility
+- Ensure SSL mode is enabled
+
+**TypeScript Errors:**
+- Temporarily use `ignoreBuildErrors: true` in `next.config.ts`
+- Or fix all TypeScript errors before deployment
 
 
 ## 🛠️ Development
@@ -582,6 +685,170 @@ npx tsc --noEmit
 - Check browser console for client-side errors
 - Monitor Vercel function logs for API issues
 - Use `npm run analyze` to optimize bundle size
+
+## 🧪 Testing Guide
+
+### Testing Categories
+
+#### 1. Functional Testing
+
+**User Interface Tests:**
+- Homepage loads with all sections visible
+- Navigation menu works across all pages
+- Contact form submits successfully
+- Admin login accepts correct credentials
+- Admin dashboard displays all components
+- Theme toggle works (light/dark mode)
+- Mobile responsive design functions properly
+
+**Data Management Tests:**
+- Inquiry creation and tracking
+- Blog post creation and publishing
+- Event management (create, edit, delete)
+- Solution management operations
+- Rating and testimonial submission
+- Demo booking system workflow
+- Backup creation and restoration
+
+#### 2. Security Testing
+
+**Authentication Tests:**
+- Admin login with valid credentials succeeds
+- Invalid credentials show appropriate error
+- Session timeout after inactivity
+- Unauthorized access redirects to login
+- Password change functionality works
+- JWT token validation
+
+**Input Validation:**
+- Contact form validates required fields
+- Email format validation works
+- XSS protection prevents script injection
+- SQL injection attempts are blocked
+- File upload validation (if applicable)
+
+#### 3. Performance Testing
+
+**Load Testing:**
+- Homepage loads in under 3 seconds
+- Admin dashboard responds quickly
+- Database queries are optimized
+- Image loading is optimized (WebP/AVIF)
+- Bundle size is under recommended limits
+
+**Analytics:**
+- Core Web Vitals (LCP, FID, CLS)
+- Time to First Byte (TTFB)
+- Time to Interactive (TTI)
+- Bundle analysis results
+
+#### 4. Integration Testing
+
+**API Endpoint Tests:**
+- `/api/inquiries` - POST and GET operations
+- `/api/auth/login` - Authentication flow
+- `/api/blogs` - CRUD operations
+- `/api/events` - Event management
+- `/api/backups` - Backup operations
+- `/api/analytics` - Data retrieval
+
+**Database Integration:**
+- Connection pool management
+- Transaction handling
+- Migration execution
+- Data integrity checks
+
+#### 5. User Experience Testing
+
+**Navigation Flow:**
+- User journey from home to contact
+- Admin workflow for inquiry management
+- Booking demo process
+- Blog reading experience
+- Mobile navigation usability
+
+**Accessibility:**
+- Keyboard navigation support
+- Screen reader compatibility
+- Color contrast compliance
+- Alt text for images
+- ARIA labels where needed
+
+### Testing Tools & Commands
+
+```bash
+# Run linter
+npm run lint
+
+# Check TypeScript errors
+npx tsc --noEmit
+
+# Analyze bundle size
+npm run analyze
+
+# Test database connection
+npm run db:check
+
+# View database contents
+npm run db:view
+```
+
+### Manual Testing Checklist
+
+**Before Production:**
+- [ ] All forms submit correctly
+- [ ] Email notifications deliver
+- [ ] Admin panel fully functional
+- [ ] Database backups working
+- [ ] Analytics tracking active
+- [ ] Error handling works properly
+- [ ] Mobile responsive on all devices
+- [ ] Cross-browser compatibility (Chrome, Firefox, Safari)
+- [ ] Performance metrics meet standards
+- [ ] Security headers configured
+- [ ] HTTPS enforced
+- [ ] Rate limiting active
+
+### Automated Testing Setup
+
+```typescript
+// Example test structure (add testing library if needed)
+describe('Contact Form', () => {
+  it('should submit form with valid data', async () => {
+    // Test implementation
+  });
+  
+  it('should show validation errors', async () => {
+    // Test implementation
+  });
+});
+```
+
+### Bug Reporting Template
+
+```markdown
+**Bug Description:**
+Brief description of the issue
+
+**Steps to Reproduce:**
+1. Go to...
+2. Click on...
+3. See error
+
+**Expected Behavior:**
+What should happen
+
+**Actual Behavior:**
+What actually happens
+
+**Environment:**
+- Browser: Chrome 120
+- Device: Desktop
+- OS: Windows 11
+
+**Screenshots:**
+Attach relevant screenshots
+```
 
 ## Performance Optimization
 

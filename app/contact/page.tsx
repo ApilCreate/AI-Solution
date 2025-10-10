@@ -8,6 +8,7 @@ import {
 } from "framer-motion";
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import toast from 'react-hot-toast';
 import {
   Mail,
   Phone,
@@ -89,9 +90,10 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Basic front-end guards (we’ll replace with Zod + API later)
+    // Basic front-end guards (we'll replace with Zod + API later)
     if (!formData.consent) {
       setSubmitStatus("error");
+      toast.error("Please agree to the terms and conditions to submit.");
       return;
     }
 
@@ -121,6 +123,7 @@ export default function ContactPage() {
       if (!res.ok) {
         const errorText = await res.text();
         console.error("Submission failed:", errorText);
+        toast.error("Failed to submit your inquiry. Please try again.");
         throw new Error(errorText);
       }
 
@@ -128,6 +131,8 @@ export default function ContactPage() {
       console.log("Inquiry created:", result);
 
       setSubmitStatus("success");
+      toast.success("Thank you! Your inquiry has been submitted successfully. We'll get back to you soon!");
+      
       setFormData({
         name: "",
         email: "",

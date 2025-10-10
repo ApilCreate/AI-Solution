@@ -3,7 +3,7 @@ import { db } from '../db';
 
 async function createRatingsTables() {
   try {
-    console.log('🔄 Creating ratings and testimonials tables...');
+    console.log('Creating ratings and testimonials tables...');
 
     // Create ratings table
     await db.execute(sql`

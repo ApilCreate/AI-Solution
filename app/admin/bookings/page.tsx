@@ -70,12 +70,13 @@ export default function AdminBookingsPage() {
         setBookings(bookings.map(b => 
           b.id === bookingId ? { ...b, status: newStatus } : b
         ));
+        toast.success('Booking status updated successfully!');
       } else {
-        toast.error('Failed to update booking status');
+        toast.error('Failed to update booking status. Please try again.');
       }
     } catch (error) {
       console.error('Error updating booking status:', error);
-      alert('Failed to update booking status');
+      toast.error('Failed to update booking status. Please try again.');
     }
   };
 
@@ -109,12 +110,13 @@ export default function AdminBookingsPage() {
         setSelectedBooking(null);
         setReplyText('');
         setNotes('');
+        toast.success('Reply sent successfully!');
       } else {
-        toast.error('Failed to send reply');
+        toast.error('Failed to send reply. Please try again.');
       }
     } catch (error) {
       console.error('Error sending reply:', error);
-      toast.error('Failed to send reply');
+      toast.error('Failed to send reply. Please try again.');
     } finally {
       setReplying(false);
     }
@@ -137,48 +139,54 @@ export default function AdminBookingsPage() {
         }
         toast.success('Booking deleted successfully!');
       } else {
-        toast.error('Failed to delete booking');
+        toast.error('Failed to delete booking. Please try again.');
       }
     } catch (error) {
       console.error('Error deleting booking:', error);
-      toast.error('Error deleting booking');
+      toast.error('Failed to delete booking. Please try again.');
     }
   };
 
   const handleExportCSV = () => {
-    const csvData = filteredBookings.map(booking => ({
-      'Booking ID': booking.id,
-      'Name': booking.name,
-      'Email': booking.email,
-      'Company': booking.company,
-      'Solution Name': booking.solutionName || 'N/A',
-      'Solution ID': booking.solutionId || 'N/A',
-      'Message': booking.message || '',
-      'Preferred Date': booking.preferredDate || 'Not specified',
-      'Preferred Time': booking.preferredTime || 'Not specified',
-      'Status': booking.status,
-      'Admin Notes': booking.adminNotes || '',
-      'Admin Reply': booking.adminReply || '',
-      'Replied At': booking.repliedAt ? formatDateTime(booking.repliedAt).full : 'N/A',
-      'Created At': formatDateTime(booking.createdAt).full,
-      'Updated At': formatDateTime(booking.updatedAt).full
-    }));
+    try {
+      const csvData = filteredBookings.map(booking => ({
+        'Booking ID': booking.id,
+        'Name': booking.name,
+        'Email': booking.email,
+        'Company': booking.company,
+        'Solution Name': booking.solutionName || 'N/A',
+        'Solution ID': booking.solutionId || 'N/A',
+        'Message': booking.message || '',
+        'Preferred Date': booking.preferredDate || 'Not specified',
+        'Preferred Time': booking.preferredTime || 'Not specified',
+        'Status': booking.status,
+        'Admin Notes': booking.adminNotes || '',
+        'Admin Reply': booking.adminReply || '',
+        'Replied At': booking.repliedAt ? formatDateTime(booking.repliedAt).full : 'N/A',
+        'Created At': formatDateTime(booking.createdAt).full,
+        'Updated At': formatDateTime(booking.updatedAt).full
+      }));
 
-    const headers = Object.keys(csvData[0]);
-    const csvContent = [
-      headers.join(','),
-      ...csvData.map(row => headers.map(header => `"${row[header as keyof typeof row]}"`).join(','))
-    ].join('\n');
+      const headers = Object.keys(csvData[0]);
+      const csvContent = [
+        headers.join(','),
+        ...csvData.map(row => headers.map(header => `"${row[header as keyof typeof row]}"`).join(','))
+      ].join('\n');
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `demo-bookings-${new Date().toISOString().split('T')[0]}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `demo-bookings-${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast.success('Bookings exported successfully!');
+    } catch (error) {
+      console.error('Error exporting CSV:', error);
+      toast.error('Failed to export bookings. Please try again.');
+    }
   };
 
   const filteredBookings = bookings.filter(booking => {

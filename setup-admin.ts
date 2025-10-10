@@ -29,7 +29,7 @@ async function setupAdminUser() {
         .set({ passwordHash: hashedPassword })
         .where(eq(adminUsers.email, email));
         
-      console.log('✅ Admin user password updated successfully!');
+      console.log('Admin user password updated successfully!');
     } else {
       console.log('Creating new admin user...');
       
@@ -43,14 +43,14 @@ async function setupAdminUser() {
         role: 'admin'
       });
       
-      console.log('✅ Admin user created successfully!');
+      console.log('Admin user created successfully!');
     }
     
     console.log(`Email: ${email}`);
     console.log(`Password: ${password}`);
     
   } catch (error) {
-    console.error('❌ Error setting up admin user:', error);
+    console.error('Error setting up admin user:', error);
   }
 }
 

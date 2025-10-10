@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { Star, Send, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 
 interface RatingFormProps {
@@ -47,6 +48,7 @@ export default function RatingForm({ className = "" }: RatingFormProps) {
 
     if (!formData.name || !formData.email || formData.rating === 0 || !formData.comment) {
       setSubmitStatus("error");
+      toast.error("Please fill in all fields and select a rating.");
       return;
     }
 
@@ -63,6 +65,7 @@ export default function RatingForm({ className = "" }: RatingFormProps) {
       }
 
       setSubmitStatus("success");
+      toast.success("Thank you for your feedback! Your rating has been submitted successfully.");
       setFormData({
         name: "",
         email: "",
@@ -71,6 +74,7 @@ export default function RatingForm({ className = "" }: RatingFormProps) {
       });
     } catch (error) {
       setSubmitStatus("error");
+      toast.error("Failed to submit your rating. Please try again.");
     } finally {
       setIsSubmitting(false);
       setTimeout(() => setSubmitStatus("idle"), 5000);

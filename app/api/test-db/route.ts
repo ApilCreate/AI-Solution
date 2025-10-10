@@ -4,22 +4,22 @@ import { sql } from 'drizzle-orm';
 
 export async function GET() {
   try {
-    console.log('🔍 Testing database connection...');
+    console.log('Testing database connection...');
     
     // Test basic connection
     const result = await db.execute(sql`SELECT 1 as test`);
-    console.log('✅ Database connection successful');
+    console.log('Database connection successful');
     
     // Test events table exists
     const tableCheck = await db.execute(sql`
       SELECT table_name FROM information_schema.tables 
       WHERE table_name = 'events'
     `);
-    console.log('📋 Events table check:', tableCheck.rows);
+    console.log('Events table check:', tableCheck.rows);
     
     // Test events count
     const eventCount = await db.execute(sql`SELECT COUNT(*) FROM events`);
-    console.log('📊 Events count:', eventCount.rows);
+    console.log('Events count:', eventCount.rows);
     
     return NextResponse.json({
       status: 'ok',
@@ -29,7 +29,7 @@ export async function GET() {
       message: 'Diagnostic check completed successfully'
     });
   } catch (error) {
-    console.error('❌ Diagnostic check failed:', error);
+    console.error('Diagnostic check failed:', error);
     return NextResponse.json(
       { 
         status: 'error',

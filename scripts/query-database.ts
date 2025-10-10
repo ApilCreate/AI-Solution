@@ -7,7 +7,7 @@ dotenv.config({ path: '.env.local' });
 
 async function runQuery() {
   try {
-    console.log('🔍 Custom Database Query Tool');
+    console.log('Custom Database Query Tool');
     console.log('============================');
     
     // Get command line arguments

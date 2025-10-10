@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { 
   Star, 
   Search, 
@@ -97,7 +98,10 @@ export default function RatingsManagement() {
   };
 
   const handleReply = async () => {
-    if (!selectedRating || !replyMessage.trim()) return;
+    if (!selectedRating || !replyMessage.trim()) {
+      toast.error('Please enter a reply message.');
+      return;
+    }
 
     setIsReplying(true);
     try {
@@ -112,9 +116,13 @@ export default function RatingsManagement() {
         setReplyMessage('');
         setSelectedRating(null);
         fetchRatings();
+        toast.success('Reply sent successfully!');
+      } else {
+        toast.error('Failed to send reply. Please try again.');
       }
     } catch (error) {
       console.error('Error sending reply:', error);
+      toast.error('Failed to send reply. Please try again.');
     } finally {
       setIsReplying(false);
     }
@@ -133,9 +141,13 @@ export default function RatingsManagement() {
 
       if (response.ok) {
         fetchRatings();
+        toast.success(isCurrentlyPublished ? 'Rating unpublished successfully!' : 'Rating published successfully!');
+      } else {
+        toast.error('Failed to update publish status. Please try again.');
       }
     } catch (error) {
       console.error('Error updating publish status:', error);
+      toast.error('Failed to update publish status. Please try again.');
     }
   };
 

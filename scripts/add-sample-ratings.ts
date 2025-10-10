@@ -140,7 +140,7 @@ async function addSampleRatings() {
     const averageRating = (totalRating / finalRatings.length).toFixed(2);
     console.log(`\nAverage Rating: ${averageRating} stars`);
     
-    console.log('\n🎉 Sample ratings added successfully!');
+    console.log('\nSample ratings added successfully!');
     
     return true;
     
@@ -154,10 +154,10 @@ async function addSampleRatings() {
 if (require.main === module) {
   addSampleRatings().then(success => {
     if (success) {
-      console.log('\n✅ Script completed successfully');
+      console.log('\nScript completed successfully');
       process.exit(0);
     } else {
-      console.log('\n❌ Script failed');
+      console.log('\nScript failed');
       process.exit(1);
     }
   });

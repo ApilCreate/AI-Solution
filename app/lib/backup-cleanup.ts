@@ -8,10 +8,10 @@ export async function cleanupExpiredBackups() {
   try {
     console.log('Starting backup cleanup...');
     const deletedCount = await backupService.cleanupExpiredBackups();
-    console.log(`✅ Cleanup completed. Deleted ${deletedCount} expired backups.`);
+    console.log(`Cleanup completed. Deleted ${deletedCount} expired backups.`);
     return deletedCount;
   } catch (error) {
-    console.error('❌ Backup cleanup failed:', error);
+    console.error('Backup cleanup failed:', error);
     throw error;
   }
 }
@@ -29,6 +29,6 @@ export function scheduleBackupCleanup() {
     cleanupExpiredBackups();
   }, 24 * 60 * 60 * 1000);
   
-  console.log('🔄 Backup cleanup scheduled to run daily');
+  console.log('Backup cleanup scheduled to run daily');
 }
 

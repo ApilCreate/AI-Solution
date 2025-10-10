@@ -71,7 +71,7 @@ const PerformanceMonitor = ({ showMetrics = false }: { showMetrics?: boolean }) 
   // Log performance metrics for debugging
   useEffect(() => {
     if (process.env.NODE_ENV === 'development' && Object.values(metrics).some(v => v !== null)) {
-      console.group('🚀 Performance Metrics');
+      console.group('Performance Metrics');
       console.log('First Contentful Paint (FCP):', metrics.fcp ? `${metrics.fcp.toFixed(2)}ms` : 'N/A');
       console.log('Largest Contentful Paint (LCP):', metrics.lcp ? `${metrics.lcp.toFixed(2)}ms` : 'N/A');
       console.log('First Input Delay (FID):', metrics.fid ? `${metrics.fid.toFixed(2)}ms` : 'N/A');

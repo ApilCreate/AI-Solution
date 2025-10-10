@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import toast from 'react-hot-toast';
 import { 
   Eye, 
   EyeOff, 
@@ -76,7 +77,9 @@ export default function AdminLogin() {
     try {
       // Validate input
       if (!formData.email || !formData.password) {
-        setError("Please enter both email and password.");
+        const errorMsg = "Please enter both email and password.";
+        setError(errorMsg);
+        toast.error(errorMsg);
         return;
       }
 
@@ -96,13 +99,23 @@ export default function AdminLogin() {
         localStorage.setItem('adminUser', JSON.stringify(data.user));
         localStorage.setItem('adminAuthenticated', 'true');
         localStorage.setItem('adminLoginTime', Date.now().toString());
-        router.push("/admin/dashboard");
+        
+        toast.success("Login successful! Redirecting to dashboard...");
+        
+        // Small delay to show the toast before redirecting
+        setTimeout(() => {
+          router.push("/admin/dashboard");
+        }, 500);
       } else {
-        setError(data.error || "Invalid credentials");
+        const errorMsg = data.error || "Invalid credentials";
+        setError(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (error) {
       console.error("Login error:", error);
-      setError("An error occurred during login. Please try again.");
+      const errorMsg = "An error occurred during login. Please try again.";
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setIsLoading(false);
     }

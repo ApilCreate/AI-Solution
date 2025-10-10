@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useState, memo } from 'react';
+import { ImageOff } from 'lucide-react';
 
 interface OptimizedImageProps {
   src: string;
@@ -60,7 +61,7 @@ const OptimizedImage = memo(({
         style={{ width: fill ? '100%' : width, height: fill ? '100%' : height }}
       >
         <div className="text-center text-purple-300">
-          <div className="text-2xl mb-2">🖼️</div>
+          <ImageOff className="w-8 h-8 mx-auto mb-2" />
           <p className="text-sm">Image not available</p>
         </div>
       </div>

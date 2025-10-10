@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { Plus, Edit, Trash2, Eye, EyeOff, Star, StarOff, Search, Filter } from 'lucide-react';
 import SolutionForm from '../../../components/SolutionForm';
 import DashboardLayout from '../../../components/DashboardLayout';
@@ -63,12 +64,13 @@ export default function AdminSolutionsPage() {
 
       if (response.ok) {
         setSolutions(solutions.filter(s => s.id !== id));
+        toast.success('Solution deleted successfully!');
       } else {
-        alert('Failed to delete solution');
+        toast.error('Failed to delete solution. Please try again.');
       }
     } catch (error) {
       console.error('Error deleting solution:', error);
-      alert('Failed to delete solution');
+      toast.error('Failed to delete solution. Please try again.');
     }
   };
 
@@ -90,12 +92,13 @@ export default function AdminSolutionsPage() {
         setSolutions(solutions.map(s => 
           s.id === solution.id ? { ...s, status: newStatus } : s
         ));
+        toast.success(`Solution ${newStatus === 'published' ? 'published' : 'unpublished'} successfully!`);
       } else {
-        alert('Failed to update solution status');
+        toast.error('Failed to update solution status. Please try again.');
       }
     } catch (error) {
       console.error('Error updating solution status:', error);
-      alert('Failed to update solution status');
+      toast.error('Failed to update solution status. Please try again.');
     }
   };
 
@@ -116,12 +119,13 @@ export default function AdminSolutionsPage() {
         setSolutions(solutions.map(s => 
           s.id === solution.id ? { ...s, featured: !solution.featured } : s
         ));
+        toast.success(`Solution ${!solution.featured ? 'featured' : 'unfeatured'} successfully!`);
       } else {
-        alert('Failed to update solution featured status');
+        toast.error('Failed to update solution featured status. Please try again.');
       }
     } catch (error) {
       console.error('Error updating solution featured status:', error);
-      alert('Failed to update solution featured status');
+      toast.error('Failed to update solution featured status. Please try again.');
     }
   };
 
@@ -151,12 +155,13 @@ export default function AdminSolutionsPage() {
         
         setShowCreateForm(false);
         setEditingSolution(null);
+        toast.success(editingSolution ? 'Solution updated successfully!' : 'Solution created successfully!');
       } else {
-        alert('Failed to save solution');
+        toast.error('Failed to save solution. Please try again.');
       }
     } catch (error) {
       console.error('Error saving solution:', error);
-      alert('Failed to save solution');
+      toast.error('Failed to save solution. Please try again.');
     }
   };
 

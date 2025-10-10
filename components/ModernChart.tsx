@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useTheme } from '../app/contexts/ThemeContext';
+import { BarChart3 } from 'lucide-react';
 
 interface DataPoint {
   label: string;
@@ -311,7 +312,7 @@ export default function ModernChart({ data, type, title, height = 300 }: ModernC
             animate={{ opacity: 1 }}
             className="text-center"
           >
-            <div className="text-4xl mb-2">📊</div>
+            <BarChart3 className="w-10 h-10 mx-auto mb-2 opacity-50" />
             <div>No data available</div>
           </motion.div>
         </div>

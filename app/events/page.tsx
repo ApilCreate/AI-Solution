@@ -50,7 +50,7 @@ export default function EventsPage() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        console.log('🔄 Fetching events...');
+        console.log('Fetching events...');
         const response = await fetch('/api/events/list');
         
         if (response.ok) {

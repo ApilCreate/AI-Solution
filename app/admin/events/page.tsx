@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import toast from 'react-hot-toast';
 import { 
   Plus,
   Calendar,
@@ -105,7 +106,7 @@ export default function AdminEventsPage() {
 
   const handleSubmit = async (status: 'draft' | 'published') => {
     if (!formData.title || !formData.date || !formData.location) {
-      alert('Please fill in all required fields');
+      toast.error('Please fill in all required fields');
       return;
     }
 
@@ -136,12 +137,13 @@ export default function AdminEventsPage() {
         await fetchEvents();
         resetForm();
         setShowModal(false);
+        toast.success(editingEvent ? 'Event updated successfully!' : 'Event created successfully!');
       } else {
         throw new Error('Failed to save event');
       }
     } catch (error) {
       console.error('Error saving event:', error);
-      alert('Failed to save event');
+      toast.error('Failed to save event. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -157,12 +159,13 @@ export default function AdminEventsPage() {
 
       if (response.ok) {
         await fetchEvents();
+        toast.success('Event deleted successfully!');
       } else {
         throw new Error('Failed to delete event');
       }
     } catch (error) {
       console.error('Error deleting event:', error);
-      alert('Failed to delete event');
+      toast.error('Failed to delete event. Please try again.');
     }
   };
 

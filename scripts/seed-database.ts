@@ -17,7 +17,7 @@ async function seedDatabase() {
     const passwordHash = await bcrypt.hash('Admin@123', 12);
 
     // Insert admin user
-    console.log('👤 Creating admin user...');
+    console.log('Creating admin user...');
     const adminUser = await db.insert(adminUsers).values({
       id: randomUUID(),
       email: 'admin@aisolutions.com',

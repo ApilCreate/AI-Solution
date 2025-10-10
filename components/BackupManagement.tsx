@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { 
   Database, 
   Download, 
@@ -201,10 +202,12 @@ export default function BackupManagement() {
         throw new Error(errorData.error || 'Failed to restore backup');
       }
       
-      alert('Backup restored successfully');
+      toast.success('Backup restored successfully!');
     } catch (error) {
       console.error('Error restoring backup:', error);
-      setError('Failed to restore backup');
+      const errorMsg = 'Failed to restore backup. Please try again.';
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setActionLoading(null);
     }
@@ -224,11 +227,13 @@ export default function BackupManagement() {
       }
       
       const data = await response.json();
-      alert(`Cleaned up ${data.deletedCount} expired backups`);
+      toast.success(`Successfully cleaned up ${data.deletedCount} expired backup${data.deletedCount !== 1 ? 's' : ''}!`);
       await fetchBackups(); // Refresh the list
     } catch (error) {
       console.error('Error cleaning up backups:', error);
-      setError('Failed to cleanup expired backups');
+      const errorMsg = 'Failed to cleanup expired backups. Please try again.';
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setActionLoading(null);
     }

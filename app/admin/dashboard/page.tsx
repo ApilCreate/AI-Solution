@@ -149,7 +149,7 @@ export default function AdminDashboard() {
   const fetchDashboardData = async () => {
     setIsLoading(true);
     try {
-      console.log('🔄 Starting fetchDashboardData...');
+      console.log('Starting fetchDashboardData...');
       
       // Fetch inquiries data - get ALL inquiries for chart data
       const inquiriesRes = await fetch('/api/inquiries/list?limit=1000', {
@@ -164,8 +164,8 @@ export default function AdminDashboard() {
         
         // Handle the API response structure { inquiries: [], total, page, limit, hasMore }
         const inquiries = Array.isArray(inquiriesData) ? inquiriesData : (inquiriesData.inquiries || []);
-        console.log('📊 Processed inquiries array:', inquiries);
-        console.log('📈 Total inquiries count:', inquiries.length);
+        console.log('Processed inquiries array:', inquiries);
+        console.log('Total inquiries count:', inquiries.length);
         
         // Debug: Show date range of fetched data
         if (inquiries.length > 0) {
@@ -295,7 +295,7 @@ export default function AdminDashboard() {
           avgResponseTime: '2.4h'
         });
 
-        console.log('📊 Generated months for chart:', months);
+        console.log('Generated months for chart:', months);
         setChartData(months);
         setCategoryData(categories);
         setCountryData(countries);

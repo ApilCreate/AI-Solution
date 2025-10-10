@@ -287,6 +287,7 @@ export default function InquiriesPage() {
         );
 
         console.log(`Status updated to ${newStatus} for inquiry ${inquiryId}`);
+        toast.success(`Inquiry status updated to ${newStatus}!`);
         
         // Refresh status counts
         fetchStatusCounts();
@@ -298,14 +299,14 @@ export default function InquiriesPage() {
         try {
           const errorData = JSON.parse(errorText);
           console.error('Error data:', errorData);
-          alert(`Failed to update status: ${errorData.error || 'Unknown error'}`);
+          toast.error(`Failed to update status: ${errorData.error || 'Unknown error'}`);
         } catch {
-          alert(`Failed to update status. Server returned: ${response.status} ${response.statusText}`);
+          toast.error(`Failed to update status. Server returned: ${response.status} ${response.statusText}`);
         }
       }
     } catch (error) {
       console.error('Network error while updating status:', error);
-      alert('Failed to update status. Please check your connection and try again.');
+      toast.error('Failed to update status. Please check your connection and try again.');
     }
   };
 

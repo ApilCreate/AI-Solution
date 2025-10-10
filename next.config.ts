@@ -15,6 +15,9 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true, // Temporarily set to true for deployment
   },
   
+  // External packages for server components
+  serverExternalPackages: ['@neondatabase/serverless'],
+  
   // Performance optimizations
   experimental: {
     optimizePackageImports: [
@@ -25,7 +28,6 @@ const nextConfig: NextConfig = {
       '@react-three/drei',
       'three'
     ],
-    serverComponentsExternalPackages: ['@neondatabase/serverless'],
   },
   
   // Image optimization

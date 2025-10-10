@@ -5,7 +5,7 @@ import { join } from 'path';
 config({ path: join(process.cwd(), '.env.local') });
 
 async function checkSetup() {
-  console.log('🔍 Checking database setup...\n');
+  console.log('Checking database setup...\n');
   
   // Check if DATABASE_URL exists
   const databaseUrl = process.env.DATABASE_URL;

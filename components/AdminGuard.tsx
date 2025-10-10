@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { Shield, Loader2 } from 'lucide-react';
 
 interface AdminGuardProps {
@@ -102,6 +103,7 @@ const AdminGuard: React.FC<AdminGuardProps> = ({ children }) => {
         localStorage.removeItem('adminUser');
         localStorage.removeItem('adminAuthenticated');
         localStorage.removeItem('adminLoginTime');
+        toast.error('Session expired. Please log in again.');
         router.replace('/admin/login');
         
       } catch (error) {
@@ -134,6 +136,7 @@ const AdminGuard: React.FC<AdminGuardProps> = ({ children }) => {
         localStorage.removeItem('adminUser');
         localStorage.removeItem('adminAuthenticated');
         localStorage.removeItem('adminLoginTime');
+        toast.error('Authentication failed. Please log in again.');
         router.replace('/admin/login');
       }
     };

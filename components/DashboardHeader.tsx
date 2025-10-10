@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { 
   Sun, 
   Moon, 
@@ -26,7 +27,10 @@ export default function DashboardHeader({ onRefresh, isRefreshing, lastUpdated }
     localStorage.removeItem('adminAuthenticated');
     localStorage.removeItem('adminLoginTime');
     localStorage.removeItem('adminUser');
-    window.location.href = '/admin/login';
+    toast.success('Logged out successfully!');
+    setTimeout(() => {
+      window.location.href = '/admin/login';
+    }, 500);
   };
 
   return (

@@ -75,7 +75,7 @@ async function viewDatabase() {
     console.log(` Inquiries: ${allInquiries.length}`);
     console.log(` Events: ${allEvents.length}`);
     console.log(` RSVPs: ${allRsvps.length}`);
-    console.log('\n🎉 Database setup is complete and working correctly!');
+    console.log('\nDatabase setup is complete and working correctly!');
     
     return true;
 

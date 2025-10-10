@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { 
   Eye, 
   EyeOff, 
@@ -153,6 +154,7 @@ export default function ChangePassword({ userEmail, onPasswordChanged }: ChangeP
 
       if (data.success) {
         setMessage({ type: 'success', text: 'Password changed successfully!' });
+        toast.success('Password changed successfully!');
         setFormData({
           currentPassword: '',
           newPassword: '',
@@ -160,11 +162,15 @@ export default function ChangePassword({ userEmail, onPasswordChanged }: ChangeP
         });
         onPasswordChanged?.();
       } else {
-        setMessage({ type: 'error', text: data.error || 'Failed to change password' });
+        const errorMsg = data.error || 'Failed to change password';
+        setMessage({ type: 'error', text: errorMsg });
+        toast.error(errorMsg);
       }
     } catch (error) {
       console.error('Password change error:', error);
-      setMessage({ type: 'error', text: 'An error occurred while changing password' });
+      const errorMsg = 'An error occurred while changing password';
+      setMessage({ type: 'error', text: errorMsg });
+      toast.error(errorMsg);
     } finally {
       setIsLoading(false);
     }

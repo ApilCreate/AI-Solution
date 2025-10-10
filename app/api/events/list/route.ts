@@ -5,12 +5,12 @@ import { desc } from 'drizzle-orm';
 
 export async function GET() {
   try {
-    console.log('🔄 Fetching events from database...');
+    console.log('Fetching events from database...');
     
     // Use Drizzle schema instead of raw SQL
     const result = await db.select().from(events).orderBy(desc(events.createdAt));
     
-    console.log(`✅ Found ${result.length} events`);
+    console.log(`Found ${result.length} events`);
     
     // Curated AI/Tech event images
     const eventImages = [
@@ -36,7 +36,7 @@ export async function GET() {
 
     return NextResponse.json(transformedEvents);
   } catch (error) {
-    console.error('❌ Error fetching events:', error);
+    console.error('Error fetching events:', error);
     return NextResponse.json(
       { error: 'Failed to fetch events', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }

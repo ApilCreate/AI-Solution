@@ -13,7 +13,7 @@ const client = neon(connectionString);
 const db = drizzle(client);
 
 async function addSampleBlog() {
-  console.log('🚀 Adding sample blog...');
+  console.log('Adding sample blog...');
   
   try {
     await db.insert(blogs).values({

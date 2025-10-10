@@ -36,10 +36,10 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('🚀 Backup creation API called');
-    console.log('📡 Request URL:', request.url);
-    console.log('📡 Request method:', request.method);
-    console.log('📡 Request headers:', Object.fromEntries(request.headers.entries()));
+    console.log('Backup creation API called');
+    console.log('Request URL:', request.url);
+    console.log('Request method:', request.method);
+    console.log('Request headers:', Object.fromEntries(request.headers.entries()));
     
     const session = await verifyAdminSession(request);
     if (!session) {
@@ -57,9 +57,9 @@ export async function POST(request: NextRequest) {
     let body;
     try {
       body = await request.json();
-      console.log('📦 Request body parsed successfully:', body);
+      console.log('Request body parsed successfully:', body);
     } catch (parseError) {
-      console.error('❌ Failed to parse request body:', parseError);
+      console.error('Failed to parse request body:', parseError);
       return NextResponse.json({ 
         error: 'Invalid JSON in request body',
         details: parseError instanceof Error ? parseError.message : 'Unknown parsing error'
@@ -95,16 +95,16 @@ export async function POST(request: NextRequest) {
       recoveryPoint: recoveryPoint || false
     };
 
-    console.log('📋 Backup options:', backupOptions);
-    console.log('🔄 Calling enhancedBackupService.createBackup...');
+    console.log('Backup options:', backupOptions);
+    console.log('Calling enhancedBackupService.createBackup...');
 
     let backupId;
     try {
       backupId = await enhancedBackupService.createBackup(backupOptions);
-      console.log('✅ Backup created with ID:', backupId);
+      console.log('Backup created with ID:', backupId);
     } catch (serviceError) {
-      console.error('❌ Enhanced backup service error:', serviceError);
-      console.error('❌ Service error stack:', serviceError instanceof Error ? serviceError.stack : 'No stack trace');
+      console.error('Enhanced backup service error:', serviceError);
+      console.error('Service error stack:', serviceError instanceof Error ? serviceError.stack : 'No stack trace');
       throw serviceError; // Re-throw to be caught by outer try-catch
     }
 

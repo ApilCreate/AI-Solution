@@ -183,22 +183,22 @@ export default function EnhancedBackupManagement() {
     };
     
     const adminUser = localStorage.getItem('adminUser');
-    console.log('🔐 Admin user from localStorage:', adminUser);
+    console.log('Admin user from localStorage:', adminUser);
     
     if (adminUser) {
       try {
         const userData = JSON.parse(adminUser);
-        console.log('👤 Parsed user data:', userData);
+        console.log('Parsed user data:', userData);
         headers['x-admin-email'] = userData.email;
-        console.log('📧 Setting admin email header:', userData.email);
+        console.log('Setting admin email header:', userData.email);
       } catch (error) {
-        console.error('❌ Failed to parse admin user data:', error);
+        console.error('Failed to parse admin user data:', error);
       }
     } else {
-      console.log('⚠️ No admin user found in localStorage');
+      console.log('No admin user found in localStorage');
     }
     
-    console.log('📤 Final headers:', headers);
+    console.log('Final headers:', headers);
     return headers;
   };
 
