@@ -4,6 +4,7 @@ import ConditionalLayout from "../components/ConditionalLayout";
 import Providers from "../components/Providers";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
@@ -77,6 +78,7 @@ export default function RootLayout({
           </ConditionalLayout>
         </Providers>
         <Analytics />
+        <SpeedInsights />
         <Toaster 
           position="top-right"
           toastOptions={{
