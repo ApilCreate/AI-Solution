@@ -17,7 +17,14 @@
     "db:query": "tsx scripts/query-database.ts",
     "db:seed": "tsx scripts/seed-database.ts",
     "db:check": "tsx scripts/check-setup.ts",
-    "db:add-ratings": "tsx scripts/add-sample-ratings.ts"
+    "db:add-ratings": "tsx scripts/add-sample-ratings.ts",
+    "test:verify": "k6 run tests/load/verify-setup.js",
+    "test:smoke": "k6 run tests/load/smoke-test.js",
+    "test:load": "k6 run tests/load/homepage.js",
+    "test:api": "k6 run tests/load/api-endpoints.js",
+    "test:contact": "k6 run tests/load/contact-form.js",
+    "test:stress": "k6 run tests/load/stress-test.js",
+    "test:all": "npm run test:smoke && npm run test:load && npm run test:api"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

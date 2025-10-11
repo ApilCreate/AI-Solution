@@ -789,14 +789,14 @@ export default function AILandingPage() {
             </div>
           }
         >
-          <img
-            src="https://cdn.dribbble.com/userupload/43113498/file/original-b0235f47efe7b38f6522390c5e32550f.png?resize=800x600&vertical=center"
-            srcSet="https://cdn.dribbble.com/userupload/43113498/file/original-b0235f47efe7b38f6522390c5e32550f.png?resize=800x600&vertical=center 800w, https://cdn.dribbble.com/userupload/43113498/file/original-b0235f47efe7b38f6522390c5e32550f.png?resize=1200x900&vertical=center 1200w"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 800px"
-            alt="AI Solutions Dashboard"
+          <video
+            src="https://cdn.dribbble.com/userupload/11357113/file/original-c8638d5e68c3c32112b9f4e65d8ac6a2.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
             className="h-full w-full object-cover object-left-top rounded-2xl"
             draggable={false}
-            loading="lazy"
           />
         </ContainerScroll>
       </section>

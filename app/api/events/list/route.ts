@@ -27,11 +27,11 @@ export async function GET() {
     // Transform data to add missing fields for frontend compatibility
     const transformedEvents = result.map((event: any, index: number) => ({
       ...event,
-      time: '', // Default empty string for time
-      category: 'Workshop', // Default category
-      status: 'published', // Default status for existing events
-      updatedAt: event.createdAt, // Use createdAt as updatedAt fallback
-      bannerUrl: eventImages[index % eventImages.length], // Assign image based on index
+      time: event.time || '', // Default empty string for time
+      category: event.category || 'Workshop', // Default category
+      status: event.status || 'published', // Default status for existing events
+      updatedAt: event.updatedAt || event.createdAt, // Use createdAt as updatedAt fallback
+      bannerUrl: event.banner_url || event.bannerUrl || eventImages[index % eventImages.length], // Use actual banner_url from DB, fallback to placeholder
     }));
 
     return NextResponse.json(transformedEvents);

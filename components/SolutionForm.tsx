@@ -56,7 +56,7 @@ export default function SolutionForm({ solution, onSave, onCancel, loading = fal
     pricing: '',
     imageUrl: '',
     iconName: '',
-    status: 'draft',
+    status: 'published',
     featured: false,
     sortOrder: 0
   });
@@ -340,6 +340,9 @@ export default function SolutionForm({ solution, onSave, onCancel, loading = fal
                 <option value="draft">Draft</option>
                 <option value="published">Published</option>
               </select>
+              <p className="text-xs text-gray-500 mt-1">
+                Only published solutions appear on the public Solutions page
+              </p>
             </div>
 
             <div>

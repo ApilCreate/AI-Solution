@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
       pricing,
       imageUrl,
       iconName,
-      status = 'draft',
+      status = 'published',
       featured = false,
       sortOrder = 0
     } = body;

@@ -25,7 +25,7 @@ interface Event {
   time: string;
   location: string;
   category: string;
-  banner_url: string;
+  bannerUrl: string;
   status: string;
   created_at: string;
 }
@@ -120,9 +120,9 @@ export default function EventDetailsPage() {
         <div className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
           {/* Background */}
           <div className="absolute inset-0 z-0">
-            {event.banner_url ? (
+            {event.bannerUrl ? (
               <img
-                src={event.banner_url}
+                src={event.bannerUrl}
                 alt={event.title}
                 className="w-full h-full object-cover opacity-30"
               />
@@ -133,17 +133,14 @@ export default function EventDetailsPage() {
           </div>
 
           {/* Back Button - Floating */}
-          <div className="absolute top-8 left-8 z-20">
-            <GradientButton
-              onClick={() => router.push('/events')}
-              variant="outline"
-              size="sm"
-              icon={<ArrowLeft className="w-4 h-4" />}
-              iconPosition="left"
-              className="backdrop-blur-md"
+          <div className="absolute top-24 left-4 sm:left-8 z-20">
+            <button
+              onClick={() => router.back()}
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 hover:border-white/30 rounded-lg text-white transition-all duration-200"
             >
-              Back to Events
-            </GradientButton>
+              <ArrowLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">Back to Events</span>
+            </button>
           </div>
 
           {/* Hero Content */}

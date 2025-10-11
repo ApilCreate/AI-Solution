@@ -689,6 +689,11 @@ npx tsc --noEmit
 
 ## 🧪 Testing Guide
 
+### Load Testing with k6
+
+Comprehensive load testing scripts included for production readiness:
+
+
 ### Testing Categories
 
 #### 1. Functional Testing
