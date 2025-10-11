@@ -92,6 +92,7 @@ export const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
         <button
           onClick={() => scrollToSection(Math.max(0, activeSection - 1))}
           disabled={activeSection === 0}
+          aria-label="Previous section"
           className={cn(
             "p-2 lg:p-3 rounded-full bg-black/50 backdrop-blur-sm border border-gray-700 transition-all duration-300",
             activeSection === 0 
@@ -107,6 +108,7 @@ export const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
         <button
           onClick={() => scrollToSection(Math.min(sections.length - 1, activeSection + 1))}
           disabled={activeSection === sections.length - 1}
+          aria-label="Next section"
           className={cn(
             "p-2 lg:p-3 rounded-full bg-black/50 backdrop-blur-sm border border-gray-700 transition-all duration-300",
             activeSection === sections.length - 1 
@@ -119,11 +121,14 @@ export const HorizontalScroll: React.FC<HorizontalScrollProps> = ({
       </div>
 
       {/* Navigation Dots */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex gap-3">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex gap-3" role="tablist" aria-label="Section navigation">
         {sections.map((_, index) => (
           <button
             key={index}
             onClick={() => scrollToSection(index)}
+            role="tab"
+            aria-label={`Go to section ${index + 1}`}
+            aria-selected={activeSection === index}
             className={cn(
               "w-3 h-3 rounded-full transition-all duration-300",
               activeSection === index 

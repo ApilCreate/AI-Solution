@@ -3,36 +3,36 @@ import "./globals.css";
 import ConditionalLayout from "../components/ConditionalLayout";
 import Providers from "../components/Providers";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/react";
-import { Toaster } from "react-hot-toast";
+import ClientOnlyComponents from "../components/ClientOnlyComponents";
+import FontLoader from "../components/FontLoader";
 
 export const metadata: Metadata = {
-  title: "AI Solutions",
-  description: "AI-powered software company site",
+  title: "AI Solutions - Transform Your Business with AI",
+  description: "Innovate, automate, and thrive with AI-driven solutions. Empower your business with advanced automation, analytics, and intelligent workflows.",
   metadataBase: new URL('https://ai-solution.vercel.app'),
-  keywords: ['AI', 'artificial intelligence', 'software', 'solutions', 'technology'],
+  keywords: ['AI', 'artificial intelligence', 'software', 'solutions', 'technology', 'automation', 'machine learning', 'business intelligence', 'AI integration', 'enterprise AI'],
   authors: [{ name: 'AI Solutions Team' }],
   openGraph: {
     title: 'AI Solutions - Transform Your Business with AI',
-    description: 'AI-powered software company site',
+    description: 'Innovate, automate, and thrive with AI-driven solutions. Empower your business with advanced artificial intelligence technology.',
     type: 'website',
     locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AI Solutions',
-    description: 'AI-powered software company site',
+    title: 'AI Solutions - Transform Your Business with AI',
+    description: 'Innovate, automate, and thrive with AI-driven solutions. Empower your business with advanced artificial intelligence technology.',
   },
   robots: {
     index: true,
     follow: true,
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  }
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
@@ -43,65 +43,26 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Preconnect to external domains for faster loading */}
+        {/* Preconnect to critical external domains for faster loading */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://images.unsplash.com" />
-        <link rel="preconnect" href="https://prod.spline.design" />
         
-        {/* Optimized font loading with display=swap */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Monoton&display=swap"
-          rel="stylesheet"
-        />
-        
-        {/* DNS prefetch for better performance */}
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="https://images.unsplash.com" />
-        
-        {/* Reduce layout shift with font-display */}
+        {/* Fallback system fonts to prevent layout shift */}
         <style>{`
-          @font-face {
-            font-family: 'Manrope';
-            font-display: swap;
-          }
-          @font-face {
-            font-family: 'Monoton';
-            font-display: swap;
+          body {
+            font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
           }
         `}</style>
       </head>
       <body className="font-manrope transition-colors duration-300">
+        <FontLoader />
         <Providers>
           <ConditionalLayout>
             {children}
           </ConditionalLayout>
         </Providers>
-        <Analytics />
-        <SpeedInsights />
-        <Toaster 
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              background: 'var(--toast-bg)',
-              color: 'var(--toast-color)',
-              border: '1px solid var(--toast-border)',
-            },
-            success: {
-              iconTheme: {
-                primary: '#10b981',
-                secondary: '#ffffff',
-              },
-            },
-            error: {
-              iconTheme: {
-                primary: '#ef4444',
-                secondary: '#ffffff',
-              },
-            },
-          }}
-        />
+        <ClientOnlyComponents />
       </body>
     </html>
   );

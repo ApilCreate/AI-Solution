@@ -5,7 +5,7 @@ const blogs = [
     date: "July 20, 2025",
     author: "Dr. A. Mehta",
     readTime: "6 min read",
-    image: "/images/ai-healthcare.png",
+    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=600&fit=crop&auto=format&q=80",
     content: `
 Artificial Intelligence (AI) is reshaping how healthcare is delivered across the globe. From diagnosis to treatment plans, AI is helping medical professionals provide more accurate and timely care. One of the most revolutionary applications is in disease detection, where deep learning and image recognition technologies are used to identify conditions such as cancer, diabetic retinopathy, and other illnesses with remarkable precision. This has led to earlier interventions and improved patient outcomes.
 
@@ -20,7 +20,7 @@ Contrary to fears that AI will replace human doctors, the reality is that AI is 
     date: "July 14, 2025",
     author: "Neha Rana",
     readTime: "5 min read",
-    image: "/images/ai-education.png",
+    image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&h=600&fit=crop&auto=format&q=80",
     content: `
 AI is transforming classrooms into intelligent learning environments tailored to the needs of individual students. With adaptive learning platforms and AI-driven tools, education is becoming more personalized. Students now receive targeted support based on their performance, strengths, and weaknesses, making learning more effective and engaging.
 
@@ -35,7 +35,7 @@ Looking forward, education is expected to evolve into a hybrid model where AI co
     date: "July 10, 2025",
     author: "Suresh Joshi",
     readTime: "4 min read",
-    image: "/images/ai-finance.png",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop&auto=format&q=80",
     content: `
 In the fast-paced world of finance, AI is proving to be a game-changer. High-frequency trading platforms use machine learning algorithms to analyze massive datasets and make decisions in milliseconds. This level of speed and accuracy is beyond human capabilities and has revolutionized the stock market.
 
@@ -50,7 +50,7 @@ Additionally, AI-powered chatbots are redefining customer service in banks and f
     date: "June 28, 2025",
     author: "Arjun Dev",
     readTime: "6 min read",
-    image: "/images/chatgpt-coding.png",
+    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop&auto=format&q=80",
     content: `
 ChatGPT has emerged as a powerful assistant for developers, transforming the way code is written, understood, and maintained. With a simple prompt, developers can generate boilerplate code, entire functions, or even UI components in seconds. This not only saves time but also helps new programmers overcome common coding challenges.
 
@@ -65,7 +65,7 @@ However, with great power comes responsibility. While ChatGPT can produce impres
     date: "June 20, 2025",
     author: "Priya Khatri",
     readTime: "7 min read",
-    image: "/images/future-ai.png",
+    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop&auto=format&q=80",
     content: `
 Artificial Intelligence has transitioned from a niche research topic to a mainstream driver of innovation. As we look to the future, the next frontier is Artificial General Intelligence (AGI)—a system capable of understanding, learning, and adapting like a human. Although still theoretical, AGI has the potential to revolutionize every aspect of society.
 
@@ -80,7 +80,7 @@ As AI becomes more embedded in our daily lives—from smart assistants to autono
     date: "June 5, 2025",
     author: "Sneha Gurung",
     readTime: "4 min read",
-    image: "/images/ai-marketing.png",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop&auto=format&q=80",
     content: `
 AI is redefining how marketers connect with audiences. With intelligent algorithms analyzing consumer behavior, marketing messages can now be personalized in real time. Whether it’s product recommendations, email subject lines, or ad targeting, AI ensures that the right message reaches the right person at the right time.
 
@@ -95,7 +95,7 @@ Moreover, AI tools like Jasper and ChatGPT assist content creators in generating
     date: "May 30, 2025",
     author: "Milan Acharya",
     readTime: "5 min read",
-    image: "/images/ethical-ai.png",
+    image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&h=600&fit=crop&auto=format&q=80",
     content: `
 As AI systems become more powerful, the question of ethics becomes more pressing. Biased data can lead to unfair decisions in areas like hiring, lending, and law enforcement. Developers must ensure that training datasets are diverse and that models are tested for fairness before deployment.
 
@@ -110,7 +110,7 @@ Accountability is also critical. When an AI system causes harm, whether financia
     date: "May 18, 2025",
     author: "Dev Prakash",
     readTime: "4 min read",
-    image: "/images/ai-gaming.png",
+    image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=600&fit=crop&auto=format&q=80",
     content: `
 The gaming industry has always been at the forefront of adopting new technologies, and AI is no exception. Game developers now use AI to make non-player characters (NPCs) more intelligent and responsive. These NPCs can adapt to a player’s style and make more lifelike decisions, enhancing immersion and gameplay realism.
 

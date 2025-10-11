@@ -247,7 +247,7 @@ export default function AdminLogin() {
                       onChange={handleInputChange}
                       required
                       className="w-full px-4 py-4 rounded-xl border border-gray-200 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200 outline-none text-lg"
-                      placeholder="admin@aisolutions.com"
+                      placeholder="example123@gmail.com"
                     />
                   </div>
 

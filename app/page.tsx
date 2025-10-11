@@ -307,21 +307,21 @@ export default function AILandingPage() {
                 <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-4">
                   <Shield className="w-6 h-6 text-white" />
                 </div>
-                <h4 className="font-semibold mb-2 text-white">Enterprise Security</h4>
+                <h3 className="font-semibold mb-2 text-white">Enterprise Security</h3>
                 <p className="text-slate-400 text-sm">SOC 2 Type II compliant with end-to-end encryption</p>
               </div>
               <div className="flex flex-col items-center">
                 <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-4">
                   <Clock className="w-6 h-6 text-white" />
                 </div>
-                <h4 className="font-semibold mb-2 text-white">99.9% Uptime SLA</h4>
+                <h3 className="font-semibold mb-2 text-white">99.9% Uptime SLA</h3>
                 <p className="text-slate-400 text-sm">Guaranteed availability with 24/7 monitoring</p>
               </div>
               <div className="flex flex-col items-center">
                 <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-4">
                   <Users className="w-6 h-6 text-white" />
                 </div>
-                <h4 className="font-semibold mb-2 text-white">Expert Support</h4>
+                <h3 className="font-semibold mb-2 text-white">Expert Support</h3>
                 <p className="text-slate-400 text-sm">Dedicated AI specialists to help you succeed</p>
               </div>
             </div>
@@ -381,10 +381,11 @@ export default function AILandingPage() {
       ),
       content: (
         <div className="h-full w-full bg-black rounded-lg p-12 flex flex-col justify-center items-center shadow-2xl border border-gray-800">
-          <img
-            src="/images/ai-finance.png"
+           <img
+            src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop&auto=format&q=80"
             alt="AI Business Operations"
             className="w-96 h-64 object-cover rounded-lg mb-8 shadow-lg"
+            loading="lazy"
           />
           <div className="text-white text-center">
             <h3 className="text-2xl font-bold mb-4">Advanced Analytics Dashboard</h3>
@@ -442,10 +443,11 @@ export default function AILandingPage() {
       ),
       content: (
         <div className="h-full w-full bg-black rounded-lg p-12 flex flex-col justify-center items-center shadow-2xl border border-gray-800">
-          <img
-            src="/images/ai-marketing.png"
+           <img
+            src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop&auto=format&q=80"
             alt="Smart Automation"
             className="w-96 h-64 object-cover rounded-lg mb-8 shadow-lg"
+            loading="lazy"
           />
           <div className="text-white text-center">
             <h3 className="text-2xl font-bold mb-4">Intelligent Automation</h3>
@@ -503,10 +505,11 @@ export default function AILandingPage() {
       ),
       content: (
         <div className="h-full w-full bg-black rounded-lg p-12 flex flex-col justify-center items-center shadow-2xl border border-gray-800">
-          <img
-            src="/images/ai-healthcare.png"
+           <img
+            src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=600&fit=crop&auto=format&q=80"
             alt="API Integration"
             className="w-96 h-64 object-cover rounded-lg mb-8 shadow-lg"
+            loading="lazy"
           />
           <div className="text-white text-center">
             <h3 className="text-2xl font-bold mb-4">API Integration Hub</h3>
@@ -787,10 +790,13 @@ export default function AILandingPage() {
           }
         >
           <img
-            src="/images/Mac_Display.webp"
+            src="https://cdn.dribbble.com/userupload/43113498/file/original-b0235f47efe7b38f6522390c5e32550f.png?resize=800x600&vertical=center"
+            srcSet="https://cdn.dribbble.com/userupload/43113498/file/original-b0235f47efe7b38f6522390c5e32550f.png?resize=800x600&vertical=center 800w, https://cdn.dribbble.com/userupload/43113498/file/original-b0235f47efe7b38f6522390c5e32550f.png?resize=1200x900&vertical=center 1200w"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 800px"
             alt="AI Solutions Dashboard"
             className="h-full w-full object-cover object-left-top rounded-2xl"
             draggable={false}
+            loading="lazy"
           />
         </ContainerScroll>
       </section>
@@ -1160,7 +1166,7 @@ export default function AILandingPage() {
                   <Shield className="w-6 h-6 text-white" />
                 </div>
                 <div className="text-left">
-                  <h4 className="font-semibold text-white mb-1">Enterprise Security</h4>
+                  <h3 className="font-semibold text-white mb-1">Enterprise Security</h3>
                   <p className="text-slate-400 text-sm">SOC 2 compliant with end-to-end encryption</p>
                 </div>
               </div>
@@ -1170,7 +1176,7 @@ export default function AILandingPage() {
                   <Clock className="w-6 h-6 text-white" />
                 </div>
                 <div className="text-left">
-                  <h4 className="font-semibold text-white mb-1">Quick Setup</h4>
+                  <h3 className="font-semibold text-white mb-1">Quick Setup</h3>
                   <p className="text-slate-400 text-sm">Get started in under 5 minutes</p>
                 </div>
               </div>
@@ -1180,7 +1186,7 @@ export default function AILandingPage() {
                   <Users className="w-6 h-6 text-white" />
                 </div>
                 <div className="text-left">
-                  <h4 className="font-semibold text-white mb-1">Expert Onboarding</h4>
+                  <h3 className="font-semibold text-white mb-1">Expert Onboarding</h3>
                   <p className="text-slate-400 text-sm">Dedicated success manager included</p>
                 </div>
               </div>

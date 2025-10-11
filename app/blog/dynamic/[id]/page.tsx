@@ -227,7 +227,7 @@ export default function DynamicBlogPage() {
                   id={`db-${relatedBlog.id}`}
                   title={relatedBlog.title}
                   excerpt={relatedBlog.excerpt || relatedBlog.content.slice(0, 100) + "..."}
-                  image={relatedBlog.image || '/images/default-blog.png'}
+                  image={relatedBlog.image || 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop&auto=format&q=80'}
                   date={new Date(relatedBlog.publishedAt || relatedBlog.createdAt).toLocaleDateString()}
                   readTime={relatedBlog.readTime || '5 min read'}
                   href={`/blog/dynamic/${relatedBlog.id}`}

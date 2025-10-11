@@ -1,0 +1,18 @@
+# Browsers that we support
+# Target modern browsers to reduce bundle size and improve performance
+# This eliminates unnecessary polyfills and transformations
+
+# Production: Modern browsers only (ES2020+ native support)
+# No polyfills needed for: Array.flat, Object.fromEntries, String.trimEnd, etc.
+
+# Modern browsers with ES2020+ support
+Chrome >= 90
+Firefox >= 88
+Safari >= 14
+Edge >= 90
+
+# Additional filters
+not dead
+not IE 11
+not op_mini all
+

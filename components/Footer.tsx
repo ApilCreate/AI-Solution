@@ -42,21 +42,21 @@ export default function Footer() {
         <div>
           <h3 className="font-semibold text-lg mb-4 text-white">Connect</h3>
           <div className="flex space-x-4 text-xl">
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-slate-800/50 rounded-lg flex items-center justify-center hover:bg-white hover:text-black transition-all duration-300 hover:scale-110">
-              <FaGithub />
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="Visit our GitHub profile" className="w-10 h-10 bg-slate-800/50 rounded-lg flex items-center justify-center hover:bg-white hover:text-black transition-all duration-300 hover:scale-110">
+              <FaGithub aria-hidden="true" />
             </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-slate-800/50 rounded-lg flex items-center justify-center hover:bg-white hover:text-black transition-all duration-300 hover:scale-110">
-              <FaLinkedin />
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="Connect with us on LinkedIn" className="w-10 h-10 bg-slate-800/50 rounded-lg flex items-center justify-center hover:bg-white hover:text-black transition-all duration-300 hover:scale-110">
+              <FaLinkedin aria-hidden="true" />
             </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-slate-800/50 rounded-lg flex items-center justify-center hover:bg-white hover:text-black transition-all duration-300 hover:scale-110">
-              <FaTwitter />
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Twitter" className="w-10 h-10 bg-slate-800/50 rounded-lg flex items-center justify-center hover:bg-white hover:text-black transition-all duration-300 hover:scale-110">
+              <FaTwitter aria-hidden="true" />
             </a>
           </div>
         </div>
       </div>
 
       {/* Bottom */}
-      <div className="relative z-10 text-center py-6 text-sm text-slate-500 border-t border-slate-800/60">
+      <div className="relative z-10 text-center py-6 text-sm text-slate-400 border-t border-slate-800/60">
         © {new Date().getFullYear()} AI SOLUTION. All rights reserved.
       </div>
     </footer>

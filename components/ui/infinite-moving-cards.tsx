@@ -106,6 +106,7 @@ export const InfiniteMovingCards = ({
                       src={item.profileImage}
                       alt={item.name}
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">

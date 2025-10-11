@@ -1,0 +1,10 @@
+# robots.txt for AI Solutions
+User-agent: *
+Allow: /
+
+# Disallow admin or private pages
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://ai-solution.vercel.app/sitemap.xml
+
