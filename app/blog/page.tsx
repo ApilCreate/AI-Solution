@@ -288,7 +288,7 @@ export default function BlogPage() {
               className="text-center mt-16"
             >
               <p className="text-slate-400">
-                All articles loaded! 📚 Check back soon for more insights.
+                All articles loaded! Check back soon for more insights.
               </p>
             </motion.div>
           )}

@@ -13,9 +13,11 @@ import {
   Phone,
   ExternalLink
 } from "lucide-react";
-import Navbar from "../../../components/Navbar";
-import Footer from "../../../components/Footer";
 import { GradientButton } from "../../../components/ui";
+import dynamic from "next/dynamic";
+
+// Dynamic import for background effects
+const Beams = dynamic(() => import("../../../components/Beams"), { ssr: false });
 
 interface Event {
   id: string;
@@ -76,64 +78,61 @@ export default function EventDetailsPage() {
 
   if (isLoading) {
     return (
-      <>
-        <Navbar />
-        <div className="min-h-screen bg-black flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-            <p className="text-gray-400">Loading event details...</p>
-          </div>
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="absolute inset-0">
+          <Beams />
+          <div className="absolute inset-0 bg-black/40"></div>
         </div>
-        <Footer />
-      </>
+        <div className="relative z-10 text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading event details...</p>
+        </div>
+      </div>
     );
   }
 
   if (error || !event) {
     return (
-      <>
-        <Navbar />
-        <div className="min-h-screen bg-black flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-white mb-6">
-              {error || 'Event Not Found'}
-            </h1>
-            <GradientButton
-              onClick={() => router.push('/events')}
-              icon={<ArrowLeft className="w-4 h-4" />}
-              iconPosition="left"
-            >
-              Back to Events
-            </GradientButton>
-          </div>
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="absolute inset-0">
+          <Beams />
+          <div className="absolute inset-0 bg-black/40"></div>
         </div>
-        <Footer />
-      </>
+        <div className="relative z-10 text-center">
+          <h1 className="text-2xl font-bold text-white mb-6">
+            {error || 'Event Not Found'}
+          </h1>
+          <GradientButton
+            onClick={() => router.push('/events')}
+            icon={<ArrowLeft className="w-4 h-4" />}
+            iconPosition="left"
+          >
+            Back to Events
+          </GradientButton>
+        </div>
+      </div>
     );
   }
 
   return (
-    <>
-      <Navbar />
-      <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white pt-20">
         {/* Hero Section with Back Button */}
         <div className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
           {/* Background */}
           <div className="absolute inset-0 z-0">
-            {event.bannerUrl ? (
+            <Beams />
+            {event.bannerUrl && (
               <img
                 src={event.bannerUrl}
                 alt={event.title}
-                className="w-full h-full object-cover opacity-30"
+                className="absolute inset-0 w-full h-full object-cover opacity-20"
               />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-indigo-900/20" />
             )}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/90"></div>
+            <div className="absolute inset-0 bg-black/60"></div>
           </div>
 
           {/* Back Button - Floating */}
-          <div className="absolute top-24 left-4 sm:left-8 z-20">
+          <div className="absolute top-8 left-4 sm:left-8 z-20">
             <button
               onClick={() => router.back()}
               className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 hover:border-white/30 rounded-lg text-white transition-all duration-200"
@@ -152,9 +151,17 @@ export default function EventDetailsPage() {
               transition={{ delay: 0.2 }}
               className="mb-6"
             >
-              <span className="inline-block px-4 py-2 bg-gradient-to-r from-purple-500/20 to-indigo-500/20 backdrop-blur-sm border border-purple-500/30 text-purple-300 text-sm font-medium rounded-full">
-                {event.category || 'Workshop'}
-              </span>
+              <div className="bg-slate-800 no-underline group cursor-default relative shadow-2xl shadow-slate-900 rounded-xl p-px text-xs font-semibold leading-6 text-white inline-block">
+                <span className="absolute inset-0 overflow-hidden rounded-xl">
+                  <span className="absolute inset-0 rounded-xl bg-[image:radial-gradient(75%_100%_at_50%_0%,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_75%)] opacity-100"></span>
+                </span>
+                <div className="relative flex space-x-2 items-center justify-center z-10 rounded-xl bg-slate-950 px-6 py-2 ring-1 ring-white/10">
+                  <span className="text-white text-sm">
+                    {event.category || 'Workshop'}
+                  </span>
+                </div>
+                <span className="absolute -bottom-0 left-[1.125rem] h-px w-[calc(100%-2.25rem)] bg-gradient-to-r from-slate-400/0 via-slate-400/90 to-slate-400/0"></span>
+              </div>
             </motion.div>
 
             {/* Event Title */}
@@ -162,7 +169,7 @@ export default function EventDetailsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-purple-100 to-indigo-100 bg-clip-text text-transparent"
+              className="text-4xl md:text-6xl font-bold mb-6 text-white leading-tight"
             >
               {event.title}
             </motion.h1>
@@ -175,19 +182,19 @@ export default function EventDetailsPage() {
               className="flex flex-wrap justify-center gap-6 text-gray-300"
             >
               <div className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-purple-400" />
+                <Calendar className="w-5 h-5 text-white" />
                 <span>{formatDate(event.date)}</span>
               </div>
 
               {event.time && (
                 <div className="flex items-center gap-2">
-                  <Clock className="w-5 h-5 text-purple-400" />
+                  <Clock className="w-5 h-5 text-white" />
                   <span>{event.time}</span>
                 </div>
               )}
 
               <div className="flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-purple-400" />
+                <MapPin className="w-5 h-5 text-white" />
                 <span>{event.location}</span>
               </div>
             </motion.div>
@@ -201,11 +208,11 @@ export default function EventDetailsPage() {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden shadow-2xl"
+              className="bg-slate-900/50 backdrop-blur-sm rounded-3xl border border-slate-700/50 overflow-hidden shadow-2xl shadow-slate-900/20"
             >
               {/* Event Description */}
               <div className="p-8 md:p-12">
-                <h2 className="text-3xl font-bold mb-8 bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                <h2 className="text-3xl font-bold mb-8 text-white">
                   About This Event
                 </h2>
                 
@@ -217,13 +224,13 @@ export default function EventDetailsPage() {
               </div>
 
               {/* Book Event Section */}
-              <div className="bg-gradient-to-r from-purple-600/10 via-indigo-600/10 to-purple-600/10 border-t border-white/10 p-8 md:p-12">
+              <div className="bg-gradient-to-r from-slate-800/50 to-slate-900/50 border-t border-slate-700/50 p-8 md:p-12">
                 <div className="text-center">
                   <div className="mb-8">
-                    <h3 className="text-2xl md:text-3xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                    <h3 className="text-2xl md:text-3xl font-bold mb-4 text-white">
                       Ready to Join the Future?
                     </h3>
-                    <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+                    <p className="text-gray-300 text-lg max-w-2xl mx-auto">
                       Reserve your spot at this groundbreaking AI event. Connect with industry leaders, learn cutting-edge technologies, and be part of the AI revolution.
                     </p>
                   </div>
@@ -240,11 +247,11 @@ export default function EventDetailsPage() {
                   
                   <div className="flex flex-col sm:flex-row gap-6 justify-center items-center text-sm text-gray-400">
                     <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-purple-400" />
+                      <Mail className="w-4 h-4 text-white" />
                       <span>Instant confirmation</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-purple-400" />
+                      <Phone className="w-4 h-4 text-white" />
                       <span>24/7 support available</span>
                     </div>
                   </div>
@@ -256,8 +263,6 @@ export default function EventDetailsPage() {
 
         {/* Bottom Spacing */}
         <div className="h-20"></div>
-      </div>
-      <Footer />
-    </>
+    </div>
   );
 }
