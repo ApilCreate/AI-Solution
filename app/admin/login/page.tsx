@@ -226,6 +226,26 @@ export default function AdminLogin() {
                   </p>
                 </motion.div>
 
+                {/* Demo Credentials */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, duration: 0.6 }}
+                  className="mb-6 rounded-xl border border-indigo-200 bg-indigo-50 p-4"
+                >
+                  <h3 className="mb-2 text-sm font-semibold text-indigo-900">Demo login credentials</h3>
+                  <div className="space-y-1 text-sm text-indigo-800">
+                    <p>
+                      <span className="font-medium">Email:</span>{" "}
+                      <span className="font-mono">admin@aisolutions.com</span>
+                    </p>
+                    <p>
+                      <span className="font-medium">Password:</span>{" "}
+                      <span className="font-mono">admin123</span>
+                    </p>
+                  </div>
+                </motion.div>
+
                 {/* Login Form */}
                 <motion.form
                   initial={{ opacity: 0, y: 30 }}
